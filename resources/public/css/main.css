@@ -1,0 +1,49 @@
+
+/* /\* Fonts  *\/ */
+/* /\* $serif-ff: 'Kaiti TC'           *\/ */
+/* $serif-ff: 'Latin Modern Roman', Georgia, 'Times New Roman', Times, serif; */
+/* /\* $sans-serif "Varela Round", sans-serif *\/ */
+/* $monospace-ff:  Menlo,Monaco,Consolas,"Courier New",monospace; */
+/* $top-offset: 20px; */
+/* /\* $sans-serif-ff: 'Helvetica Neue', Helvetica, Arial, sans-serif *\/; */
+
+/* General */
+body {
+    background-color: #292929;
+    color: #FFFFFF;
+    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+}
+
+/* Menu */
+
+/* Face */
+
+/* Palette */
+
+/* Code */
+
+#app {
+    width: 100%
+}
+
+#sidebar {
+    display: inline-block;
+    vertical-align: top;
+    width: 250px;
+}
+
+#sidebar > div {
+    border: 1px solid white;
+}
+
+#code-display {
+    background-color: #FFF;
+    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 200px;
+}
+
+.code-line > .code-region {
+    display: inline;
+}
