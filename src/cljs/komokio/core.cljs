@@ -37,7 +37,7 @@
         (sidebar props)
         (code-display props)))))
 
-(def reconciler
+(defonce reconciler
   (om/reconciler
     {:normalize true
      :state config/app-state
