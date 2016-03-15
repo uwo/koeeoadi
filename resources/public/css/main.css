@@ -55,3 +55,34 @@ html,body {
 .code-line > .code-region {
     display: inline;
 }
+
+
+
+
+.face {
+    height: 20px;
+    padding-right: 50px;
+    margin-bottom: 5px;
+}
+
+.face-name {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 0px;
+}
+
+/* trick to vertically align '.face-name' */
+.face-name:after{
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    height: 100%;
+}
+
+.swatch {
+    display: inline-block;
+    height: 100%;
+    width: 20px;
+    cursor: pointer;
+    float: right;
+}

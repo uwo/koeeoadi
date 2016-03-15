@@ -27,7 +27,9 @@
 
   (render [this]
     (let [{:keys [color/rgb] :as props} (om/props this)]
-      (dom/input #js {:type "color" :value rgb :disabled true}))))
+      (dom/div #js {:style #js {:backgroundColor rgb}
+                    :className "swatch"
+                    :onClick #(println "showing tooltip")} ""))))
 
 (def face-color (om/factory FaceColor))
 
@@ -63,13 +65,10 @@
           fg-computed (om/computed
                         fg
                         {:css-updater (partial cssUpdater "color")})]
-      (dom/div nil
-        (dom/ul nil
-          ;; TODO abstract this away and render them based on properties
-          (dom/li nil (clojure.core/name face-name))
-          (dom/li nil
-            (dom/span nil "Foreground")
-            (face-color fg-computed)))))))
+      (dom/div #js {:className "face"}
+        (dom/span #js {:className "face-name"} (clojure.core/name face-name))
+        (face-color fg-computed)
+        (face-color bg-computed)))))
 
 (def face (om/factory Face {:keyfn :db/id}))
 
