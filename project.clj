@@ -19,10 +19,6 @@
 
   :source-paths ["src/clj" "src/cljs"]
 
-  ;; :profiles {:dev {:dependencies [[com.cemerick/piggieback "0.2.1"]
-  ;;                                 [figwheel-sidecar "0.5.0-1"]]
-  ;;                  :source-paths ["cljs_src" "dev"] }} ;; <-- Note the addition of "dev"
-
   :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
 
   :cljsbuild {:builds
@@ -40,4 +36,3 @@
   :figwheel {:validate-config true
              :css-dirs ["resources/public/css"]
              :server-port 3000})
-
