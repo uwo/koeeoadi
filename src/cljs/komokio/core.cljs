@@ -15,10 +15,10 @@
 ;;** Dev
 (enable-console-print!)
 
-(def code-clojure "<code><pre><div class=\"code code-comment\">
-  ;; this is a comment</div><div class=\"code code-default\">
-  This is some default text</div><div class=\"code code-default\">
-  This is even more default text</div></pre></code>")
+(def code-clojure "<pre><code><span class=\"code code-comment\">
+  ;; this is a comment</span><span class=\"code code-default\">
+  This is some default text</span><span class=\"code code-default\">
+  This is even more default text</span></code></pre>")
 
 ;; {:sidebar {:colors-editor []
 ;;            :faces-editor []
@@ -29,62 +29,40 @@
 (def app-state
   (atom {
          ;;code widget and faces editor depend on this directly
-         :faces/list [{
-                       :db/id 100
+         :faces/list [{:db/id 100
                        :face/name :default
-                       :face/background  {
-                                          :db/id 200
-                                          :color/name "yellow"
-                                          :color/rgb  "#Ffd700"
-                                          }
-                       :face/foreground {
-                                         :db/id 201
-                                         :color/name "blue"
-                                         :color/rgb  "#1e90ff"
-                                         }
-                       }
 
-                      {
-                       :db/id 101
+                       :face/foreground {:db/id 201
+                                         :color/name "blue"
+                                         :color/rgb  "#1e90ff"}}
+
+                      {:db/id 101
                        :face/name :comment
-                       :face/background {
-                                         :db/id 202
-                                         :color/name "red"
-                                         :color/rgb  "#Cd0000"
-                                         }
-                       :face/foreground {
-                                         :db/id 203
+
+                       :face/foreground {:db/id 203
                                          :color/name "green"
-                                         :color/rgb  "#2e8b57"
-                                         }
-                       }]
+                                         :color/rgb  "#2e8b57"}}]
 
          ;; TODO rgb property name since they're not RGB values (hsv i think)
-         :colors/list [
-                       {
-                        :db/id 200
+         :colors/list [{:db/id 204
+                        :color/name "black"
+                        :color/rgb "#000000"}
+
+                       {:db/id 200
                         :color/name "yellow"
-                        :color/rgb  "#Ffd700"
-                        }
+                        :color/rgb  "#Ffd700"}
 
-                       {
-                        :db/id 201
+                       {:db/id 201
                         :color/name "blue"
-                        :color/rgb  "#1e90ff"
-                        }
+                        :color/rgb  "#1e90ff"}
 
-                       {
-                        :db/id 202
+                       {:db/id 202
                         :color/name "red"
-                        :color/rgb  "#Cd0000"
-                        }
+                        :color/rgb  "#Cd0000"}
 
-                       {
-                        :db/id 203
+                       {:db/id 203
                         :color/name "green"
-                        :color/rgb  "#2e8b57"
-                        }
-                       ]
+                        :color/rgb  "#2e8b57"}]
          }))
 
 
@@ -163,7 +141,7 @@
   (str "code-" (name face-name)))
 
 (defn update-code-css [face-name property value]
-  (let [code (gdom/getElementsByTagNameAndClass "div" (code-class face-name))
+  (let [code (gdom/getElementsByTagNameAndClass "span" (code-class face-name))
         style (js-obj property value)]
     (garray/forEach code #(gstyle/setStyle % style))))
 
@@ -227,10 +205,8 @@
                         {:css-updater (partial cssUpdater "color")})]
       (dom/div nil
         (dom/ul nil
+          ;; TODO abstract this away and render them based on properties
           (dom/li nil (clojure.core/name face-name))
-          (dom/li nil
-            (dom/span nil "Background")
-            (face-color bg-computed))
           (dom/li nil
             (dom/span nil "Foreground")
             (face-color fg-computed)))))))
