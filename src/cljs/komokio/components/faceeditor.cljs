@@ -3,6 +3,7 @@
             [om.next :as om :refer-macros [defui]]
             [om.dom :as dom]
 
+            [komokio.components.palette :refer [Color]]
             [komokio.util :as util]))
 
 (defn update-face-color-style [comp]
@@ -10,6 +11,38 @@
         rgb  (:color/rgb props)
         css-updater (:css-updater (om/get-computed props))]
     (css-updater rgb)))
+
+(defui SwatchOption
+  static om/Ident
+  (ident [this {:keys [color/name]}]
+    [:colors/by-name name])
+
+  static om/IQuery
+  (query [this]
+    ;; TODO use shared color query
+    [:db/id :color/name :color/rgb])
+
+  Object
+  (render [this]
+    (let [{:keys [color/rgb]} (om/props this)]
+      (dom/div #js {:className "swatch swatch-option"
+                    :style #js {:backgroundColor rgb}}
+        ""))))
+
+(def swatch-option (om/factory SwatchOption {:keyfn :db/id}))
+
+(defui PalettePicker
+  ;; static om/IQuery
+  ;; (query [this]
+  ;;   [{:colors/list (om/get-query Color)}])
+
+  Object
+  (render [this]
+    (let [{:keys [colors/list]} (om/props this)]
+      (apply dom/div #js {:className"palette-picker"}
+        (map swatch-option list)))))
+
+(def palette-picker (om/factory PalettePicker))
 
 (defui FaceColor
   static om/Ident
@@ -28,8 +61,8 @@
   (render [this]
     (let [{:keys [color/rgb] :as props} (om/props this)]
       (dom/div #js {:style #js {:backgroundColor rgb}
-                    :className "swatch"
-                    :onClick #(println "showing tooltip")} ""))))
+                    :className "swatch swatch-trigger"
+                    :onClick #(println "showing palette picker")} ""))))
 
 (def face-color (om/factory FaceColor))
 
@@ -37,10 +70,6 @@
   static om/Ident
   (ident [this {:keys [face/name]}]
     [:faces/by-name name])
-
-  static om/IQueryParams
-  (params [this]
-    {:face-color (om/get-query FaceColor)})
 
   static om/IQuery
   (query [this]
@@ -51,8 +80,10 @@
 
   Object
   (render [this]
-    (let [{id :db/id face-name :face/name
-           bg :face/background fg :face/foreground
+    (let [{id :db/id
+           face-name :face/name
+           bg :face/background
+           fg :face/foreground
            :as props} (om/props this)
 
           cssUpdater (fn [css-property color-rgb]
@@ -65,19 +96,29 @@
           fg-computed (om/computed
                         fg
                         {:css-updater (partial cssUpdater "color")})]
-      (dom/div #js {:className "face"}
-        (dom/span #js {:className "face-name"} (clojure.core/name face-name))
-        (face-color fg-computed)
-        (face-color bg-computed)))))
+      (dom/div #js {:className "face-container"}
+        (dom/div #js {:className "face"}
+
+          (dom/span #js {:className "face-name"} (clojure.core/name face-name))
+          (face-color fg-computed)
+          (face-color bg-computed))))))
 
 (def face (om/factory Face {:keyfn :db/id}))
 
 (defui FaceEditor
   Object
   (render [this]
-    (let [{:keys [faces/list]} (om/props this)]
-      (dom/div #js {:id "faces-editor"}
+    (let [props (om/props this)
+          {faces :faces/list} props]
+      (dom/div #js {:id "faces-editor"
+                    :className "widget"}
         (dom/h3 nil "Faces Editor")
-        (apply dom/div nil (map face list))))))
+        (apply dom/div nil (map face faces))
+        (palette-picker props)))))
 
 (def face-editor (om/factory FaceEditor))
+
+
+;;tooltip shows every color except active one
+;;tooltip is a box
+;; box is dynamically sized

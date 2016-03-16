@@ -1,6 +1,8 @@
 (ns komokio.parser
   (:require [om.next :as om]
-            [cljs.pprint :as pprint]))
+            [cljs.pprint :as pprint]
+
+            [komokio.components.palette :refer [Color]]))
 
 ;; Readers
 (defmulti read om/dispatch)
@@ -25,7 +27,8 @@
   (let [face (get-in state-derefed face-ident)
         bg (get-in state-derefed (:face/background face))
         fg (get-in state-derefed (:face/foreground face))]
-    (merge face {:face/background bg :face/foreground fg })))
+    (merge face {:face/background bg
+                 :face/foreground fg})))
 
 (defn get-faces [state key]
   (let [st @state]
@@ -35,6 +38,13 @@
   [{:keys [state query] :as env} k params]
   {:value (get-faces state k)}
   )
+
+;; (defmethod read :sidebar
+;;   [{:keys [state query] :as env} k params]
+;;   (let [faces (get-faces state :faces/list)
+;;         colors (get-colors state :colors/list)]
+;;     {:value {:faces faces
+;;              :colors colors}}))
 
 (defmethod read :faces/by-id
   [{:keys [state query] :as env} k params]

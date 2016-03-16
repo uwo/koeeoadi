@@ -25,6 +25,7 @@ html,body {
     margin: 0;
     padding: 0;
 }
+
 #app {
     width: 100%
 }
@@ -35,8 +36,13 @@ html,body {
     width: 250px;
 }
 
-#sidebar > div {
+.widget {
     border: 1px solid white;
+}
+
+
+#app-info > h1, #app-info div {
+    text-align: center;
 }
 
 #code-display {
@@ -55,9 +61,6 @@ html,body {
 .code-line > .code-region {
     display: inline;
 }
-
-
-
 
 .face {
     height: 20px;
@@ -80,9 +83,14 @@ html,body {
 }
 
 .swatch {
+    border: 1px solid white;
+    margin-right: 3px;
     display: inline-block;
-    height: 100%;
     width: 20px;
+    height: 20px;
+}
+
+.swatch.swatch-trigger{
     cursor: pointer;
     float: right;
 }

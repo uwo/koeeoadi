@@ -41,7 +41,8 @@
   Object
   (render [this]
     (let [{:keys [colors/list]} (om/props this)]
-      (dom/div #js {:id "colors-editor"}
+      (dom/div #js {:id "colors-editor"
+                    :className "widget"}
         (dom/h3 nil "Palette")
         (apply dom/div nil (map color list))))))
 
