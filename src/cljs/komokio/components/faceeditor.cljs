@@ -12,35 +12,30 @@
         css-updater (:css-updater (om/get-computed props))]
     (css-updater rgb)))
 
-(defui SwatchOption
+(defui ColorOption
   static om/Ident
   (ident [this {:keys [color/name]}]
     [:colors/by-name name])
 
   static om/IQuery
   (query [this]
-    ;; TODO use shared color query
     [:db/id :color/name :color/rgb])
 
   Object
   (render [this]
     (let [{:keys [color/rgb]} (om/props this)]
-      (dom/div #js {:className "swatch swatch-option"
+      (dom/div #js {:className "color color-option"
                     :style #js {:backgroundColor rgb}}
         ""))))
 
-(def swatch-option (om/factory SwatchOption {:keyfn :db/id}))
+(def color-option (om/factory ColorOption {:keyfn :db/id}))
 
 (defui PalettePicker
-  ;; static om/IQuery
-  ;; (query [this]
-  ;;   [{:colors/list (om/get-query Color)}])
-
   Object
   (render [this]
-    (let [{:keys [colors/list]} (om/props this)]
+    (let [color-options (om/props this)]
       (apply dom/div #js {:className"palette-picker"}
-        (map swatch-option list)))))
+        (map color-option color-options)))))
 
 (def palette-picker (om/factory PalettePicker))
 
@@ -61,7 +56,7 @@
   (render [this]
     (let [{:keys [color/rgb] :as props} (om/props this)]
       (dom/div #js {:style #js {:backgroundColor rgb}
-                    :className "swatch swatch-trigger"
+                    :className "color color-trigger"
                     :onClick #(println "showing palette picker")} ""))))
 
 (def face-color (om/factory FaceColor))
@@ -109,12 +104,12 @@
   Object
   (render [this]
     (let [props (om/props this)
-          {faces :faces/list} props]
+          {color-options :color-options/list faces :faces/list} props]
       (dom/div #js {:id "faces-editor"
                     :className "widget"}
         (dom/h3 nil "Faces Editor")
         (apply dom/div nil (map face faces))
-        (palette-picker props)))))
+        (palette-picker color-options)))))
 
 (def face-editor (om/factory FaceEditor))
 

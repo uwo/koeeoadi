@@ -11,7 +11,7 @@
             [komokio.parser :refer [parser]]
             [komokio.components.sidebar :refer [sidebar]]
             [komokio.components.codedisplay :refer [code-display]]
-            [komokio.components.faceeditor :refer [Face]]
+            [komokio.components.faceeditor :refer [Face ColorOption]]
             [komokio.components.palette :refer [Color]]))
 
 (enable-console-print!)
@@ -24,8 +24,11 @@
 
   static om/IQuery
   (query [this]
-    '[{:faces/list ?face}
-      {:colors/list ?colors}])
+    [{:faces/list (om/get-query Face)}
+     ;; TODO These share the same data, not sure if
+     ;; this is the best way...
+     {:colors/list (om/get-query Color)}
+     {:color-options/list (om/get-query ColorOption)}])
 
   Object
   (componentDidMount [this]

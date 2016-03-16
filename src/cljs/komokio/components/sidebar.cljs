@@ -8,9 +8,7 @@
 (defui Sidebar
   Object
   (render [this]
-    (let [{faces :faces/list
-           colors :colors/list
-           :as props} (om/props this)]
+    (let [props (om/props this)]
       (dom/div #js {:id "sidebar"}
         (app-info)
         (palette props)

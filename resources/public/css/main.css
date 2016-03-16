@@ -82,7 +82,7 @@ html,body {
     height: 100%;
 }
 
-.swatch {
+.color {
     border: 1px solid white;
     margin-right: 3px;
     display: inline-block;
@@ -90,7 +90,7 @@ html,body {
     height: 20px;
 }
 
-.swatch.swatch-trigger{
+.color.color-trigger{
     cursor: pointer;
     float: right;
 }
