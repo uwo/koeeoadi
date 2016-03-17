@@ -14,3 +14,5 @@ resources/public/js
 /dev/user.clj
 /TAGS
 .projectile
+resources/public/css/out
+.sass-cache/

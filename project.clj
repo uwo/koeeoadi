@@ -35,5 +35,5 @@
                            :verbose true}}]}
 
   :figwheel {:validate-config true
-             :css-dirs ["resources/public/css"]
+             :css-dirs ["resources/public/css/out"]
              :server-port 3000})
