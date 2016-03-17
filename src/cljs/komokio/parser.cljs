@@ -20,11 +20,11 @@
     (into [] (map #(get-in st %)) (get st :colors/list))))
 
 (defmethod read :colors/list
-  [{:keys [state] :as env} k params]
+  [{:keys [state] :as env} _ _]
   {:value (get-colors state)})
 
 (defmethod read :color-options/list
-  [{:keys [state] :as env} k params]
+  [{:keys [state] :as env} _ _]
   {:value (get-colors state)})
 
 (defn get-face [state-derefed face-ident]
@@ -40,8 +40,7 @@
 
 (defmethod read :faces/list
   [{:keys [state query] :as env} k params]
-  {:value (get-faces state k)}
-  )
+  {:value (get-faces state k)})
 
 ;;** Mutators
 (defmulti mutate om/dispatch)

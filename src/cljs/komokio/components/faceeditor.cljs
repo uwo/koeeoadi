@@ -112,8 +112,3 @@
         (palette-picker color-options)))))
 
 (def face-editor (om/factory FaceEditor))
-
-
-;;tooltip shows every color except active one
-;;tooltip is a box
-;; box is dynamically sized

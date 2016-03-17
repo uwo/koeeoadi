@@ -3,11 +3,14 @@
             [goog.style :refer [setStyle]]
             [goog.array :refer [forEach]]))
 
-(defn code-class [face-name]
-  (str "code-" (name face-name)))
+
+(def code-class "code")
+
+(defn code-face-class [face-name]
+  (str code-class "-" (name face-name)))
 
 (defn update-code-css [face-name property value]
-  (let [code (getElementsByTagNameAndClass "span" (code-class face-name))
+  (let [code (getElementsByTagNameAndClass "span" (code-face-class face-name))
         style (js-obj property value)]
     (forEach code #(setStyle % style))))
 

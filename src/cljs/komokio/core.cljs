@@ -25,10 +25,8 @@
   static om/IQuery
   (query [this]
     [{:faces/list (om/get-query Face)}
-     ;; TODO These share the same data, not sure if
-     ;; this is the best way...
-     {:colors/list (om/get-query Color)}
-     {:color-options/list (om/get-query ColorOption)}])
+     {:colors/list (om/get-query Color)} ;; Used for palette
+     {:color-options/list (om/get-query ColorOption)}]) ;; Used for palette picker in faces menu
 
   Object
   (componentDidMount [this]
