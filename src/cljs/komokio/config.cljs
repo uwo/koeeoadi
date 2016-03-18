@@ -11,7 +11,7 @@
                                          :color/name "blue"
                                          :color/rgb  "#1e90ff"}
 
-                       :face/background {:db/id 204
+                       :face/background {:db/id 230
                                          :color/name "black"
                                          :color/rgb  "#1a1a1a"}}
                       {:db/id 101
@@ -21,7 +21,7 @@
                                          :color/name "red"
                                          :color/rgb  "#Cd0000"}
 
-                       :face/background {:db/id 204
+                       :face/background {:db/id 230
                                          :color/name "black"
                                          :color/rgb  "#1a1a1a"}}
                       {:db/id 102
@@ -31,7 +31,7 @@
                                          :color/name "yellow"
                                          :color/rgb  "Ffd700"}
 
-                       :face/background {:db/id 204
+                       :face/background {:db/id 230
                                          :color/name "black"
                                          :color/rgb  "#1a1a1a"}}
 
@@ -42,12 +42,12 @@
                                          :color/name "green"
                                          :color/rgb  "#2e8b57"}
 
-                       :face/background {:db/id 204
+                       :face/background {:db/id 230
                                          :color/name "black"
                                          :color/rgb  "#1a1a1a"}}]
 
          ;; TODO rgb property name since they're not RGB values (hsv i think)
-         :colors/list [{:db/id 204
+         :colors/list [{:db/id 230
                         :color/name "black"
                         :color/rgb "#1a1a1a"}
                        {:db/id 200
@@ -59,21 +59,36 @@
                        {:db/id 202
                         :color/name "red"
                         :color/rgb  "#Cd0000"}
-                       {:db/id 203
-                        :color/name "green"
-                        :color/rgb  "#2e8b57"}
-                       {:db/id 204
-                        :color/name "brown"
-                        :color/rgb  "#2e8b57"}
-                       {:db/id 205
-                        :color/name "gray"
-                        :color/rgb  "#2e8b57"}
-                       {:db/id 206
-                        :color/name "cyan"
-                        :color/rgb  "#2e8b57"}
-                       {:db/id 207
-                        :color/name "teal"
-                        :color/rgb  "#2e8b57"}
+                       ;; {:db/id 203
+                       ;;  :color/name "green"
+                       ;;  :color/rgb  "#2e8b57"}
+                       ;; {:db/id 204
+                       ;;  :color/name "brown"
+                       ;;  :color/rgb  "#2e8b57"}
+                       ;; {:db/id 205
+                       ;;  :color/name "gray"
+                       ;;  :color/rgb  "#2e8b57"}
+                       ;; {:db/id 206
+                       ;;  :color/name "cyan"
+                       ;;  :color/rgb  "#2e8b57"}
+                       ;; {:db/id 207
+                       ;;  :color/name "greal"
+                       ;;  :color/rgb  "#2e8b57"}
+                       ;; {:db/id 256
+                       ;;  :color/name "breen"
+                       ;;  :color/rgb  "#2e8b57"}
+                       ;; {:db/id 2910
+                       ;;  :color/name "broon"
+                       ;;  :color/rgb  "#2e8b57"}
+                       ;; {:db/id 21112
+                       ;;  :color/name "bray"
+                       ;;  :color/rgb  "#2e8b57"}
+                       ;; {:db/id 21314
+                       ;;  :color/name "brayon"
+                       ;;  :color/rgb  "#2e8b57"}
+                       ;; {:db/id 21516
+                       ;;  :color/name "bronno"
+                       ;;  :color/rgb  "#2e8b57"}
                        ]}))
 
 (def code-clojure "<pre><code><span class=\"code code-comment\">

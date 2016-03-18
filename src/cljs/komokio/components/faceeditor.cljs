@@ -51,12 +51,12 @@
   (render [this]
     (let [color-options (:color-options (om/props this))
           {:keys [coordinates comp] :as state} (om/get-state this)]
-      (println state)
-      (apply dom/div #js {:id "palette-picker"
-                          :style #js {:position "absolute"
-                                      :top (:x coordinates)
-                                      :left (:y coordinates)}}
-        (map color-option color-options)))))
+      (when-not (empty? state)
+          (apply dom/div #js {:id "palette-picker"
+                              :style #js {:position "absolute"
+                                          :top (:x coordinates)
+                                          :left (:y coordinates)}}
+            (map color-option color-options))))))
 
 (def palette-picker (om/factory PalettePicker))
 
@@ -151,8 +151,7 @@
           color-options-computed (om/computed {:color-options color-options} {:palette-picker-chan palette-picker-chan})]
       (dom/div #js {:id "faces-editor"
                     :className "widget"
-                    :style #js {:position "relative"
-                                :width width}}
+                    :style #js {:position "relative"}}
         (dom/h5 nil "Faces Editor")
         (apply dom/div nil (map face faces-computed))
         (palette-picker color-options-computed)))))

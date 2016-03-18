@@ -19,6 +19,7 @@ body {
 .widget {
     border: 1px solid white;
     padding: 5px;
+    width: 100%;
 }
 
 /* Palette */
@@ -116,17 +117,19 @@ input[type="color"] {
 #palette-picker {
     width: max-content;
     max-width: 110px;
-    padding: 10px 10px 10px 10px;
+    padding: $colorInputSize/2;
     position: absolute;
     z-index: 1;
+    margin-left: $colorInputSize/2;
+    margin-top: $colorInputSize/2;
 }
 
 #palette-picker::after {
   content: "";
-  max-width: 110px;
-  border-radius: 10px;
+  max-width: 100px + $colorInputSize/2;
+  border-radius: 0px 15px 15px 15px;
   background-color: #1a1a1a;
-  opacity: 0.9;
+  opacity: 0.95;
   top: 0;
   left: 0;
   bottom: 0;
@@ -139,6 +142,6 @@ input[type="color"] {
     padding: 0px;
     border-radius: 0px;
     position: relative;
-    margin: 5px;
+    margin: $colorInputSize/4;
     z-index: 1;
 }
