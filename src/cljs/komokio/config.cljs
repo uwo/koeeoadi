@@ -50,22 +50,31 @@
          :colors/list [{:db/id 204
                         :color/name "black"
                         :color/rgb "#1a1a1a"}
-
                        {:db/id 200
                         :color/name "yellow"
                         :color/rgb  "#Ffd700"}
-
                        {:db/id 201
                         :color/name "blue"
                         :color/rgb  "#1e90ff"}
-
                        {:db/id 202
                         :color/name "red"
                         :color/rgb  "#Cd0000"}
-
                        {:db/id 203
                         :color/name "green"
-                        :color/rgb  "#2e8b57"}]}))
+                        :color/rgb  "#2e8b57"}
+                       {:db/id 204
+                        :color/name "brown"
+                        :color/rgb  "#2e8b57"}
+                       {:db/id 205
+                        :color/name "gray"
+                        :color/rgb  "#2e8b57"}
+                       {:db/id 206
+                        :color/name "cyan"
+                        :color/rgb  "#2e8b57"}
+                       {:db/id 207
+                        :color/name "teal"
+                        :color/rgb  "#2e8b57"}
+                       ]}))
 
 (def code-clojure "<pre><code><span class=\"code code-comment\">
   ;; this is a comment</span><span class=\"code code-default\">

@@ -14,7 +14,7 @@
                  [figwheel-sidecar "0.5.0-2"]
                  ]
 
-  :plugins [[lein-figwheel "0.5.0-1"]]
+  ;;:plugins [[lein-figwheel "0.5.0-1"]]
 
   :clean-targets ^{:protect false} ["resources/public/js/out"]
 

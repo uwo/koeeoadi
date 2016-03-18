@@ -25,15 +25,15 @@
   (render [this]
     (let [{:keys [db/id color/name color/rgb] :as color} (om/props this)
           {:keys [rgb-editing]} (om/get-state this)]
-      (dom/div nil
-        (dom/ul nil
-          (dom/li nil name)
-          (dom/li nil
-            (dom/span nil rgb)
-            (dom/input #js {:type "color"
-                            :value rgb
-                            :onClick #(println "color picker clicked")
-                            :onChange #(handle-color-change % this color)})))))))
+      (dom/div #js {:className "color-input"
+                    :style #js {:backgroundColor rgb}}
+        (dom/div #js {:className "input-overlay"
+                      :style #js {:backgroundColor rgb}})
+        (dom/input #js {:type "color"
+                        :value rgb
+                        
+                        :onClick #(println "color picker clicked")
+                        :onChange #(handle-color-change % this color)})))))
 
 (def color (om/factory Color {:keyfn :db/id}))
 
@@ -41,9 +41,10 @@
   Object
   (render [this]
     (let [{:keys [colors/list]} (om/props this)]
-      (dom/div #js {:id "colors-editor"
+      (dom/div #js {:id "palette"
                     :className "widget"}
-        (dom/h3 nil "Palette")
+        (dom/h5 nil "Palette")
+        (dom/div nil "Click color to edit:")
         (apply dom/div nil (map color list))))))
 
 (def palette (om/factory Palette))
