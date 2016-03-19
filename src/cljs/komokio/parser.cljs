@@ -56,4 +56,11 @@
    (fn []
      (swap! state update-in [:colors/by-name name] assoc :color/rgb rgb))})
 
+(defmethod mutate 'face/update
+  [{:keys [state ref] :as env} _ {:keys [name bg-or-fg color] :as args}]
+  {:value {:keys [:faces/list]}
+   :action
+   (fn []
+     (swap! state update-in [:faces/by-name name] assoc bg-or-fg [:colors/by-name (:color/name color)]))})
+
 (def parser (om/parser {:read read :mutate mutate}))
