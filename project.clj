@@ -12,7 +12,7 @@
                  [com.cemerick/piggieback "0.2.1"]
                  [org.clojure/clojure "1.7.0"]
                  [figwheel-sidecar "0.5.0-2"]
-                 ]
+                 [binaryage/devtools "0.5.2"]]
 
   ;;:plugins [[lein-figwheel "0.5.0-1"]]
 
