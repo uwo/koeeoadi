@@ -5,12 +5,19 @@
             [goog.style :as gstyle]
             [om.next :as om :refer-macros [defui]]
             [om.dom :as dom]
+            [cljs.pprint :as pprint]
             [cljs.core.async :refer [timeout mult tap untap put! chan <! >!]]
 
             [komokio.components.palette :refer [Color]]
+            [komokio.config :as config]
             [komokio.util :as util]))
 
-(def palette-picker-chan (chan))
+;; TODO delete this when I move palette picker to it's own component
+(declare Face)
+
+(defn cljs-coordinates [coords]
+  {:x (aget coords "y")
+   :y (aget coords "x")})
 
 (defn update-face-color-style [comp]
   (let [props (om/props comp)
@@ -32,110 +39,93 @@
     (let [{:keys [color/rgb]}         (om/props this)
           {:keys [colorHoverHandler
                   colorClickHandler]} (om/get-computed this)]
-
       (dom/button #js
         {:className    "color color-option"
-         :onMouseEnter #(colorHoverHandler rgb) ;;#(colorHoverHandler rgb)
+         :onMouseEnter #(colorHoverHandler rgb)
          :onMouseLeave #(colorHoverHandler nil)
-         :onMouseDown  #(do (.preventDefault %)
-                            (colorClickHandler (om/props this)))
-         :style        #js {:backgroundColor rgb
-                            ;;:border (str "0.1px solid " rgb)
-                            }}))))
+         :onMouseDown  #(colorClickHandler (om/props this))
+         :style        #js {:backgroundColor rgb}}))))
 
 (def color-option (om/factory ColorOption {:keyfn :db/id}))
 
 (defui PalettePicker
-  Object
-  (componentWillMount [this]
-    (let [ch (:palette-picker-chan (om/get-computed this))]
-      (go-loop [state (<! ch)]
-        (om/set-state! this state)
-        (recur (<! ch)))))
+  static om/IQuery
+  (query [this]
+    [:palette-picker/coordinates
+     :palette-picker/active-face-property
+     {:palette-picker/active-face (om/get-query Face)}
+     {:colors/list (om/get-query Color)}])
 
+  Object
   (componentInitState [this]
     {})
 
+  (componentDidUpdate [this prev-props prev-state])
+
   (render [this]
-    (let [color-options (:color-options (om/props this))
-          state         (om/get-state this)]
-      (when-not (empty? state)
-        (let [{:keys [face-comp color-comp coordinates css-property]} state
+    (let [{:keys [colors/list
+                  palette-picker/coordinates
+                  palette-picker/active-face
+                  palette-picker/active-face-property]} (om/props this)
 
-              {face-id     :db/id
-               face-name   :face/name} (om/props face-comp)
+          css-property (if (= active-face-property :face/background) "background" "color")
+          {face-name :face/name} active-face
+          face-color-rgb (get-in active-face [active-face-property :color/rgb])
 
-              {color-id    :db/id
-               color-name  :color/name
-               color-rgb   :color/rgb} (om/props color-comp)
+          colorClickHandler (fn [color]
+                              (let [{:keys [db/id face/name]} active-face]
+                                (om/transact! this `[(face/update
+                                                       {:id       ~id
+                                                        :name     ~name
+                                                        :bg-or-fg ~active-face-property
+                                                        :color    ~color}) :face/name])))
+          colorHoverHandler (fn [hover-color-rgb]
+                              (if hover-color-rgb
+                                (util/update-code-css face-name css-property hover-color-rgb)
+                                (util/update-code-css face-name css-property face-color-rgb)))
 
-              colorClickHandler (fn [color]
-                                  (let [{:keys [db/id face/name]} (om/props face-comp)
-                                        bg-or-fg (if (= css-property "background-color") :face/background :face/foreground)]
-                                    (.log js/console face-comp)
-                                    (om/transact! face-comp `[(face/update {:id ~id :name ~name :bg-or-fg ~bg-or-fg :color ~color})])))
-              colorHoverHandler (fn [hover-color-rgb]
-                                  (if hover-color-rgb
-                                    (util/update-code-css face-name css-property hover-color-rgb)
-                                    (util/update-code-css face-name css-property color-rgb)))
-
-              color-options-computed (map #(om/computed % {:colorHoverHandler colorHoverHandler
-                                                           :colorClickHandler colorClickHandler}) color-options)]
-
-          (.log js/console state)
-          (apply
-            dom/div
-            #js {:id    "palette-picker"
-                 :style #js {:position "absolute"
-                             :top      (:x coordinates)
-                             :left     (:y coordinates)
-                             }}
-            (map color-option color-options-computed)))))))
+          color-options-computed (map #(om/computed % {:colorHoverHandler colorHoverHandler
+                                                       :colorClickHandler colorClickHandler}) list)]
+      (when coordinates
+        (apply
+          dom/div
+          #js {:id    "palette-picker"
+               :style #js {:position "absolute"
+                           :top      (:x coordinates)
+                           :left     (:y coordinates)}}
+          (map color-option color-options-computed))))))
 
 (def palette-picker (om/factory PalettePicker))
 
-(defn faceColorClick [e comp]
-  (let [editing? (:editing? (om/props comp))]
-    (om/update-state! comp assoc :editing? (not editing?))))
+(defn face-option-elm [face-node child-no]
+  (aget
+    (gdom/getElementsByTagNameAndClass "div" "color-trigger" (gdom/getElement face-node)) child-no))
 
-(defn cljs-coordinates [coords]
-  {:x (aget coords "y")
-   :y (aget coords "x")})
+(defn faceColorClick [_ comp face-property]
+  (let [face (om/props comp)
+        child-no    (if (= :face/foreground face-property) 0 1)
+        coordinates (-> (face-option-elm (dom/node comp) child-no)
+                      gdom/getElement
+                      gstyle/getPosition
+                      cljs-coordinates)]
+    (om/transact! comp `[(palette-picker/update
+                           {:palette-picker/active-face          ~face
+                            :palette-picker/active-face-property ~face-property
+                            :palette-picker/coordinates          ~coordinates}) :palette-picker/coordinates])))
 
-(defui FaceColor
-  static om/Ident
-  (ident [this {:keys [color/name]}]
-    [:colors/by-name name])
+(defn face-color [comp face-property]
+  (let [{:keys [db/id color/rgb color/name] :as color}  (get (om/props comp) face-property)
+        {:keys [editing?] :as state} (om/get-state comp)]
 
-  static om/IQuery
-  (query [this]
-    ;; TODO use shared color query
-    [:db/id :color/name :color/rgb])
-
-  Object
-  (componentDidUpdate [this prev-props prev-state]
-    (when (:css-updater  (om/get-computed this))
-      (update-face-color-style this))
-    (let [{:keys [editing?] :as state}  (om/get-state this)
-          {:keys [signalPalettePicker]} (om/get-computed this)
-          coordinates (cljs-coordinates (gstyle/getPosition (gdom/getElement (dom/node this))))
-          palette-picker-state-fragment {:coordinates coordinates :color-comp this}]
-      (when signalPalettePicker
-        (if editing?
-          (signalPalettePicker palette-picker-state-fragment)
-          (signalPalettePicker {})))))
-  (render [this]
-    (let [{:keys [color/rgb] :as props} (om/props this)
-          {:keys [editing?] :as state} (om/get-state this)]
-
-      (dom/div
-        #js {:style     #js {:backgroundColor rgb}
-             :tabIndex  "0"
-             :className "color color-trigger"
-             :onClick   #(faceColorClick % this)
-             :onBlur    #(om/set-state! this {})}))))
-
-(def face-color (om/factory FaceColor))
+    (dom/div
+      #js {:style     #js {:backgroundColor rgb}
+           :tabIndex  "0"
+           :className "color color-trigger"
+           :onClick   #(faceColorClick % comp face-property)
+           :onBlur    #(om/transact! comp `[(palette-picker/update
+                                              {:palette-picker/active-face nil
+                                               :palette-picker/active-face-property nil
+                                               :palette-picker/coordinates nil}) :palette-picker/coordinates])})))
 
 (defui Face
   static om/Ident
@@ -146,63 +136,46 @@
   (query [this]
     `[:db/id
       :face/name
-      {:face/background ~(om/get-query FaceColor)}
-      {:face/foreground ~(om/get-query FaceColor)}])
+      {:face/background ~(om/get-query Color)}
+      {:face/foreground ~(om/get-query Color)}])
+
 
   Object
+  (componentDidUpdate [this prev-props prev-state]
+    (let [{:keys [face/name
+                  face/background
+                  face/foreground]}  (om/props this)
+
+          bg-color (:color/rgb background)
+          fg-color (:color/rgb foreground)]
+      (util/update-code-css name "color"      fg-color)
+      (util/update-code-css name "background" bg-color)))
+
   (render [this]
     (let [{id         :db/id
            face-name  :face/name
            bg         :face/background
            fg         :face/foreground
-           :as props} (om/props this)
-          {:keys [palette-picker-chan] :as computed} (om/get-computed this)
-          signalPalettePicker (fn [css-property palette-picker-state-fragment]
-                                (if-not (empty? palette-picker-state-fragment)
-                                  ;; beginning editing: send palettepicker the data it needs to do its thing
-                                  ;; this includes the color selection and the face associated with the selection
-                                  (let [palette-picker-state (merge palette-picker-state-fragment
-                                                               {:face-comp this :css-property css-property})]
-                                    (put! palette-picker-chan (merge palette-picker-state)))
-                                  ;; done editing: send palette-picker nil data so it will "turn off"
-                                  (put! palette-picker-chan {})))
-          cssUpdater (fn [css-property color-rgb]
-                       (util/update-code-css face-name css-property color-rgb))
-
-          bg-computed (om/computed
-                        bg
-                        (merge computed
-                          {:css-updater         (partial cssUpdater "background-color")
-                           :signalPalettePicker (partial signalPalettePicker "background-color")}))
-
-          fg-computed (om/computed
-                        fg
-                        (merge computed
-                          {:css-updater         (partial cssUpdater "color")
-                           :signalPalettePicker (partial signalPalettePicker "color")}))]
+           :as props} (om/props this)]
 
       (dom/div #js {:className "face-container"}
         (dom/div #js {:className "face"}
           (dom/span #js {:className "face-name"} (clojure.core/name face-name))
-          (face-color fg-computed)
-          (face-color bg-computed))))))
+          (face-color this :face/foreground)
+          (face-color this :face/background))))))
 
 (def face (om/factory Face {:keyfn :db/id}))
 
 (defui FaceEditor
   Object
   (render [this]
-    (let [{color-options :color-options/list
-           faces :faces/list :as props} (om/props this)
-          width  (* 20 (count color-options))
-          faces-computed         (map #(om/computed % {:palette-picker-chan palette-picker-chan}) faces)
-          color-options-computed (om/computed {:color-options color-options} {:palette-picker-chan palette-picker-chan})]
-
+    (let [{pp :palette-picker
+           faces :faces/list :as props} (om/props this)]
       (dom/div #js {:id "faces-editor"
                     :className "widget"
                     :style #js {:position "relative"}}
         (dom/h5 nil "Faces Editor")
-        (apply dom/div nil (map face faces-computed))
-        (palette-picker color-options-computed)))))
+        (apply dom/div nil (map face faces))
+        (palette-picker pp)))))
 
 (def face-editor (om/factory FaceEditor))

@@ -2,7 +2,6 @@
 
 (def app-state
   (atom {
-         
          ;;code widget and faces editor depend on this directly
          :faces/list [{:db/id 100
                        :face/name :default

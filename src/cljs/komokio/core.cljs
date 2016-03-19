@@ -13,12 +13,12 @@
             [komokio.parser :refer [parser]]
             [komokio.components.sidebar :refer [sidebar]]
             [komokio.components.codedisplay :refer [code-display]]
-            [komokio.components.faceeditor :refer [Face ColorOption]]
+            [komokio.components.faceeditor :refer [PalettePicker Face ColorOption]]
             [komokio.components.palette :refer [Color]]))
 
 ;; TODO separate out this dev stuff
 (enable-console-print!)
-; this enables additional features, :custom-formatters is enabled by default
+                                        ; this enables additional features, :custom-formatters is enabled by default
 (devtools/enable-feature! :sanity-hints :dirac)
 (devtools/install!)
 
@@ -31,8 +31,8 @@
   static om/IQuery
   (query [this]
     [{:faces/list (om/get-query Face)}
-     {:colors/list (om/get-query Color)} ;; Used for palette
-     {:color-options/list (om/get-query ColorOption)}]) ;; Used for palette picker in faces menu
+     {:colors/list (om/get-query Color)}
+     {:palette-picker (om/get-query PalettePicker)}])
 
   Object
   (componentDidMount [this]

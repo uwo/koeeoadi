@@ -3,10 +3,9 @@
             [om.next :as om :refer-macros [defui]]))
 
 (defn handle-color-change [e comp {:keys [color/name db/id] :as color}]
-  (let [rgb-editing (.. e -target -value)
-        face-color-updater (om/get-computed comp :face-color-updater)]
+  (let [rgb-editing (.. e -target -value)]
     (om/transact! comp
-      `[(color/update {:id ~id :name ~name :rgb ~rgb-editing})])))
+      `[(color/update {:id ~id :name ~name :rgb ~rgb-editing}) :face/name]))) ;; update all faces
 
 (defui Color
 
@@ -24,15 +23,14 @@
 
   (render [this]
     (let [{:keys [db/id color/name color/rgb] :as color} (om/props this)
-          {:keys [rgb-editing]} (om/get-state this)]
+          {:keys [rgb-editing]}                          (om/get-state this)]
       (dom/div #js {:className "color-input"
-                    :style #js {:backgroundColor rgb}}
+                    :style     #js {:backgroundColor rgb}}
         (dom/div #js {:className "input-overlay"
-                      :style #js {:backgroundColor rgb}})
-        (dom/input #js {:type "color"
-                        :value rgb
-                        
-                        :onClick #(println "color picker clicked")
+                      :style     #js {:backgroundColor rgb}})
+        (dom/input #js {:type     "color"
+                        :value    rgb
+                        :onClick  #(println "color picker clicked")
                         :onChange #(handle-color-change % this color)})))))
 
 (def color (om/factory Color {:keyfn :db/id}))

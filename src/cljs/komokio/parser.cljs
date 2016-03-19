@@ -2,7 +2,8 @@
   (:require [om.next :as om]
             [cljs.pprint :as pprint]
 
-            [komokio.components.palette :refer [Color]]))
+            [komokio.components.palette :refer [Color]]
+            [komokio.components.faceeditor :refer [PalettePicker]]))
 
 ;; Readers
 (defmulti read om/dispatch)
@@ -13,6 +14,11 @@
     (if (contains? st k)
       {:value (get st k)}
       {:remote true})))
+
+(defmethod read :palette-picker
+  [{:keys [state] :as env} _ _]
+  (let [pp (om/db->tree [{:palette-picker (om/get-query PalettePicker)}]  @state @state)]
+    {:value (:palette-picker pp)}))
 
 (defn get-colors [state]
   (let [st @state]
@@ -62,5 +68,14 @@
    :action
    (fn []
      (swap! state update-in [:faces/by-name name] assoc bg-or-fg [:colors/by-name (:color/name color)]))})
+
+
+(defmethod mutate 'palette-picker/update
+  [{:keys [state ref] :as env} _ args]
+  {:value {:keys [:palette-picker]}
+   :action
+   (fn []
+     (let [state' (update-in @state [:palette-picker] merge args {:colors/list (get @state :colors/list)})]
+       (reset! state state')))})
 
 (def parser (om/parser {:read read :mutate mutate}))
