@@ -3,7 +3,7 @@
             [cljs.pprint :as pprint]
 
             [komokio.components.palette :refer [Color]]
-            [komokio.components.faceeditor :refer [PalettePicker]]))
+            [komokio.components.palettepicker :refer [PalettePicker]]))
 
 ;; Readers
 (defmulti read om/dispatch)
@@ -17,16 +17,19 @@
 
 (defn sub-colors [face state-derefed]
   (-> face
-    (update :face/background #(get-in state-derefed %))
-    (update :face/foreground #(get-in state-derefed %))))
+    (update :face/background #(if (empty? %) nil (get-in state-derefed %)))
+    (update :face/foreground #(if (empty? %) nil (get-in state-derefed %)))))
 
 (defn sub-face [code state-derefed]
   (update code :face #(sub-colors (get-in state-derefed %) state-derefed)))
 
-(defmethod read :code
+(defn get-code-chunks [state]
+  (let [st @state]
+    (into [] (map #(sub-face (get-in st %) st)) (get st :code-chunks/list))))
+
+(defmethod read :code-chunks/list
   [{:keys [state] :as env} _ _]
-  (let [code (map #(sub-face % @state) (get @state :code))]
-    {:value code}))
+  {:value (get-code-chunks state)})
 
 (defmethod read :palette-picker
   [{:keys [state] :as env} _ _]
@@ -35,7 +38,6 @@
 
 (defn get-colors [state]
   (let [st @state]
-    ;; TODO figure out how transducers work
     (into [] (map #(get-in st %)) (get st :colors/list))))
 
 (defmethod read :colors/list
@@ -88,7 +90,6 @@
   {:value {:keys [:palette-picker]}
    :action
    (fn []
-     (let [state' (update-in @state [:palette-picker] merge args {:colors/list (get @state :colors/list)})]
-       (reset! state state')))})
+     (swap! state update-in [:palette-picker] merge args {:colors/list (get @state :colors/list)}))})
 
 (def parser (om/parser {:read read :mutate mutate}))

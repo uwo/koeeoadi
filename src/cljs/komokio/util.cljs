@@ -6,6 +6,7 @@
 (def code-class "code")
 
 (defn code-face-class [face-name]
+  (println face-name)
   (str code-class "-" (name face-name)))
 
 (defn update-code-other-elements [face-name func]

@@ -1,42 +1,65 @@
 (ns komokio.components.codedisplay
   (:require [goog.dom :as gdom]
             [goog.dom.classes :as gclasses]
+            [goog.style :as gstyle]
             [om.next :as om :refer-macros [defui]]
             [om.dom :as dom]
 
             [komokio.util :as util]
             [komokio.config :refer [code-clojure]]))
 
+(defn cljs-coordinates [coords]
+  {:x (aget coords "y")
+   :y (aget coords "x")})
+
+(defn handleCodeClick [comp face-property]
+  (let [face        (:face (om/props comp))
+        coordinates (-> (dom/node comp)
+                      gdom/getElement
+                      gstyle/getPosition
+                      cljs-coordinates)]
+    (println face)
+    (om/transact! comp `[(palette-picker/update
+                           {:palette-picker/active-face          ~face
+                            :palette-picker/active-face-property ~face-property
+                            :palette-picker/coordinates          ~coordinates}) :palette-picker/coordinates])))
+
 (defui CodeChunk
+  static om/Ident
+  (ident [this {:keys [line-chunk]}]
+    ;; dirty ident but it works for our purposes
+    [:code-chunks/by-linechunk line-chunk])
+
   static om/IQuery
   (query [this]
-    [:face :line :chunk :string])
+    [:face :line-chunk :string])
 
   Object
   (render [this]
-    (let [{:keys [face line chunk string]} (om/props this)
+    (let [{:keys [face line-chunk string]} (om/props this)
           {:keys [face/name]} face
           {fg :color/rgb} (:face/foreground face)
           {bg :color/rgb} (:face/background face)]
-      (dom/span #js {:className (str util/code-class " " (util/code-face-class name))
-                     :onMouseOver  (fn [e] (util/update-code-other-elements name #(gclasses/add % "code-temp-minimize")))
-                     :onMouseLeave (fn [e] (util/update-code-other-elements name #(gclasses/remove % "code-temp-minimize")))
-                     :style #js {:backgroundColor (if bg bg "transparent")
-                                 :color           (if fg fg "black")}} string))))
+      (dom/span #js {:className    (str util/code-class " " (util/code-face-class name))
+                     :onClick      #(handleCodeClick this :face/foreground)
+                     ;;:onMouseOver  (fn [e] (util/update-code-other-elements name #(gclasses/add % "code-temp-minimize")))
+                     ;;:onMouseLeave (fn [e] (util/update-code-other-elements name #(gclasses/remove % "code-temp-minimize")))
+                     :style #js    {:backgroundColor (if bg bg "transparent")
+                                    :color           (if fg fg "black")}} string))))
 
-(def code-chunk (om/factory CodeChunk {:keyfn #(+ (:chunk %) (* 10 (:line %)))}))
+(def code-chunk (om/factory CodeChunk {:keyfn :line-chunk}))
 
 (defn code-line [line]
-  (let [code-chunks (sort-by :chunk line)]
-    (apply dom/span #js {:className "code-line"}
+  (let [code-chunks (sort-by :line-chunk line)]
+    (.log js/console code-chunks)
+    (apply dom/div #js {:className "code-line"}
+      (map code-chunk code-chunks))))
 
-      (map #(code-chunk %) code-chunks))))
-
-(defui CodeDisplay
-  Object
-  (render [this]
-    (let [code-lines (sort-by first (group-by :line (om/props this)))]
-      (apply dom/code #js {:id "code-display"}
-        (map #(code-line (last %)) code-lines)))))
-
-(def code-display (om/factory CodeDisplay))
+(defn code-display [props]
+  (let [code-chunks (:code-chunks/list props)
+        code-lines (sort-by first (sort-by first
+                                    (group-by #(.floor js/Math (/ (:line-chunk %) 1000))
+                                      code-chunks)))]
+    (.log js/console code-lines)
+    (apply dom/code #js {:id "code-display"}
+      (map #(code-line (last %)) code-lines))))

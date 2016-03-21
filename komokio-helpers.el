@@ -37,7 +37,7 @@
 
 (defun komokio-to-valid-face (face)
   (let ((face (if (consp face) (car face) face)))
-    (if (member face valid-faces)
+    (if (member face komokio-valid-faces)
         face
       'default)))
 
@@ -72,8 +72,7 @@
                                               (substring string
                                                          region-start
                                                          region-end))
-                                     :line   line-no
-                                     :chunk  chunk-no)))
+                                     :line-chunk (+ chunk-no (* line-no 1000)))))
         (setq props (subseq props 3))
         (setq region (subseq props 0 2))
         (setq last-line-no line-no)

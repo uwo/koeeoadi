@@ -1,6 +1,7 @@
 (ns komokio.config)
 
-(def code-elisp [{:face [:faces/by-name :default], :string "", :line 5, :chunk 1} {:face [:faces/by-name :default], :string "", :line 4, :chunk 6} {:face [:faces/by-name :default], :string ")", :line 4, :chunk 5} {:face [:faces/by-name :default], :string ")", :line 4, :chunk 4} {:face [:faces/by-name :default], :string "+ a b", :line 4, :chunk 3} {:face [:faces/by-name :default], :string "(", :line 4, :chunk 2} {:face [:faces/by-name :default], :string "  ", :line 4, :chunk 1} {:face [:faces/by-name :default], :string "", :line 3, :chunk 9} {:face [:faces/by-name :default], :string ")", :line 3, :chunk 8} {:face [:faces/by-name :default], :string "a b", :line 3, :chunk 7} {:face [:faces/by-name :default], :string "(", :line 3, :chunk 6} {:face [:faces/by-name :default], :string " ", :line 3, :chunk 5} {:face [:faces/by-name :font-lock-function-name-face], :string "heres-a-test-function", :line 3, :chunk 4} {:face [:faces/by-name :default], :string " ", :line 3, :chunk 3} {:face [:faces/by-name :font-lock-keyword-face], :string "defun", :line 3, :chunk 2} {:face [:faces/by-name :default], :string "(", :line 3, :chunk 1} {:face [:faces/by-name :default], :string "", :line 2, :chunk 1} {:face [:faces/by-name :font-lock-comment-face], :string "This is some test code", :line 1, :chunk 3} {:face [:faces/by-name :font-lock-comment-delimiter-face], :string "; ", :line 1, :chunk 2} {:face [:faces/by-name :font-lock-comment-delimiter-face], :string ";", :line 1, :chunk 1}])
+(def code-elisp [{:face [:faces/by-name :default], :string "", :line-chunk 5001} {:face [:faces/by-name :default], :string "", :line-chunk 4006} {:face [:faces/by-name :default], :string ")", :line-chunk 4005} {:face [:faces/by-name :default], :string ")", :line-chunk 4004} {:face [:faces/by-name :default], :string "+ a b", :line-chunk 4003} {:face [:faces/by-name :default], :string "(", :line-chunk 4002} {:face [:faces/by-name :default], :string "  ", :line-chunk 4001} {:face [:faces/by-name :default], :string "", :line-chunk 3009} {:face [:faces/by-name :default], :string ")", :line-chunk 3008} {:face [:faces/by-name :default], :string "a b", :line-chunk 3007} {:face [:faces/by-name :default], :string "(", :line-chunk 3006} {:face [:faces/by-name :default], :string " ", :line-chunk 3005} {:face [:faces/by-name :font-lock-function-name-face], :string "adder", :line-chunk 3004} {:face [:faces/by-name :default], :string " ", :line-chunk 3003} {:face [:faces/by-name :font-lock-keyword-face], :string "defun", :line-chunk 3002} {:face [:faces/by-name :default], :string "(", :line-chunk 3001} {:face [:faces/by-name :default], :string "", :line-chunk 2001} {:face [:faces/by-name :font-lock-comment-face], :string "", :line-chunk 1004} {:face [:faces/by-name :font-lock-comment-face], :string "this is a comment", :line-chunk 1003} {:face [:faces/by-name :font-lock-comment-delimiter-face], :string "; ", :line-chunk 1002} {:face [:faces/by-name :font-lock-comment-delimiter-face], :string ";", :line-chunk 1001}])
+
 
 (def code-clojure "<pre><code><span class=\"code code-comment\">
   ;; this is a comment</span><span class=\"code code-default\">
@@ -11,11 +12,9 @@
 
   This is what a keyword looks like</span></span></code></pre>")
 
-
-
 (def app-state
   (atom {
-         :code code-elisp
+         :code-chunks/list code-elisp
          ;;code widget and faces editor depend on this directly
          :faces/list [{:db/id 100
                        :face/name :default
@@ -31,28 +30,21 @@
                                          :color/name "red"
                                          :color/rgb  "#Cd0000"}}
 
-                      {:db/id 101
+                      {:db/id 102
                        :face/name :font-lock-comment-face
 
                        :face/foreground {:db/id 202
                                          :color/name "red"
                                          :color/rgb  "#Cd0000"}}
 
-                      {:db/id 102
+                      {:db/id 103
                        :face/name :font-lock-keyword-face
 
                        :face/foreground {:db/id 200
                                          :color/name "yellow"
                                          :color/rgb  "Ffd700"}}
 
-                      {:db/id 103
-                       :face/name :comment
-
-                       :face/foreground {:db/id 203
-                                         :color/name "green"
-                                         :color/rgb  "#2e8b57"}}
-                      
-                      {:db/id 104
+                      {:db/id 105
                        :face/name :font-lock-function-name-face
 
                        :face/foreground {:db/id 203
@@ -74,9 +66,9 @@
                        {:db/id 202
                         :color/name "red"
                         :color/rgb  "#Cd0000"}
-                       ;; {:db/id 203
-                       ;;  :color/name "green"
-                       ;;  :color/rgb  "#2e8b57"}
+                       {:db/id 203
+                        :color/name "green"
+                        :color/rgb  "#2e8b57"}
                        ;; {:db/id 204
                        ;;  :color/name "brown"
                        ;;  :color/rgb  "#2e8b57"}

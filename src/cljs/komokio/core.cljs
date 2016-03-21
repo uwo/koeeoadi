@@ -11,9 +11,9 @@
 
             [komokio.config :as config]
             [komokio.parser :refer [parser]]
-            [komokio.components.sidebar :refer [sidebar]]
             [komokio.components.codedisplay :refer [code-display CodeChunk]]
-            [komokio.components.faceeditor :refer [PalettePicker Face ColorOption]]
+            [komokio.components.faceeditor :refer [Face]]
+            [komokio.components.palettepicker :refer [PalettePicker palette-picker]]
             [komokio.components.palette :refer [Color]]))
 
 ;; TODO separate out this dev stuff
@@ -32,16 +32,18 @@
   (query [this]
     [{:faces/list (om/get-query Face)}
      {:colors/list (om/get-query Color)}
-     {:code (om/get-query CodeChunk)}
-     ;;{:palette-picker (om/get-query PalettePicker)}
-     ])
+     {:palette-picker (om/get-query PalettePicker)}
+     {:code-chunks/list (om/get-query CodeChunk)}])
 
   Object
   (render [this]
+    (println "in root")
+    (.log js/console (om/props this))
     (let [props (om/props this)]
       (dom/div nil
         ;;(sidebar props)
-        (code-display (:code props))))))
+        (palette-picker props)
+        (code-display props)))))
 
 (defonce reconciler
   (om/reconciler
