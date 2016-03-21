@@ -15,6 +15,19 @@
       {:value (get st k)}
       {:remote true})))
 
+(defn sub-colors [face state-derefed]
+  (-> face
+    (update :face/background #(get-in state-derefed %))
+    (update :face/foreground #(get-in state-derefed %))))
+
+(defn sub-face [code state-derefed]
+  (update code :face #(sub-colors (get-in state-derefed %) state-derefed)))
+
+(defmethod read :code
+  [{:keys [state] :as env} _ _]
+  (let [code (map #(sub-face % @state) (get @state :code))]
+    {:value code}))
+
 (defmethod read :palette-picker
   [{:keys [state] :as env} _ _]
   (let [pp (om/db->tree [{:palette-picker (om/get-query PalettePicker)}]  @state @state)]

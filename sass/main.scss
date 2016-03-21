@@ -5,6 +5,30 @@ $colorInputSize: 20px;
 code {
     background-color: transparent !important;
     border: none !important;
+    white-space: pre-wrap;
+}
+
+
+#code-display {
+    position: absolute;
+    background-color: #1a1a1a;
+    font: normal 1.5em Menlo,Monaco,Consolas,"Courier New",monospace;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.code-line {
+    min-height: 1.5em;
+    display: block;
+}
+
+.code {
+    display: inline-block;
+    transition: opacity 0.1s ease-out;
+}
+
+.code.code-temp-minimize {
+    opacity: 0.1;
 }
 
 /* General */
@@ -61,24 +85,6 @@ input[type="color"] {
     text-align: center;
 }
 
-#code-display {
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    right: 0px;
-    left: 250px;
-    background-color: #1a1a1a;
-    font: normal 1.5em Menlo,Monaco,Consolas,"Courier New",monospace;
-    display: inline-block;
-    vertical-align: top;
-    padding-left: 50px;
-}
-
-.code-line > .code-region {
-    display: inline;
-}
-
-
 /* Face Editor */
 
 .face {
@@ -125,17 +131,17 @@ input[type="color"] {
 }
 
 #palette-picker::after {
-  content: "";
-  max-width: 100px + $colorInputSize/2;
-  border-radius: 0px 15px 15px 15px;
-  background-color: #1a1a1a;
-  opacity: 0.95;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  position: absolute;
-  z-index: 0;
+    content: "";
+    max-width: 100px + $colorInputSize/2;
+    border-radius: 0px 15px 15px 15px;
+    background-color: #1a1a1a;
+    opacity: 0.95;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: 0;
 }
 
 .color-option {

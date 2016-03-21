@@ -12,7 +12,7 @@
             [komokio.config :as config]
             [komokio.parser :refer [parser]]
             [komokio.components.sidebar :refer [sidebar]]
-            [komokio.components.codedisplay :refer [code-display]]
+            [komokio.components.codedisplay :refer [code-display CodeChunk]]
             [komokio.components.faceeditor :refer [PalettePicker Face ColorOption]]
             [komokio.components.palette :refer [Color]]))
 
@@ -32,17 +32,16 @@
   (query [this]
     [{:faces/list (om/get-query Face)}
      {:colors/list (om/get-query Color)}
-     {:palette-picker (om/get-query PalettePicker)}])
+     {:code (om/get-query CodeChunk)}
+     ;;{:palette-picker (om/get-query PalettePicker)}
+     ])
 
   Object
-  (componentDidMount [this]
-    (om/set-state! this {}))
-
   (render [this]
     (let [props (om/props this)]
       (dom/div nil
-        (sidebar props)
-        (code-display props)))))
+        ;;(sidebar props)
+        (code-display (:code props))))))
 
 (defonce reconciler
   (om/reconciler
