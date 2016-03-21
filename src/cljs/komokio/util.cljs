@@ -6,16 +6,19 @@
 (def code-class "code")
 
 (defn code-face-class [face-name]
-  (println face-name)
   (str code-class "-" (name face-name)))
 
-(defn update-code-other-elements [face-name func]
+(defn update-other-code-face-elements [face-name func]
   ;; TODO find the non deprecated $$ i should be using
   (let [code ($$ (str ".code:not(." (code-face-class face-name) ")"))]
     (forEach code #(func %))))
 
-(defn update-code-elements [face-name func]
+(defn update-code-face-elements [face-name func]
   (let [code (getElementsByTagNameAndClass "span" (code-face-class face-name))]
+    (forEach code #(func %))))
+
+(defn update-code-elements [func]
+  (let [code (getElementsByTagNameAndClass "span" code-class)]
     (forEach code #(func %))))
 
 ;;  TODO Not using these.  Should probably delete these or move them into my own library

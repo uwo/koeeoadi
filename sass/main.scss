@@ -27,6 +27,10 @@ code {
     transition: opacity 0.1s ease-out;
 }
 
+.code:focus {
+    outline: none;
+}
+
 .code.code-temp-minimize {
     opacity: 0.1;
 }

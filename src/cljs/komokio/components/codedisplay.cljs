@@ -18,7 +18,6 @@
                       gdom/getElement
                       gstyle/getPosition
                       cljs-coordinates)]
-    (println face)
     (om/transact! comp `[(palette-picker/update
                            {:palette-picker/active-face          ~face
                             :palette-picker/active-face-property ~face-property
@@ -32,7 +31,9 @@
 
   static om/IQuery
   (query [this]
-    [:face :line-chunk :string])
+    [:face
+     :line-chunk
+     :string])
 
   Object
   (render [this]
@@ -42,8 +43,13 @@
           {bg :color/rgb} (:face/background face)]
       (dom/span #js {:className    (str util/code-class " " (util/code-face-class name))
                      :onClick      #(handleCodeClick this :face/foreground)
-                     ;;:onMouseOver  (fn [e] (util/update-code-other-elements name #(gclasses/add % "code-temp-minimize")))
-                     ;;:onMouseLeave (fn [e] (util/update-code-other-elements name #(gclasses/remove % "code-temp-minimize")))
+                     :tabIndex 0
+                     :onBlur       #(om/transact! this `[(palette-picker/update
+                                                           {:palette-picker/active-face          nil
+                                                            :palette-picker/active-face-property nil
+                                                            :palette-picker/coordinates          nil}) :palette-picker/coordinates])
+                     ;; :onMouseOver  (fn [e] (util/update-code-other-elements name #(gclasses/add % "code-temp-minimize")))
+                     ;; :onMouseLeave (fn [e] (util/update-code-other-elements name #(gclasses/remove % "code-temp-minimize")))
                      :style #js    {:backgroundColor (if bg bg "transparent")
                                     :color           (if fg fg "black")}} string))))
 
@@ -51,15 +57,14 @@
 
 (defn code-line [line]
   (let [code-chunks (sort-by :line-chunk line)]
-    (.log js/console code-chunks)
     (apply dom/div #js {:className "code-line"}
       (map code-chunk code-chunks))))
 
 (defn code-display [props]
+  (println "rerendering code")
   (let [code-chunks (:code-chunks/list props)
         code-lines (sort-by first (sort-by first
                                     (group-by #(.floor js/Math (/ (:line-chunk %) 1000))
                                       code-chunks)))]
-    (.log js/console code-lines)
     (apply dom/code #js {:id "code-display"}
       (map #(code-line (last %)) code-lines))))

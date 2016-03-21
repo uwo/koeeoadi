@@ -37,11 +37,9 @@
 
   Object
   (render [this]
-    (println "in root")
-    (.log js/console (om/props this))
+    (println "rendering core")
     (let [props (om/props this)]
       (dom/div nil
-        ;;(sidebar props)
         (palette-picker props)
         (code-display props)))))
 

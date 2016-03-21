@@ -1,5 +1,6 @@
 (ns komokio.components.palettepicker
   (:require [goog.style :as gstyle]
+            [goog.dom.classes :as gclasses]
             [om.next :as om :refer-macros [defui]]
             [om.dom :as dom]
             [cljs.pprint :as pprint]
@@ -44,12 +45,16 @@
   (componentInitState [this]
     {})
 
-  (componentDidUpdate [this prev-props prev-state])
+  (componentDidUpdate [this prev-props prev-state]
+    (let [{:keys [face/name]} (:palette-picker/active-face (:palette-picker (om/props this)))]
+      (if name
+        (util/update-other-code-face-elements name #(gclasses/add % "code-temp-minimize"))
+        (util/update-code-elements #(gclasses/remove % "code-temp-minimize")))))
 
   (render [this]
     (println "rendering palettepicker")
     (let [{:keys [colors/list
-                 palette-picker/coordinates
+                  palette-picker/coordinates
                   palette-picker/active-face
                   palette-picker/active-face-property]} (:palette-picker (om/props this))
 
@@ -63,16 +68,16 @@
                                                        {:id       ~id
                                                         :name     ~name
                                                         :bg-or-fg ~active-face-property
-                                                        :color    ~color}) :face/name])))
+                                                        :color    ~color}) ;;:face/name
+                                                     ])))
           colorHoverHandler (fn [hover-color-rgb]
-                              (if hover-color-rgb
-                                (util/update-code-elements face-name #(gstyle/setStyle % active-face-property hover-color-rgb))
-                                (util/update-code-elements face-name #(gstyle/setStyle % active-face-property face-color-rgb))))
+                              (let [prop (if (= :face/foreground active-face-property) "color" "background-color")]
+                                (if hover-color-rgb
+                                  (util/update-code-face-elements face-name #(gstyle/setStyle % prop hover-color-rgb))
+                                  (util/update-code-face-elements face-name #(gstyle/setStyle % prop face-color-rgb)))))
 
           color-options-computed (map #(om/computed % {:colorHoverHandler colorHoverHandler
                                                        :colorClickHandler colorClickHandler}) list)]
-
-      (.log js/console (om/props this))
       (when coordinates
         (apply
           dom/div
