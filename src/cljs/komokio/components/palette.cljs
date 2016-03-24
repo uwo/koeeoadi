@@ -36,6 +36,10 @@
 (def color (om/factory Color {:keyfn :db/id}))
 
 (defui Palette
+  static om/IQuery
+  (query [this]
+    [{:colors/list (om/get-query Color)}])
+
   Object
   (render [this]
     (let [{:keys [colors/list]} (om/props this)]

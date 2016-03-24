@@ -2,6 +2,7 @@
   (:require [om.next :as om]
             [cljs.pprint :as pprint]
 
+            [komokio.components.widgets :refer [Widgets]]
             [komokio.components.palette :refer [Color]]
             [komokio.components.palettepicker :refer [PalettePicker]]))
 
@@ -14,6 +15,27 @@
     (if (contains? st k)
       {:value (get st k)}
       {:remote true})))
+
+
+
+(defmethod read :widgets
+  [{:keys [state query] :as env} k params]
+  (println "printlng test")
+
+  (let [st @state
+        widgets-query [{:widgets query}]
+        widgets-tree  {:widgets {:code-display {:code-chunks/list (get-in st [:data :code-chunks/list])}
+
+                                 :sidebar      {:faces   {:faces/list [:data :faces/list]}
+                                                :palette {:colors/list [:data :colors/list]}}}}
+        widgets       (om/db->tree widgets-query widgets-tree st)]
+  (println "printlng state")
+    (.log js/console st)
+  (println "printlng query")
+  (.log js/console query)
+    (println "widgets")
+    (.log js/console widgets)
+    {:value (:widgets widgets)}))
 
 (defn sub-colors [face state-derefed]
   (-> face

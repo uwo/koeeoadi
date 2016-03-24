@@ -1,11 +1,16 @@
+;; OBJECTIVE ->
+;; Transform a buffer of syntax highlighted code into Clojure data I need for my a project.
+
+;; [{:face "font-lock-comment-face" :string ";;This is a comment" :linechunk 1001} ...]
+;; A line chunk is simply the line the chunk is on multiplied by 1000 and added with the chunk number.
+;; This is a simple way to give a unique identifier for each chunk while also specifying its position
+
+;; Get entire buffer string
+;; Get the properties of each of the propertized chunks of text
+;; Use the string and those properties to build the needed data structure
+
 ;; This file provides some emacs utilities for converting a buffer of code
 ;; into a clojure data structure that komokio can use to build code data
-
-;; (defun komokio-what-face ()
-;;   (let ((face (or (get-char-property (point) 'read-face-name)
-;;                   (get-char-property (point) 'face))))
-
-;;     face))
 
 (setq komokio-valid-faces
       '(default
@@ -89,10 +94,6 @@
       (with-current-buffer (current-buffer)
         (komokio-build-code-data string props)))))
 
-
-(setq test (komokio-buffer-to-data))
-
-
 (defun komokio-insert-code-def ()
   (interactive)
   (let ((code-name (read-string "Enter code name: ")))
@@ -105,7 +106,3 @@
                       ;;"(clojure.core/use 'komokio.emacs-helpers)"
                       "(plist-to-map '%s)") (prin1-to-string (komokio-buffer-to-data))))))
       (insert (format "(def code-%s %s)" code-name (nrepl-dict-get result "value"))))))
-
-
-
-

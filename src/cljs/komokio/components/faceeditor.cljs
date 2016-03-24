@@ -8,7 +8,6 @@
             [cljs.core.async :refer [timeout mult tap untap put! chan <! >!]]
 
             [komokio.components.palette :refer [Color]]
-            [komokio.config :as config]
             [komokio.util :as util]))
 
 ;; TODO delete this when I move palette picker to it's own component
@@ -77,3 +76,8 @@
           (face-color this :face/background))))))
 
 (def face (om/factory Face {:keyfn :db/id}))
+
+(defui FaceEditor
+  static om/IQuery
+  (query [this]
+    [{:faces/list (om/get-query Face)}]))
