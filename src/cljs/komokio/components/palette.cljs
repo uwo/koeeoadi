@@ -8,10 +8,9 @@
 (defn handle-color-change [e comp {:keys [color/name db/id] :as color}]
   (let [rgb-editing (.. e -target -value)]
     (om/transact! comp
-      `[(color/update {:id ~id :name ~name :rgb ~rgb-editing}) :face/name]))) ;; update all faces
+      `[(color/update {:id ~id :name ~name :rgb ~rgb-editing}) :faces]))) ;; update all faces
 
 (defui Color
-
   static om/Ident
   (ident [this {:keys [color/name]}]
     [:colors/by-name name])
@@ -27,38 +26,27 @@
   (render [this]
     (let [{:keys [db/id color/name color/rgb] :as color} (om/props this)
           {:keys [rgb-editing]}                          (om/get-state this)]
-      (dom/div #js {:className "color color-input"
-                    :style     #js {:backgroundColor rgb}}
-        (dom/div #js {:className "input-overlay"
-                      :style     #js {:backgroundColor rgb}})
+      (dom/div #js {:className "color color-input"}
+        (dom/div #js {:className (str "input-overlay" (if rgb "" " color-missing"))
+                      :style     (when rgb #js {:backgroundColor rgb})})
         (dom/input #js {:type     "color"
                         :value    rgb
-                        :onClick  #(println "color picker clicked")
                         :onChange #(handle-color-change % this color)})))))
 
 (def color (om/factory Color {:keyfn :db/id}))
 
-;; (gevents/dispatchEvent
-;;                               (gdom/getElement "color-add-button")
-;;                               (aget EventType "CLICK"))
-(defui ColorAdd
+(defn handle-color-adder-add [comp name]
+  (om/transact! comp '[(colors/add) :colors/list]))
+
+(defui ColorAdder
   Object
-  (componentDidUpdate [this prev-props prev-state]
-    (println "color adder updated"))
-
   (render [this]
-    (dom/div #js {:className "color color-add"}
-      (dom/i #js {:className "fa fa-plus"})
-      (dom/div #js {:className "input-overlay"
-                    })
-      (dom/input #js {:id "color-add-button"
-                      :type "color"
-                      :value "#000000"
-                      :onChange #(om/update-state! this update :editing-rgb (.. % -target -value))
-                      })
-      )))
+    (let [callback (:callback (om/get-computed this))]
+      (dom/div #js {:className "color color-add"
+                    :onClick callback}
+        (dom/i #js {:className "fa fa-plus"})))))
 
-(def color-add (om/factory ColorAdd))
+(def color-adder (om/factory ColorAdder))
 
 (defui Palette
   static om/IQuery
@@ -67,15 +55,14 @@
 
   Object
   (render [this]
-    (let [{:keys [colors/list]} (om/props this)]
+    (let [{:keys [colors/list]} (om/props this)
+          callback (partial handle-color-adder-add this)]
       (dom/div #js {:id "palette"
                     :className "widget"}
         (dom/h5 nil "Palette")
         (dom/div nil "Click color to edit:")
         (apply dom/div #js {:className "palette-colors"}
           (conj (mapv color list)
-            (color-add)))
-        
-        ))))
+            (color-adder (om/computed {} {:callback callback}))))))))
 
 (def palette (om/factory Palette))

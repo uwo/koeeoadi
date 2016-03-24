@@ -83,6 +83,19 @@
 (defmethod mutate :default
   [_ _ _] {:remote true})
 
+(defmethod mutate 'colors/add
+  [{:keys [state] :as env} _ _]
+  {:value {:keys [:faces/list]}
+   :action
+   (fn []
+     ;; TODO change this around and cleanup once I stop using names
+     (let [props {:db/id 3000 :color/name "dumbname"}
+           state' (update-in @state [:colors/by-name] merge {(:color/name props) props})
+           state'' (update-in state' [:data :colors/list] conj [:colors/by-name (:color/name props)])]
+       (reset! state state'')))})
+
+(update-in {:data {:colors [[:colors/by-name "green"]]}} [:data :colors] conj [:colors/by-name "blue"])
+
 (defmethod mutate 'color/update
   [{:keys [state ref] :as env} _ {:keys [name rgb] :as args}]
   {:value {:keys [:faces/list]}
