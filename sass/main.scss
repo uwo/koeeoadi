@@ -1,7 +1,6 @@
 /* Vars */
 $colorInputSize: 20px;
-
-
+$backgroundColor: #292929;
 
 /* Overrides for skeleton.css */
 code {
@@ -10,6 +9,22 @@ code {
     white-space: pre-wrap;
 }
 
+/* Tags */
+body {
+    background-color: $backgroundColor;
+    color: #FFFFFF;
+    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+}
+
+/* General Classes */
+
+.color {
+    display: inline-block;
+    width: $colorInputSize;
+    height: $colorInputSize;
+}
+
+/* Code Display */
 
 #code-display {
     position: absolute;
@@ -37,13 +52,6 @@ code {
     opacity: 0.1;
 }
 
-/* General */
-body {
-    background-color: #292929;
-    color: #FFFFFF;
-    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
-}
-
 /* Sidebar */
 
 .widget {
@@ -54,15 +62,50 @@ body {
 
 /* Palette */
 
-.color-input {
-    display: inline-block;
-    width: $colorInputSize;
-    height: $colorInputSize;
+
+.palette-colors > * {
+    vertical-align: middle;
+}
+
+.color-input,.color-add {
     position: relative;
+}
+
+.color-add {
+    text-align: center;
+    cursor: pointer;
+}
+
+.color-add:before {
+    content: '';
+    vertical-align: middle;
+    height: 100%;
+    pointer-events: none;
+}
+
+.color-add > i {
+    z-index: 102;
+    pointer-events: none;
+}
+
+.color-add > i:before {
+    position: relative;
+    z-index: 102;
+}
+
+.color-add > .input-overlay {
+    background-color: $backgroundColor;
+    z-index: 101;
+}
+
+.color-add > input:focus {
+    outline: none;
 }
 
 .input-overlay {
     position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
@@ -74,8 +117,11 @@ input[type="color"] {
     width: 100%;
     height: 100%;
     position: absolute;
+    top: 0;
+    left: 0;
     z-index: 100;
     margin: 0;
+    cursor: pointer;
 }
 
 /* Code */
@@ -104,20 +150,6 @@ input[type="color"] {
     vertical-align: middle;
     display: inline-block;
     margin-left: 10px;
-}
-
-/* /\* trick to vertically align '.face-name' *\/ */
-/* .face-name:after{ */
-/*     content: ""; */
-/*     display: inline-block; */
-/*     vertical-align: middle; */
-/*     height: 100%; */
-/* } */
-
-.color {
-    display: inline-block;
-    width: $colorInputSize;
-    height: $colorInputSize;
 }
 
 .color.color-trigger{
