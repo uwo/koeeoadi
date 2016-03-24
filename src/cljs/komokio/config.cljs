@@ -75,13 +75,9 @@
                    :color/name "green"
                    :color/rgb  "#2e8b57"}])
 
-;; TODO doing this wacky thing here to denormalize the code so everything can be normalized all at once by the reconciler
-;; need to think about the best way to handle because Om can't handle partially normalized data
-(def faces-list-normalized (om/tree->db FaceEditor {:faces/list  faces-list} true))
-(def code-elisp' (mapv #(let [face (last (:code-chunk/face %))]
-                          (assoc % :code-chunk/face (get-in faces-list-normalized [:faces/by-name face]))) code-elisp))
-
+;; TODO ok this works so far using partially normalized data
+;; keep this in mind because this might cause trouble
 (def app-state
   {:data {:faces/list faces-list
           :colors/list colors-list
-          :code-chunks/list code-elisp'}})
+          :code-chunks/list code-elisp}})
