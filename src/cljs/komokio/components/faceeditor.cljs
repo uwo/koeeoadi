@@ -77,11 +77,11 @@
            fg         :face/foreground
            :as props} (om/props this)]
 
-      (dom/div #js {:className "face-container"}
-        (dom/div #js {:className "face"}
-          (dom/span #js {:className "face-name"} (clojure.core/name face-name))
-          (face-color this :face/foreground)
-          (face-color this :face/background))))))
+      (dom/div #js {:className "face"}
+        (face-color this :face/foreground)
+        (dom/span #js {:className "face-name"} (clojure.core/name face-name))
+        ;;(face-color this :face/background)
+        ))))
 
 (def face (om/factory Face {:keyfn :db/id}))
 
@@ -94,7 +94,10 @@
   (render [this]
     (let [{:keys [:faces/list]} (om/props this)]
       (.log js/console list)
-      (dom/div #js {:id "face-editor"}
+      (dom/div #js {:id "face-editor"
+                    :className "widget"}
+
+        (dom/h5 nil "Faces")
         (map face list)))))
 
 (def face-editor (om/factory FaceEditor))
