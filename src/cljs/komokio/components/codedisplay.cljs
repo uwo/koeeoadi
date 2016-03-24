@@ -85,8 +85,6 @@
           code-lines (sort-by first (sort-by first
                                       (group-by #(.floor js/Math (/ (:code-chunk/line-chunk %) 1000))
                                         code-chunks)))]
-      (println "Printing code-display")
-      (.log js/console code-chunks)
       (apply dom/code #js {:id "code-display"}
         (map #(code-line (last %)) code-lines)))))
 

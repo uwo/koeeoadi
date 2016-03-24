@@ -11,7 +11,7 @@
 
             [komokio.config :as config]
             [komokio.parser :refer [parser]]
-            [komokio.components.widgets :refer [Widgets]]
+            [komokio.components.widgets :refer [Widgets widgets]]
             [komokio.components.sidebar :refer [Sidebar sidebar]]
             [komokio.components.codedisplay :refer [code-display CodeChunk CodeDisplay]]
             [komokio.components.faceeditor :refer [Face]]
@@ -22,7 +22,6 @@
                                         ; this enables additional features, :custom-formatters is enabled by default
 (devtools/enable-feature! :sanity-hints :dirac)
 (devtools/install!)
-(.log js/console (range 0 200))
 
 (defui Root
   static om/IQuery
@@ -34,11 +33,8 @@
 
   Object
   (render [this]
-    (.log js/console (om/props this))
-    (let [{sidebar-data :sidebar code-display-data :code-display} (:widgets (om/props this))]
-      (dom/div nil
-        (code-display code-display-data)
-        (sidebar sidebar-data)))))
+    (println "Rendering root")
+    (widgets (:widgets (om/props this)))))
 
 (defonce reconciler
   (om/reconciler

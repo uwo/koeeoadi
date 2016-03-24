@@ -78,6 +78,7 @@
 ;; TODO ok this works so far using partially normalized data
 ;; keep this in mind because this might cause trouble
 (def app-state
-  {:data {:faces/list faces-list
+  {:palette-picker {:palette-picker/id 1}
+   :data {:faces/list faces-list
           :colors/list colors-list
           :code-chunks/list code-elisp}})

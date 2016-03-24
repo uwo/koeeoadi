@@ -16,25 +16,16 @@
       {:value (get st k)}
       {:remote true})))
 
-
-
 (defmethod read :widgets
   [{:keys [state query] :as env} k params]
-  (println "printlng test")
-
   (let [st @state
         widgets-query [{:widgets query}]
-        widgets-tree  {:widgets {:code-display {:code-chunks/list (get-in st [:data :code-chunks/list])}
-
+        ;; TODO use ident instead of get-in
+        widgets-tree  {:widgets {:code-display {:code-chunks/list [:data :code-chunks/list]}
+                                 :palette-picker (get st :palette-picker) 
                                  :sidebar      {:faces   {:faces/list [:data :faces/list]}
                                                 :palette {:colors/list [:data :colors/list]}}}}
         widgets       (om/db->tree widgets-query widgets-tree st)]
-  (println "printlng state")
-    (.log js/console st)
-  (println "printlng query")
-  (.log js/console query)
-    (println "widgets")
-    (.log js/console widgets)
     {:value (:widgets widgets)}))
 
 (defn sub-colors [face state-derefed]
@@ -112,6 +103,8 @@
   {:value {:keys [:palette-picker]}
    :action
    (fn []
-     (swap! state update-in [:palette-picker] merge args {:colors/list (get @state :colors/list)}))})
+     (swap! state update-in [:palette-picker] merge args {:colors/list (get-in @state [:data :colors/list])}))})
 
 (def parser (om/parser {:read read :mutate mutate}))
+
+(update-in {} [:beeodfll] #(identity 5))

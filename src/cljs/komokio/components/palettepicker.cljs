@@ -52,11 +52,10 @@
         (util/update-code-elements #(gclasses/remove % "code-temp-minimize")))))
 
   (render [this]
-    (println "rendering palettepicker")
     (let [{:keys [colors/list
                   palette-picker/coordinates
                   palette-picker/active-face
-                  palette-picker/active-face-property]} (:palette-picker (om/props this))
+                  palette-picker/active-face-property]} (om/props this)
 
           css-property (if (= active-face-property :face/background) "background" "color")
           {face-name :face/name} active-face

@@ -4,7 +4,7 @@
             [cljs.pprint :as pprint]
 
             [komokio.components.appinfo :refer [app-info]]
-            [komokio.components.faceeditor :refer [Face]]
+            [komokio.components.faceeditor :refer [Face face-editor]]
             [komokio.components.palette :refer [palette Palette]]))
 
 (defui Sidebar
@@ -17,13 +17,12 @@
   (render [this]
     (println "printin sidebar")
     (.log js/console (om/props this))
-    (let [palette-data (:palette (om/props this))]
-      (println "palette-data")
-      (println palette-data)
+    (let [{faces-data :faces
+           palette-data :palette}  (om/props this)]
       (dom/div #js {:id "sidebar"}
         (app-info)
         (palette palette-data)
-        ;;(face-editor props)
+        (face-editor faces-data)
         ))))
 
 (def sidebar (om/factory Sidebar))
