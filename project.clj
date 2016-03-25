@@ -1,4 +1,4 @@
-(defproject komokio "0.1.0-SNAPSHOT"
+(defproject koeeoadi "0.1.0-SNAPSHOT"
   :description ""
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
@@ -8,7 +8,7 @@
                  [org.clojure/core.async "0.2.374"]
                  [org.clojure/clojurescript "1.7.228"]
                  [org.clojure/tools.nrepl "0.2.12"]
-                 [org.omcljs/om "1.0.0-alpha30"]
+                 [org.omcljs/om "1.0.0-alpha32"]
                  [com.cemerick/piggieback "0.2.1"]
                  [org.clojure/clojure "1.7.0"]
                  [figwheel-sidecar "0.5.0-2"]
@@ -26,7 +26,7 @@
               [{:id "dev"
                 :figwheel true
                 :source-paths ["src/cljs"]
-                :compiler {:main komokio.core
+                :compiler {:main koeeoadi.core
                            :asset-path "js/out"
                            :output-to "resources/public/js/main.js"
                            :output-dir "resources/public/js/out"

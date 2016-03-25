@@ -12,7 +12,7 @@
    [{:id "dev"
      :figwheel true
      :source-paths ["src/cljs"]
-     :compiler {:main 'komokio.core
+     :compiler {:main 'koeeoadi.core
                 :asset-path "js"
                 :output-to "resources/public/js/main.js"
                 :output-dir "resources/public/js"
