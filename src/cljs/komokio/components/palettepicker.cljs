@@ -11,12 +11,12 @@
 
 (defui ColorOption
   static om/Ident
-  (ident [this {:keys [color/name]}]
-    [:colors/by-name name])
+  (ident [this {:keys [color/id]}]
+    [:colors/by-id id])
 
   static om/IQuery
   (query [this]
-    [:db/id :color/name :color/rgb])
+    [:color/id :color/rgb])
 
   Object
   (render [this]
@@ -30,7 +30,7 @@
          :onMouseDown  #(colorClickHandler (om/props this))
          :style        #js {:backgroundColor rgb}}))))
 
-(def color-option (om/factory ColorOption {:keyfn :db/id}))
+(def color-option (om/factory ColorOption {:keyfn :color/id}))
 
 
 (defui PalettePicker
@@ -57,7 +57,7 @@
                   palette-picker/active-face
                   palette-picker/active-face-property]} (om/props this)
 
-          css-property (if (= active-face-property :face/background) "background" "color")
+          css-property (if (= active-face-property :face/color) "background" "color")
           {face-name :face/name} active-face
           face-color-rgb (get-in active-face [active-face-property :color/rgb])
 

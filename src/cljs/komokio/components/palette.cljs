@@ -5,37 +5,37 @@
             [om.next :as om :refer-macros [defui]])
   (:import goog.events.EventType))
 
-(defn handle-color-change [e comp {:keys [color/name db/id] :as color}]
+(defn handle-color-change [e comp {:keys [color/id] :as color}]
   (let [rgb-editing (.. e -target -value)]
     (om/transact! comp
-      `[(color/update {:id ~id :name ~name :rgb ~rgb-editing}) :faces]))) ;; update all faces
+      `[(color/update {:id ~id :rgb ~rgb-editing}) :faces]))) ;; update all faces
 
 (defui Color
   static om/Ident
-  (ident [this {:keys [color/name]}]
-    [:colors/by-name name])
+  (ident [this {:keys [color/id]}]
+    [:colors/by-id id])
 
   static om/IQuery
   (query [this]
-    [:db/id :color/name :color/rgb])
+    [:color/id :color/rgb])
 
   Object
   ;; will be adding a editing-color property here
   (initLocalState [this] {})
 
   (render [this]
-    (let [{:keys [db/id color/name color/rgb] :as color} (om/props this)
+    (let [{:keys [color/id color/rgb] :as color} (om/props this)
           {:keys [rgb-editing]}                          (om/get-state this)]
       (dom/div #js {:className "color color-input"}
-        (dom/div #js {:className (str "input-overlay" (if rgb "" " color-missing"))
-                      :style     (when rgb #js {:backgroundColor rgb})})
+        (dom/div #js {:className  (str "input-overlay" (if rgb "" " color-missing"))
+                      :style      (when rgb #js {:backgroundColor rgb})})
         (dom/input #js {:type     "color"
                         :value    rgb
                         :onChange #(handle-color-change % this color)})))))
 
-(def color (om/factory Color {:keyfn :db/id}))
+(def color (om/factory Color {:keyfn :color/id}))
 
-(defn handle-color-adder-add [comp name]
+(defn handle-color-adder-add [comp]
   (om/transact! comp '[(colors/add) :colors/list]))
 
 (defui ColorAdder

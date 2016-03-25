@@ -31,8 +31,7 @@
 
 (defn sub-colors [face state-derefed]
   (-> face
-    (update :face/background #(if (empty? %) nil (get-in state-derefed %)))
-    (update :face/foreground #(if (empty? %) nil (get-in state-derefed %)))))
+    (update :face/color #(if (empty? %) nil (get-in state-derefed %)))))
 
 (defn sub-face [code state-derefed]
   (update code :face #(sub-colors (get-in state-derefed %) state-derefed)))
@@ -64,10 +63,8 @@
 
 (defn get-face [state-derefed face-ident]
   (let [face (get-in state-derefed face-ident)
-        bg (get-in state-derefed (:face/background face))
-        fg (get-in state-derefed (:face/foreground face))]
-    (merge face {:face/background bg
-                 :face/foreground fg})))
+        color (get-in state-derefed (:face/color face))]
+    (merge face {:face/color color})))
 
 (defn get-faces [state key]
   (let [st @state]
@@ -84,33 +81,34 @@
 (defmethod mutate :default
   [_ _ _] {:remote true})
 
+(defn new-color-id [colors]
+  (let [ids (sort-by #(- (last %)) colors)]
+    (inc (last (first ids)))))
+
 (defmethod mutate 'colors/add
   [{:keys [state] :as env} _ _]
   {:value {:keys [:faces/list]}
    :action
    (fn []
-     ;; TODO change this around and cleanup once I stop using names
-     (let [props {:db/id 3000 :color/name "dumbname"}
-           state' (update-in @state [:colors/by-name] merge {(:color/name props) props})
-           state'' (update-in state' [:data :colors/list] conj [:colors/by-name (:color/name props)])]
+     (let [st      @state
+           new-id  (new-color-id (get-in st [:data :colors/list]))
+           state'  (update-in st [:colors/by-id] merge {new-id {:color/id new-id}})
+           state'' (update-in state' [:data :colors/list] conj [:colors/by-id new-id])]
        (reset! state state'')))})
 
-(update-in {:data {:colors [[:colors/by-name "green"]]}} [:data :colors] conj [:colors/by-name "blue"])
-
 (defmethod mutate 'color/update
-  [{:keys [state ref] :as env} _ {:keys [name rgb] :as args}]
+  [{:keys [state ref] :as env} _ {:keys [id rgb] :as args}]
   {:value {:keys [:faces/list]}
    :action
    (fn []
-     (swap! state update-in [:colors/by-name name] assoc :color/rgb rgb))})
+     (swap! state update-in [:colors/by-id id] assoc :color/rgb rgb))})
 
 (defmethod mutate 'face/update
   [{:keys [state ref] :as env} _ {:keys [name bg-or-fg color] :as args}]
   {:value {:keys [:faces/list]}
    :action
    (fn []
-     (swap! state update-in [:faces/by-name name] assoc bg-or-fg [:colors/by-name (:color/name color)]))})
-
+     (swap! state update-in [:faces/by-name name] assoc bg-or-fg [:colors/by-id (:color/id color)]))})
 
 (defmethod mutate 'palette-picker/update
   [{:keys [state ref] :as env} _ args]

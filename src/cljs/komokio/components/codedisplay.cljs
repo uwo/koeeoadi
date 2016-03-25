@@ -30,7 +30,7 @@
 
   static om/IQuery
   (query [this]
-    [:db/id :face/name :face/background :face/foreground]))
+    [:db/id :face/name :face/color :face/color]))
 
 (defui CodeChunk
   static om/Ident
@@ -41,8 +41,7 @@
   (query [this]
     ;; TODO why can't I query Face here?
     [{:code-chunk/face [:db/id :face/name
-                        {:face/background [:db/id :color/name :color/rgb]}
-                        {:face/foreground [:db/id :color/name :color/rgb]}]}
+                        {:face/color [:color/id :color/rgb]}]}
      :code-chunk/line-chunk
      :code-chunk/string])
 
@@ -50,10 +49,9 @@
   (render [this]
     (let [{:keys [code-chunk/face code-chunk/line-chunk code-chunk/string]} (om/props this)
           {:keys [face/name]} face
-          {fg :color/rgb} (:face/foreground face)
-          {bg :color/rgb} (:face/background face)]
+          {color :color/rgb} (:face/color face)]
       (dom/span #js {:className    (str util/code-class " " (util/code-face-class name))
-                     :onClick      #(handleCodeClick this face :face/foreground)
+                     :onClick      #(handleCodeClick this face :face/color)
                      :tabIndex 0
                      :onBlur       #(om/transact! this `[(palette-picker/update
                                                            {:palette-picker/active-face          nil
@@ -61,8 +59,7 @@
                                                             :palette-picker/coordinates          nil}) :palette-picker/coordinates])
                      ;; :onMouseOver  (fn [e] (util/update-code-other-elements name #(gclasses/add % "code-temp-minimize")))
                      ;; :onMouseLeave (fn [e] (util/update-code-other-elements name #(gclasses/remove % "code-temp-minimize")))
-                     :style #js    {:backgroundColor (if bg bg "transparent")
-                                    :color           (if fg fg "black")}} string))))
+                     :style #js    {:color color}} string))))
 
 (def code-chunk (om/factory CodeChunk {:keyfn :code-chunk/line-chunk}))
 
@@ -76,11 +73,11 @@
   (query [this]
     [:db/id
      :face/name
-     {:face/foreground [:db/id :color/name :color/rgb]}])
+     {:face/color [:color/id :color/rgb]}])
 
   Object
   (render [this]
-    (let [{:keys [:face/foreground]} (om/props this)]
+    (let [{:keys [:face/color]} (om/props this)]
       (dom/div #js {
                     :className (str util/code-class " " (util/code-face-class "background"))
                     :id        "code-background"
@@ -88,8 +85,8 @@
                                                        {:palette-picker/active-face nil
                                                         :palette-picker/active-face-property nil
                                                         :palette-picker/coordinates nil}) :palette-picker/coordinates])
-                    :onClick   #(handleCodeClick this (om/props this) :face/foreground)
-                    :style     #js {:backgroundColor (:color/rgb foreground)}
+                    :onClick   #(handleCodeClick this (om/props this) :face/color)
+                    :style     #js {:backgroundColor (:color/rgb color)}
                     :tabIndex  0}))))
 
 (def code-background (om/factory CodeBackground))
