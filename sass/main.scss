@@ -1,6 +1,13 @@
 /* Vars */
 $colorInputSize: 20px;
+
+$sidebarPadding: 10px;
+$sidebarBorder: 1px;
+$sidebarContent: 235px;
+$sidebarWidth: 2*$sidebarPadding + 2*$sidebarBorder + $sidebarContent;
+
 $backgroundColor: #292929;
+$white: #FFF;
 
 /* Overrides for skeleton.css */
 .container {
@@ -12,6 +19,8 @@ code {
     background-color: transparent !important;
     border: none !important;
     white-space: pre-wrap;
+    padding: 0;
+    margin: 0;
 }
 
 /* Tags */
@@ -49,26 +58,38 @@ body {
     height: $colorInputSize;
 }
 
+/* Sidebar */
+
+#sidebar{
+    width: $sidebarContent;
+    display: inline-block;
+    position: relative;
+    z-index: 100;
+    background: $backgroundColor;
+}
+
+.widget {
+    border: $sidebarBorder solid $white;
+    padding: $sidebarPadding;
+    width: 100%;
+}
+
 /* Code Display */
 
 #code-display {
     box-sizing: border-box;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom : 0;
-    background-color: #1a1a1a;
-    font: normal 1.5em Menlo,Monaco,Consolas,"Courier New",monospace;
+    font: normal 1em Menlo,Monaco,Consolas,"Courier New",monospace;
     display: inline-block;
     vertical-align: top;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: $sidebarWidth;
     z-index: 0;
 }
 
 #code-background {
     position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     z-index: 0;
@@ -92,21 +113,6 @@ body {
 
 .code.code-temp-minimize {
     opacity: 0.1;
-}
-
-/* Sidebar */
-
-#sidebar{
-    position: relative;
-    z-index: 100;
-    background: $backgroundColor;
-}
-
-
-.widget {
-    border: 1px solid white;
-    padding: 5px;
-    width: 100%;
 }
 
 /* Palette */
@@ -154,7 +160,7 @@ body {
 
 .input-overlay.color-missing {
     box-sizing: border-box;
-    border: 1px solid white;
+    border: 1px solid $white;
     background-color: #2a2a2a;
 }
 
@@ -171,14 +177,6 @@ input[type="color"] {
 }
 
 /* Code */
-
-#sidebar {
-    position: absolute;
-    right: 0;
-    vertical-align: top;
-    width: 250px;
-}
-
 
 #app-info > h1, #app-info div {
     text-align: center;
