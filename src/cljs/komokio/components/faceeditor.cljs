@@ -14,7 +14,6 @@
 (declare Face)
 
 (defn faceColorClick [_ comp face-property]
-  (println "clicked on face color")
   ;; (let [face (om/props comp)
   ;;       child-no    (if (= :face/foreground face-property) 0 1)
   ;;       coordinates (-> (face-option-elm (dom/node comp) child-no)
@@ -58,7 +57,6 @@
 
   Object
   (componentDidUpdate [this prev-props prev-state]
-    (println "face color updated")
     (let [{:keys [face/name
                   face/background
                   face/foreground]}  (om/props this)
@@ -93,7 +91,6 @@
   Object
   (render [this]
     (let [{:keys [:faces/list]} (om/props this)]
-      (.log js/console list)
       (dom/div #js {:id "face-editor"
                     :className "widget"}
 

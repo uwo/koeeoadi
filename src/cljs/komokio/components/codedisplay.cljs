@@ -83,8 +83,6 @@
   Object
   (render [this]
     (let [{:keys [:face/foreground]} (om/props this)]
-      (println "printing background")
-      (.log js/console foreground)
       (dom/div #js {:id "code-background"
                     :style #js
                     {:backgroundColor (:color/rgb foreground)}}))))
@@ -99,7 +97,6 @@
 
   Object
   (render [this]
-    (.log js/console (om/props this))
     (let [code-chunks (:code-chunks/list (om/props this))
           code-lines (sort-by first (sort-by first
                                       (group-by #(.floor js/Math (/ (:code-chunk/line-chunk %) 1000))

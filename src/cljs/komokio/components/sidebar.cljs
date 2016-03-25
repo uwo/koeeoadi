@@ -15,8 +15,6 @@
 
   Object
   (render [this]
-    (println "printin sidebar")
-    (.log js/console (om/props this))
     (let [{faces-data :faces
            palette-data :palette}  (om/props this)]
       (dom/div #js {:id "sidebar"}
