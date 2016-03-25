@@ -17,20 +17,22 @@
   (let [face (om/props comp)
         coordinates (-> (gstyle/getClientPosition e)
                       util/cljs-coordinates)]
-    (println "in face color click")
-    (.log js/console face)
     (om/transact! comp `[(palette-picker/update
                            {:palette-picker/active-face ~face
-                            :palette-picker/coordinates ~coordinates}) :palette-picker])))
+                            :palette-picker/coordinates ~coordinates}) :palette-picker/coordinates])))
 
 (defn face-color [comp]
   (let [{:keys [color/id color/rgb] :as color}  (get (om/props comp) :face/color)
         {:keys [editing?] :as state} (om/get-state comp)]
     (dom/div
-      #js {:style     #js {:backgroundColor rgb}
+      #js {:className "color color-trigger"
+           :onBlur    #(om/transact! comp `[(palette-picker/update
+                                              {:palette-picker/active-face          nil
+                                               :palette-picker/active-face-property nil
+                                               :palette-picker/coordinates          nil}) :palette-picker/coordinates])
            :onClick   #(faceColorClick comp %)
-           :tabIndex  "0"
-           :className "color color-trigger"})))
+           :style     #js {:backgroundColor rgb}
+           :tabIndex  "0"})))
 
 (defui Face
   static om/Ident
@@ -47,19 +49,12 @@
   (componentDidUpdate [this prev-props prev-state]
     (let [{:keys [face/name
                   face/color]}  (om/props this)
-
-          color (:color/rgb color)]
-      ;;(util/update-code-css name "color"      fg-color)
-      ;;(util/update-code-css name "color" bg-color)
-      )
-    )
+          color (:color/rgb color)]))
 
   (render [this]
     (let [{id         :db/id
            face-name  :face/name
            :as props} (om/props this)]
-      (when (= face-name "doc")
-        (.log js/console props))
       (dom/div #js {:className "face"}
         (face-color this)
         (dom/span #js {:className "face-name"} (clojure.core/name face-name))))))

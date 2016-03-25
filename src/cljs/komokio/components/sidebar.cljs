@@ -4,14 +4,14 @@
             [cljs.pprint :as pprint]
 
             [komokio.components.appinfo :refer [app-info]]
-            [komokio.components.faceeditor :refer [Face face-editor]]
+            [komokio.components.faceeditor :refer [FaceEditor face-editor]]
             [komokio.components.palette :refer [palette Palette]]))
 
 (defui Sidebar
   static om/IQuery
   (query [this]
     [{:palette (om/get-query Palette)}
-     {:faces [{:faces/list (om/get-query Face)}]}])
+     {:faces (om/get-query FaceEditor)}])
 
   Object
   (render [this]

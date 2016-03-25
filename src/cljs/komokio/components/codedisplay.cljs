@@ -15,6 +15,7 @@
                       util/cljs-coordinates)]
     (om/transact! comp `[(palette-picker/update
                            {:palette-picker/active-face          ~face
+                            :palette-picker/active-face-property ~face-property
                             :palette-picker/coordinates          ~coordinates}) :palette-picker/coordinates])))
 
 (defui CodeFace
