@@ -5,7 +5,6 @@
             [komokio.components.codedisplay :refer [CodeDisplay code-display]]
             [komokio.components.sidebar :refer [Sidebar sidebar]]))
 
-;; TODO if widgets doesn't fix the update issue then just use the root component for now
 (defui Widgets
   static om/IQuery
   (query [this]

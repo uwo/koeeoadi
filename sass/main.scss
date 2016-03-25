@@ -1,6 +1,7 @@
 /* Vars */
 $colorInputSize: 20px;
 
+$sidebarHeight: 500px;
 $sidebarPadding: 10px;
 $sidebarBorder: 1px;
 $sidebarContent: 235px;
@@ -183,6 +184,16 @@ input[type="color"] {
 }
 
 /* Face Editor */
+
+#face-editor {
+    height: 250px;
+    overflow: hidden;
+}
+
+#faces-container{
+    height: 200px;
+    overflow-y: scroll;
+}
 
 .face {
     height: 20px;

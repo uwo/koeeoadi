@@ -60,7 +60,6 @@
       (dom/div #js {:id "palette"
                     :className "widget"}
         (dom/h5 nil "Palette")
-        (dom/div nil "Click color to edit:")
         (apply dom/div #js {:className "palette-colors"}
           (conj (mapv color list)
             (color-adder (om/computed {} {:callback callback}))))))))

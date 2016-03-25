@@ -81,6 +81,19 @@
 (defmethod mutate :default
   [_ _ _] {:remote true})
 
+(defn clear-faces [state])
+
+(defmethod mutate 'theme/new
+  [{:keys [state] :as env} _ _]
+  ;; {:action
+  ;;  (fn []
+  ;;    (reset! state (-> @state
+  ;;                    clear-faces
+  ;;                    clear-colors
+  ;;                    clear-palette-picker)))}
+  )
+
+
 (defn new-color-id [colors]
   (let [ids (sort-by #(- (last %)) colors)]
     (inc (last (first ids)))))

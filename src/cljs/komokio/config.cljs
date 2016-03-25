@@ -17,26 +17,26 @@
                   {:color/id 9  :color/rgb "#93a1a1"}])
 
 (def faces-list
-  [
+  [{:db/id 0 :face/name "default"                     :face/color {:color/id 9  :color/rgb "#93a1a1"}}
+   {:db/id 1 :face/name "background"                  :face/color {:color/id 8  :color/rgb "#073642"}}
+   {:db/id 2 :face/name "builtin"                     :face/color {:color/id 0  :color/rgb "#6c71c4"}}
+   {:db/id 3 :face/name "comment-delimiter"           :face/color {:color/id 1  :color/rgb "#586e75"}}
+   {:db/id 4 :face/name "comment"                     :face/color {:color/id 1  :color/rgb "#586e75"}}
+   {:db/id 5 :face/name "constant"                    :face/color {:color/id 2  :color/rgb "#268bd2"}}
+   {:db/id 6 :face/name "doc"                         :face/color {:color/id 3  :color/rgb "#d33682"}}
+   {:db/id 7 :face/name "doc-string"                  :face/color {:color/id 0  :color/rgb "#6c71c4"}}
+   {:db/id 8 :face/name "function-name"               :face/color {:color/id 4  :color/rgb "#b58900"}}
+   {:db/id 9 :face/name "keyword"                     :face/color {:color/id 5  :color/rgb "#859900"}}
+   {:db/id 10 :face/name "negation-char"               :face/color {:color/id 2  :color/rgb "#268bd2"}}
+   {:db/id 11 :face/name "preprocessor"                :face/color {:color/id 3  :color/rgb "#d33682"}}
+   {:db/id 12 :face/name "regexp-grouping-backslash"  :face/color {:color/id 0 :color/rgb "#6c71c4"}}
+   {:db/id 13 :face/name "regexp-grouping-construct"  :face/color {:color/id 3 :color/rgb "#d33682"}}
+   {:db/id 14 :face/name "string"                     :face/color {:color/id 6 :color/rgb "#2aa198"}}
+   {:db/id 15 :face/name "type"                       :face/color {:color/id 2 :color/rgb "#268bd2"}}
+   {:db/id 16 :face/name "variable-name"              :face/color {:color/id 0 :color/rgb "#6c71c4"}}
+   {:db/id 17 :face/name "warning"                    :face/color {:color/id 7 :color/rgb "#dc322f"}}])
 
-   {:db/id 0 :face/name "default"                     :face/color {:color/id 9  :color/rgb "#93a1a1"}}
-   {:db/id 0 :face/name "background"                  :face/color {:color/id 8  :color/rgb "#073642"}}
-   {:db/id 0 :face/name "builtin"                     :face/color {:color/id 0  :color/rgb "#6c71c4"}}
-   {:db/id 1 :face/name "comment-delimiter"           :face/color {:color/id 1  :color/rgb "#586e75"}}
-   {:db/id 2 :face/name "comment"                     :face/color {:color/id 1  :color/rgb "#586e75"}}
-   {:db/id 3 :face/name "constant"                    :face/color {:color/id 2  :color/rgb "#268bd2"}}
-   {:db/id 4 :face/name "doc"                         :face/color {:color/id 3  :color/rgb "#d33682"}}
-   {:db/id 5 :face/name "doc-string"                  :face/color {:color/id 0  :color/rgb "#6c71c4"}}
-   {:db/id 6 :face/name "function-name"               :face/color {:color/id 4  :color/rgb "#b58900"}}
-   {:db/id 7 :face/name "keyword"                     :face/color {:color/id 5  :color/rgb "#859900"}}
-   {:db/id 8 :face/name "negation-char"               :face/color {:color/id 2  :color/rgb "#268bd2"}}
-   {:db/id 9 :face/name "preprocessor"                :face/color {:color/id 3  :color/rgb "#d33682"}}
-   {:db/id 10 :face/name "regexp-grouping-backslash"  :face/color {:color/id 0 :color/rgb "#6c71c4"}}
-   {:db/id 11 :face/name "regexp-grouping-construct"  :face/color {:color/id 3 :color/rgb "#d33682"}}
-   {:db/id 12 :face/name "string"                     :face/color {:color/id 6 :color/rgb "#2aa198"}}
-   {:db/id 13 :face/name "type"                       :face/color {:color/id 2 :color/rgb "#268bd2"}}
-   {:db/id 14 :face/name "variable-name"              :face/color {:color/id 0 :color/rgb "#6c71c4"}}
-   {:db/id 15 :face/name "warning"                    :face/color {:color/id 7 :color/rgb "#dc322f"}}])
+
 
 ;; TODO ok this works so far using partially normalized data
 ;; keep this in mind because this might cause trouble

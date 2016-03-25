@@ -3,6 +3,7 @@
             [om.dom :as dom]
             [cljs.pprint :as pprint]
 
+            [komokio.components.actions :refer [Actions actions]]
             [komokio.components.appinfo :refer [app-info]]
             [komokio.components.faceeditor :refer [FaceEditor face-editor]]
             [komokio.components.palette :refer [palette Palette]]))
@@ -16,9 +17,11 @@
   Object
   (render [this]
     (let [{faces-data :faces
-           palette-data :palette}  (om/props this)]
+           palette-data :palette
+           actions-data :actions}  (om/props this)]
       (dom/div #js {:id "sidebar"}
         (app-info)
+        (actions actions-data)
         (palette palette-data)
         (face-editor faces-data)
         ))))

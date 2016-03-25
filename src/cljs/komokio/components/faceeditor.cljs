@@ -73,6 +73,7 @@
                     :className "widget"}
 
         (dom/h5 nil "Faces")
-        (map face list)))))
+        (dom/div #js {:id "faces-container"}
+          (map face list))))))
 
 (def face-editor (om/factory FaceEditor))
