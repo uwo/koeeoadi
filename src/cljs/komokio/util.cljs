@@ -3,6 +3,10 @@
             [goog.style :refer [setStyle]]
             [goog.array :refer [forEach]]))
 
+(defn cljs-coordinates [coords]
+  {:x (aget coords "y")
+   :y (aget coords "x")})
+
 (def code-class "code")
 
 (defn code-face-class [face-name]

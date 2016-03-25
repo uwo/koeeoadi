@@ -10,16 +10,11 @@
             [komokio.util :as util]
             ))
 
-(defn cljs-coordinates [coords]
-  {:x (aget coords "y")
-   :y (aget coords "x")})
-
 (defn handleCodeClick [comp face face-property e]
   (let [coordinates (-> (gstyle/getClientPosition e)
-                      cljs-coordinates)]
+                      util/cljs-coordinates)]
     (om/transact! comp `[(palette-picker/update
                            {:palette-picker/active-face          ~face
-                            :palette-picker/active-face-property ~face-property
                             :palette-picker/coordinates          ~coordinates}) :palette-picker/coordinates])))
 
 (defui CodeFace

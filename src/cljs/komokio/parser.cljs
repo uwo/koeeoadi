@@ -104,11 +104,11 @@
      (swap! state update-in [:colors/by-id id] assoc :color/rgb rgb))})
 
 (defmethod mutate 'face/update
-  [{:keys [state ref] :as env} _ {:keys [name bg-or-fg color] :as args}]
+  [{:keys [state ref] :as env} _ {:keys [name color] :as args}]
   {:value {:keys [:faces/list]}
    :action
    (fn []
-     (swap! state update-in [:faces/by-name name] assoc bg-or-fg [:colors/by-id (:color/id color)]))})
+     (swap! state update-in [:faces/by-name name] assoc :face/color [:colors/by-id (:color/id color)]))})
 
 (defmethod mutate 'palette-picker/update
   [{:keys [state ref] :as env} _ args]

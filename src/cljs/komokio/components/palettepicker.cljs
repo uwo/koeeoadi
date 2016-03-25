@@ -37,7 +37,6 @@
   static om/IQuery
   (query [this]
     [:palette-picker/coordinates
-     :palette-picker/active-face-property
      {:palette-picker/active-face (om/get-query Face)}
      {:colors/list (om/get-query Color)}])
 
@@ -54,19 +53,15 @@
   (render [this]
     (let [{:keys [colors/list
                   palette-picker/coordinates
-                  palette-picker/active-face
-                  palette-picker/active-face-property]} (om/props this)
+                  palette-picker/active-face]} (om/props this)
 
-          css-property (if (= active-face-property :face/color) "background" "color")
-          {face-name :face/name} active-face
-          face-color-rgb (get-in active-face [active-face-property :color/rgb])
-
+          {face-name :face/name
+           face-color-rgb :face/color} active-face
           colorClickHandler (fn [color]
                               (let [{:keys [db/id face/name]} active-face]
                                 (om/transact! this `[(face/update
                                                        {:id       ~id
                                                         :name     ~name
-                                                        :bg-or-fg ~active-face-property
                                                         :color    ~color}) ;;:face/name
                                                      ])))
           colorHoverHandler (fn [hover-color-rgb]

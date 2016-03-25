@@ -19,35 +19,37 @@
 (def faces-list [{:db/id 0
                   :face/name "background"
                   :face/color {:color/id 230
-                                    :color/rgb  "#1a1a1a"}}
+                               :color/rgb  "#1a1a1a"}}
                  {:db/id 1
                   :face/name "default"
                   :face/color {:color/id 201
-                                    :color/rgb  "#1e90ff"}}
+                               :color/rgb  "#1e90ff"}}
                  {:db/id 2
                   :face/name "builtin"}
                  {:db/id 3
                   :face/name "comment-delimiter"
                   :face/color {:color/id 202
-                                    :color/rgb  "#Cd0000"}}
+                               :color/rgb  "#Cd0000"}}
                  {:db/id 4
                   :face/name "comment"
                   :face/color {:color/id 202
-                                    :color/rgb  "#Cd0000"}}
+                               :color/rgb  "#Cd0000"}}
                  {:db/id 5
                   :face/name "constant"}
                  {:db/id 6
-                  :face/name "doc"}
+                  :face/name "doc"
+                  :face/color {:color/id 202
+                               :color/rgb  "#Cd0000"}}
                  {:db/id 7
                   :face/name "doc-string"}
                  {:db/id 8
                   :face/name "function-name"
                   :face/color {:color/id 203
-                                    :color/rgb  "#2e8b57"}}
+                               :color/rgb  "#2e8b57"}}
                  {:db/id 9
                   :face/name "keyword"
                   :face/color {:color/id 200
-                                    :color/rgb  "Ffd700"}}
+                               :color/rgb  "Ffd700"}}
                  {:db/id 10
                   :face/name "negation-char"}
                  {:db/id 11

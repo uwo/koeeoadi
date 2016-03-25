@@ -13,25 +13,22 @@
 ;; TODO delete this when I move palette picker to it's own component
 (declare Face)
 
-(defn faceColorClick [_ comp face-property]
-  ;; (let [face (om/props comp)
-  ;;       child-no    (if (= :face/color face-property) 0 1)
-  ;;       coordinates (-> (face-option-elm (dom/node comp) child-no)
-  ;;                     gdom/getElement
-  ;;                     gstyle/getPosition
-  ;;                     cljs-coordinates)]
-  ;;   (om/transact! comp `[(palette-picker/update
-  ;;                          {:palette-picker/active-face          ~face
-  ;;                           :palette-picker/active-face-property ~face-property
-  ;;                           :palette-picker/coordinates          ~coordinates}) :palette-picker]))
-  )
+(defn faceColorClick [comp e]
+  (let [face (om/props comp)
+        coordinates (-> (gstyle/getClientPosition e)
+                      util/cljs-coordinates)]
+    (println "in face color click")
+    (.log js/console face)
+    (om/transact! comp `[(palette-picker/update
+                           {:palette-picker/active-face ~face
+                            :palette-picker/coordinates ~coordinates}) :palette-picker])))
 
-(defn face-color [comp face-property]
-  (let [{:keys [color/id color/rgb] :as color}  (get (om/props comp) face-property)
+(defn face-color [comp]
+  (let [{:keys [color/id color/rgb] :as color}  (get (om/props comp) :face/color)
         {:keys [editing?] :as state} (om/get-state comp)]
-
     (dom/div
       #js {:style     #js {:backgroundColor rgb}
+           :onClick   #(faceColorClick comp %)
            :tabIndex  "0"
            :className "color color-trigger"})))
 
@@ -44,17 +41,14 @@
   (query [this]
     `[:db/id
       :face/name
-      {:face/color ~(om/get-query Color)}
       {:face/color ~(om/get-query Color)}])
 
   Object
   (componentDidUpdate [this prev-props prev-state]
     (let [{:keys [face/name
-                  face/color
                   face/color]}  (om/props this)
 
-          bg-color (:color/rgb color)
-          fg-color (:color/rgb color)]
+          color (:color/rgb color)]
       ;;(util/update-code-css name "color"      fg-color)
       ;;(util/update-code-css name "color" bg-color)
       )
@@ -63,15 +57,12 @@
   (render [this]
     (let [{id         :db/id
            face-name  :face/name
-           bg         :face/color
-           fg         :face/color
            :as props} (om/props this)]
-
+      (when (= face-name "doc")
+        (.log js/console props))
       (dom/div #js {:className "face"}
-        (face-color this :face/color)
-        (dom/span #js {:className "face-name"} (clojure.core/name face-name))
-        ;;(face-color this :face/color)
-        ))))
+        (face-color this)
+        (dom/span #js {:className "face-name"} (clojure.core/name face-name))))))
 
 (def face (om/factory Face {:keyfn :db/id}))
 
