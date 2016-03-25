@@ -83,6 +83,7 @@
   Object
   (render [this]
     (let [{:keys [:face/foreground]} (om/props this)]
+      (println "printing background")
       (.log js/console foreground)
       (dom/div #js {:id "code-background"
                     :style #js

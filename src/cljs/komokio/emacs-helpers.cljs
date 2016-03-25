@@ -6,4 +6,5 @@
                           (into {} (mapv #(into [] %) (partition 2 2 x)))
                           x))]
 
-    (mapv plist-to-map' plist)))
+    (vec (reverse (mapv plist-to-map' plist)))))
+

@@ -22,8 +22,8 @@
         widgets-query [{:widgets query}]
         ;; TODO use ident instead of get-in
         widgets-tree  {:widgets {:code-display {:code-chunks/list [:data :code-chunks/list]
-                                                :code-background [:faces/by-name :background]}
-                                 :palette-picker (get st :palette-picker) 
+                                                :code-background [:faces/by-name "background"]}
+                                 :palette-picker (get st :palette-picker)
                                  :sidebar      {:faces   {:faces/list [:data :faces/list]}
                                                 :palette {:colors/list [:data :colors/list]}}}}
         widgets       (om/db->tree widgets-query widgets-tree st)]
