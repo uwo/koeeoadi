@@ -14,9 +14,8 @@
   {:x (aget coords "y")
    :y (aget coords "x")})
 
-(defn handleCodeClick [comp face face-property]
-  (let [coordinates (-> (dom/node comp)
-                      gstyle/getPosition
+(defn handleCodeClick [comp face face-property e]
+  (let [coordinates (-> (gstyle/getClientPosition e)
                       cljs-coordinates)]
     (om/transact! comp `[(palette-picker/update
                            {:palette-picker/active-face          ~face
@@ -51,7 +50,7 @@
           {:keys [face/name]} face
           {color :color/rgb} (:face/color face)]
       (dom/span #js {:className    (str util/code-class " " (util/code-face-class name))
-                     :onClick      #(handleCodeClick this face :face/color)
+                     :onClick      #(handleCodeClick this face :face/color %)
                      :tabIndex 0
                      :onBlur       #(om/transact! this `[(palette-picker/update
                                                            {:palette-picker/active-face          nil
@@ -85,7 +84,7 @@
                                                        {:palette-picker/active-face nil
                                                         :palette-picker/active-face-property nil
                                                         :palette-picker/coordinates nil}) :palette-picker/coordinates])
-                    :onClick   #(handleCodeClick this (om/props this) :face/color)
+                    :onClick   #(handleCodeClick this (om/props this) :face/color %)
                     :style     #js {:backgroundColor (:color/rgb color)}
                     :tabIndex  0}))))
 
