@@ -1,20 +1,96 @@
 /* Vars */
 $colorInputSize: 20px;
+$backgroundColor: #292929;
 
 /* Overrides for skeleton.css */
+.container {
+    width: 100% !important;
+    max-width: initial !important;
+}
+
 code {
     background-color: transparent !important;
     border: none !important;
+    white-space: pre-wrap;
 }
 
-/* General */
+/* Tags */
 body {
-    background-color: #292929;
+    background-color: $backgroundColor;
     color: #FFFFFF;
     font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
 }
 
+/* General Classes */
+
+#app {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.color {
+    display: inline-block;
+    width: $colorInputSize;
+    height: $colorInputSize;
+}
+
+/* Code Display */
+
+#code-display {
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom : 0;
+    background-color: #1a1a1a;
+    font: normal 1.5em Menlo,Monaco,Consolas,"Courier New",monospace;
+    display: inline-block;
+    vertical-align: top;
+    z-index: 0;
+    padding-left: 100px;
+}
+
+#code-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.code-line {
+    min-height: 1.5em;
+    display: block;
+}
+
+.code {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    transition: opacity 0.1s ease-out;
+}
+
+.code:focus {
+    outline: none;
+}
+
+.code.code-temp-minimize {
+    opacity: 0.1;
+}
+
 /* Sidebar */
+
+#sidebar{
+    position: relative;
+    z-index: 100;
+    background: $backgroundColor;
+}
+
 
 .widget {
     border: 1px solid white;
@@ -24,19 +100,51 @@ body {
 
 /* Palette */
 
-.color-input {
-    display: inline-block;
-    width: $colorInputSize;
-    height: $colorInputSize;
+
+.palette-colors > * {
+    vertical-align: middle;
+}
+
+.color-input,.color-add {
     position: relative;
+}
+
+.color-add {
+    text-align: center;
+    cursor: pointer;
+}
+
+.color-add:before {
+    content: '';
+    vertical-align: middle;
+    height: 100%;
+    pointer-events: none;
+}
+
+.color-add > i {
+    z-index: 102;
+    pointer-events: none;
+}
+
+.color-add > i:before {
+    position: relative;
+    z-index: 102;
 }
 
 .input-overlay {
     position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
     z-index: 101;
+}
+
+.input-overlay.color-missing {
+    box-sizing: border-box;
+    border: 1px solid white;
+    background-color: #2a2a2a;
 }
 
 input[type="color"] {
@@ -44,14 +152,18 @@ input[type="color"] {
     width: 100%;
     height: 100%;
     position: absolute;
+    top: 0;
+    left: 0;
     z-index: 100;
     margin: 0;
+    cursor: pointer;
 }
 
 /* Code */
 
 #sidebar {
     position: absolute;
+    right: 0;
     vertical-align: top;
     width: 250px;
 }
@@ -61,55 +173,23 @@ input[type="color"] {
     text-align: center;
 }
 
-#code-display {
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    right: 0px;
-    left: 250px;
-    background-color: #1a1a1a;
-    font: normal 1.5em Menlo,Monaco,Consolas,"Courier New",monospace;
-    display: inline-block;
-    vertical-align: top;
-    padding-left: 50px;
-}
-
-.code-line > .code-region {
-    display: inline;
-}
-
-
 /* Face Editor */
 
 .face {
     height: 20px;
-    padding-right: 50px;
     margin-bottom: 5px;
 }
 
 .face-name {
-    display: inline-block;
+    font-size: .75em;
     vertical-align: middle;
-    line-height: 0px;
-}
-
-/* trick to vertically align '.face-name' */
-.face-name:after{
-    content: "";
     display: inline-block;
-    vertical-align: middle;
-    height: 100%;
-}
-
-.color {
-    display: inline-block;
-    width: $colorInputSize;
-    height: $colorInputSize;
+    margin-left: 10px;
 }
 
 .color.color-trigger{
     cursor: pointer;
-    float: right;
+    vertical-align: middle;
 }
 
 
@@ -125,17 +205,17 @@ input[type="color"] {
 }
 
 #palette-picker::after {
-  content: "";
-  max-width: 100px + $colorInputSize/2;
-  border-radius: 0px 15px 15px 15px;
-  background-color: #1a1a1a;
-  opacity: 0.95;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  position: absolute;
-  z-index: 0;
+    content: "";
+    max-width: 100px + $colorInputSize/2;
+    border-radius: 0px 15px 15px 15px;
+    background-color: #1a1a1a;
+    opacity: 0.95;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    z-index: 0;
 }
 
 .color-option {

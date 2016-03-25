@@ -2,8 +2,9 @@
   (:require [om.next :as om]
             [cljs.pprint :as pprint]
 
+            [komokio.components.widgets :refer [Widgets]]
             [komokio.components.palette :refer [Color]]
-            [komokio.components.faceeditor :refer [PalettePicker]]))
+            [komokio.components.palettepicker :refer [PalettePicker]]))
 
 ;; Readers
 (defmulti read om/dispatch)
@@ -15,6 +16,35 @@
       {:value (get st k)}
       {:remote true})))
 
+(defmethod read :widgets
+  [{:keys [state query] :as env} k params]
+  (let [st @state
+        widgets-query [{:widgets query}]
+        ;; TODO use ident instead of get-in
+        widgets-tree  {:widgets {:code-display {:code-chunks/list [:data :code-chunks/list]
+                                                :code-background [:faces/by-name :background]}
+                                 :palette-picker (get st :palette-picker) 
+                                 :sidebar      {:faces   {:faces/list [:data :faces/list]}
+                                                :palette {:colors/list [:data :colors/list]}}}}
+        widgets       (om/db->tree widgets-query widgets-tree st)]
+    {:value (:widgets widgets)}))
+
+(defn sub-colors [face state-derefed]
+  (-> face
+    (update :face/background #(if (empty? %) nil (get-in state-derefed %)))
+    (update :face/foreground #(if (empty? %) nil (get-in state-derefed %)))))
+
+(defn sub-face [code state-derefed]
+  (update code :face #(sub-colors (get-in state-derefed %) state-derefed)))
+
+(defn get-code-chunks [state]
+  (let [st @state]
+    (into [] (map #(sub-face (get-in st %) st)) (get st :code-chunks/list))))
+
+(defmethod read :code-chunks/list
+  [{:keys [state] :as env} _ _]
+  {:value (get-code-chunks state)})
+
 (defmethod read :palette-picker
   [{:keys [state] :as env} _ _]
   (let [pp (om/db->tree [{:palette-picker (om/get-query PalettePicker)}]  @state @state)]
@@ -22,7 +52,6 @@
 
 (defn get-colors [state]
   (let [st @state]
-    ;; TODO figure out how transducers work
     (into [] (map #(get-in st %)) (get st :colors/list))))
 
 (defmethod read :colors/list
@@ -55,6 +84,19 @@
 (defmethod mutate :default
   [_ _ _] {:remote true})
 
+(defmethod mutate 'colors/add
+  [{:keys [state] :as env} _ _]
+  {:value {:keys [:faces/list]}
+   :action
+   (fn []
+     ;; TODO change this around and cleanup once I stop using names
+     (let [props {:db/id 3000 :color/name "dumbname"}
+           state' (update-in @state [:colors/by-name] merge {(:color/name props) props})
+           state'' (update-in state' [:data :colors/list] conj [:colors/by-name (:color/name props)])]
+       (reset! state state'')))})
+
+(update-in {:data {:colors [[:colors/by-name "green"]]}} [:data :colors] conj [:colors/by-name "blue"])
+
 (defmethod mutate 'color/update
   [{:keys [state ref] :as env} _ {:keys [name rgb] :as args}]
   {:value {:keys [:faces/list]}
@@ -75,7 +117,8 @@
   {:value {:keys [:palette-picker]}
    :action
    (fn []
-     (let [state' (update-in @state [:palette-picker] merge args {:colors/list (get @state :colors/list)})]
-       (reset! state state')))})
+     (swap! state update-in [:palette-picker] merge args {:colors/list (get-in @state [:data :colors/list])}))})
 
 (def parser (om/parser {:read read :mutate mutate}))
+
+(update-in {} [:beeodfll] #(identity 5))
