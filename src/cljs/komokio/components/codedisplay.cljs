@@ -5,7 +5,6 @@
             [om.next :as om :refer-macros [defui]]
             [om.dom :as dom]
 
-
             [komokio.components.palette :refer [Color]]
             [komokio.components.faceeditor :refer [Face]]
             [komokio.util :as util]
@@ -15,9 +14,8 @@
   {:x (aget coords "y")
    :y (aget coords "x")})
 
-(defn handleCodeClick [comp face-property]
-  (let [face        (:code-chunk/face (om/props comp))
-        coordinates (-> (dom/node comp)
+(defn handleCodeClick [comp face face-property]
+  (let [coordinates (-> (dom/node comp)
                       gstyle/getPosition
                       cljs-coordinates)]
     (om/transact! comp `[(palette-picker/update
@@ -55,7 +53,7 @@
           {fg :color/rgb} (:face/foreground face)
           {bg :color/rgb} (:face/background face)]
       (dom/span #js {:className    (str util/code-class " " (util/code-face-class name))
-                     :onClick      #(handleCodeClick this :face/foreground)
+                     :onClick      #(handleCodeClick this face :face/foreground)
                      :tabIndex 0
                      :onBlur       #(om/transact! this `[(palette-picker/update
                                                            {:palette-picker/active-face          nil
@@ -83,9 +81,16 @@
   Object
   (render [this]
     (let [{:keys [:face/foreground]} (om/props this)]
-      (dom/div #js {:id "code-background"
-                    :style #js
-                    {:backgroundColor (:color/rgb foreground)}}))))
+      (dom/div #js {
+                    :className (str util/code-class " " (util/code-face-class "background"))
+                    :id        "code-background"
+                    :onBlur    #(om/transact! this `[(palette-picker/update
+                                                       {:palette-picker/active-face nil
+                                                        :palette-picker/active-face-property nil
+                                                        :palette-picker/coordinates nil}) :palette-picker/coordinates])
+                    :onClick   #(handleCodeClick this (om/props this) :face/foreground)
+                    :style     #js {:backgroundColor (:color/rgb foreground)}
+                    :tabIndex  0}))))
 
 (def code-background (om/factory CodeBackground))
 

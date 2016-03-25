@@ -70,7 +70,7 @@
                                                         :color    ~color}) ;;:face/name
                                                      ])))
           colorHoverHandler (fn [hover-color-rgb]
-                              (let [prop (if (= :face/foreground active-face-property) "color" "background-color")]
+                              (let [prop (if (= face-name "background") "background-color" "color")]
                                 (if hover-color-rgb
                                   (util/update-code-face-elements face-name #(gstyle/setStyle % prop hover-color-rgb))
                                   (util/update-code-face-elements face-name #(gstyle/setStyle % prop face-color-rgb)))))

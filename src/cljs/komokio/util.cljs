@@ -14,11 +14,11 @@
     (forEach code #(func %))))
 
 (defn update-code-face-elements [face-name func]
-  (let [code (getElementsByTagNameAndClass "span" (code-face-class face-name))]
+  (let [code (getElementsByTagNameAndClass nil (code-face-class face-name))]
     (forEach code #(func %))))
 
 (defn update-code-elements [func]
-  (let [code (getElementsByTagNameAndClass "span" code-class)]
+  (let [code (getElementsByTagNameAndClass nil code-class)]
     (forEach code #(func %))))
 
 ;;  TODO Not using these.  Should probably delete these or move them into my own library
