@@ -10,7 +10,7 @@
             [devtools.core :as devtools]
 
             [komokio.themes :refer [themes]]
-            [komokio.config :as config]
+            [komokio.config :refer [app-state]]
             [komokio.parser :refer [parser]]
             [komokio.components.widgets :refer [Widgets widgets]]
             [komokio.components.sidebar :refer [Sidebar sidebar]]
@@ -39,7 +39,7 @@
 (defonce reconciler
   (om/reconciler
     {:normalize true
-     :state (atom config/app-state)
+     :state app-state
      :parser parser}))
 
 (om/add-root! reconciler

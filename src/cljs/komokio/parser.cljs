@@ -3,7 +3,6 @@
             [cljs.pprint :as pprint]
 
             [komokio.themes :refer [themes]]
-            [komokio.components.widgets :refer [Widgets]]
             [komokio.components.palette :refer [Color]]
             [komokio.components.palettepicker :refer [PalettePicker]]))
 
