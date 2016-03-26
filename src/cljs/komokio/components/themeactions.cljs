@@ -16,8 +16,9 @@
 (defn export-theme []
   (println "stub"))
 
-(defn theme-option [theme-name]
-  (dom/option #js {:onHover #()} theme-name))
+(defn theme-option [theme-name base-theme]
+  (let [selected (= theme-name base-theme)]
+    (dom/option #js {:selected selected} theme-name)))
 
 (defn theme-export-emacs [comp]
   (.log js/console @app-state))
@@ -41,11 +42,12 @@
                               ;; TODO CLENAUP
                               (assoc (get themes (.. % -target -value))
                                 :base-theme (.. % -target -value)))}
-            (map theme-option (keys themes))))
+            (map #(theme-option % base-theme) (keys themes))))
         (dom/button #js {:onClick theme-export-emacs} "Export to Emacs")
-        (dom/a #js {:target "_blank"
-                    ;:download "blahbla.txt"
-                    ;:href (str "data:text/plain;charset=utf-8;base64," (.btoa js/window))
-                    } "DOWNLOAD")))))
+        ;; (dom/a #js {:target "_blank"
+        ;;             ;:download "blahbla.txt"
+        ;;             ;:href (str "data:text/plain;charset=utf-8;base64," (.btoa js/window))
+        ;;             } "DOWNLOAD")
+        ))))
 
 (def theme-actions (om/factory ThemeActions))

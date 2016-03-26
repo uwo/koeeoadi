@@ -30,7 +30,7 @@
    {:face/id 16 :face/name "variable-name"              :face/color {:color/id 0  :color/rgb "#000000"}}
    {:face/id 17 :face/name "warning"                    :face/color {:color/id 0  :color/rgb "#000000"}}])
 
-;; TODO ok this works so far using partially normalized data
+;; TODO ok this works so far using partially noRmalized data
 ;; keep this in mind because this might cause trouble
 ;; TODO Initialize this using themes
 (def app-state
