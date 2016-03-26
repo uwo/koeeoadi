@@ -75,11 +75,15 @@ body {
     width: 100%;
 }
 
+#theme-select {
+    color: black;
+}
+
 /* Code Display */
 
 #code-display {
     box-sizing: border-box;
-    font: normal 1em Menlo,Monaco,Consolas,"Courier New",monospace;
+    font: normal 1.5em Menlo,Monaco,Consolas,"Courier New",monospace;
     display: inline-block;
     vertical-align: top;
     position: absolute;
@@ -182,6 +186,7 @@ input[type="color"] {
 #app-info > h1, #app-info div {
     text-align: center;
 }
+
 
 /* Face Editor */
 

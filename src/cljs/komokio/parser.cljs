@@ -2,6 +2,7 @@
   (:require [om.next :as om]
             [cljs.pprint :as pprint]
 
+            [komokio.themes :refer [themes]]
             [komokio.components.widgets :refer [Widgets]]
             [komokio.components.palette :refer [Color]]
             [komokio.components.palettepicker :refer [PalettePicker]]))
@@ -24,7 +25,8 @@
         widgets-tree  {:widgets {:code-display {:code-chunks/list [:data :code-chunks/list]
                                                 :code-background [:faces/by-name "background"]}
                                  :palette-picker (get st :palette-picker)
-                                 :sidebar      {:faces   {:faces/list [:data :faces/list]}
+                                 :sidebar      {:theme-actions (select-keys st [:base-theme])
+                                                :faces   {:faces/list [:data :faces/list]}
                                                 :palette {:colors/list [:data :colors/list]}}}}
         widgets       (om/db->tree widgets-query widgets-tree st)]
     {:value (:widgets widgets)}))
@@ -83,16 +85,19 @@
 
 (defn clear-faces [state])
 
-(defmethod mutate 'theme/new
-  [{:keys [state] :as env} _ _]
-  ;; {:action
-  ;;  (fn []
-  ;;    (reset! state (-> @state
-  ;;                    clear-faces
-  ;;                    clear-colors
-  ;;                    clear-palette-picker)))}
-  )
+(defn theme-merge [state theme]
+  (if (coll? state)
+    (merge state theme)
+    theme))
 
+(defmethod mutate 'theme/change
+  [{:keys [state] :as env} _ {:keys [theme]}]
+  {:action
+   (fn []
+     (println "in mutate")
+     (.log js/console theme)
+     (.log js/console (merge-with theme-merge @state theme))
+     (reset! state (merge-with theme-merge @state theme)))})
 
 (defn new-color-id [colors]
   (let [ids (sort-by #(- (last %)) colors)]

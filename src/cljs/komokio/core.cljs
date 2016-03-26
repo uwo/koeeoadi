@@ -9,11 +9,12 @@
 
             [devtools.core :as devtools]
 
+            [komokio.themes :refer [themes]]
             [komokio.config :as config]
             [komokio.parser :refer [parser]]
             [komokio.components.widgets :refer [Widgets widgets]]
             [komokio.components.sidebar :refer [Sidebar sidebar]]
-            [komokio.components.codedisplay :refer [code-display CodeChunk CodeDisplay]]
+            [komokio.components.codedisplay :refer [CodeChunk]]
             [komokio.components.faceeditor :refer [Face]]
             [komokio.components.palette :refer [Color]]))
 

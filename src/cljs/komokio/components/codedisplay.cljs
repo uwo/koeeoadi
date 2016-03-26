@@ -7,8 +7,7 @@
 
             [komokio.components.palette :refer [Color]]
             [komokio.components.faceeditor :refer [Face]]
-            [komokio.util :as util]
-            ))
+            [komokio.util :as util]))
 
 (defn handleCodeClick [comp face face-property e]
   (let [coordinates (-> (gstyle/getClientPosition e)

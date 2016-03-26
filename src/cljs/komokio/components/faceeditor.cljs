@@ -41,7 +41,7 @@
 
   static om/IQuery
   (query [this]
-    `[:db/id
+    `[:face/id
       :face/name
       {:face/color ~(om/get-query Color)}])
 
@@ -52,14 +52,14 @@
           color (:color/rgb color)]))
 
   (render [this]
-    (let [{id         :db/id
+    (let [{id         :face/id
            face-name  :face/name
            :as props} (om/props this)]
       (dom/div #js {:className "face"}
         (face-color this)
         (dom/span #js {:className "face-name"} (clojure.core/name face-name))))))
 
-(def face (om/factory Face {:keyfn :db/id}))
+(def face (om/factory Face {:keyfn :face/id}))
 
 (defui FaceEditor
   static om/IQuery
