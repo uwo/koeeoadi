@@ -2,7 +2,7 @@
   (:require [om.next :as om :refer-macros [defui]]
             [om.dom :as dom]
 
-            [komokio.config :refer [app-state]]
+            [komokio.themebuilder :as tb]
             [komokio.themes :refer [themes]]))
 
 (defn select-theme [comp theme]
@@ -19,9 +19,6 @@
 (defn theme-option [theme-name base-theme]
   (let [selected (= theme-name base-theme)]
     (dom/option #js {:selected selected} theme-name)))
-
-(defn theme-export-emacs [comp]
-  (.log js/console @app-state))
 
 (defui ThemeActions
   static om/IQuery
@@ -43,7 +40,7 @@
                               (assoc (get themes (.. % -target -value))
                                 :base-theme (.. % -target -value)))}
             (map #(theme-option % base-theme) (keys themes))))
-        (dom/button #js {:onClick theme-export-emacs} "Export to Emacs")
+        (dom/button #js {:onClick (tb/build-emacs)} "Export to Emacs")
         ;; (dom/a #js {:target "_blank"
         ;;             ;:download "blahbla.txt"
         ;;             ;:href (str "data:text/plain;charset=utf-8;base64," (.btoa js/window))
