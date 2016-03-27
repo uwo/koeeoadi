@@ -3,6 +3,9 @@
             [goog.style :refer [setStyle]]
             [goog.array :refer [forEach]]))
 
+(defn keycode [e]
+  (.-keyCode e))
+
 (defn cljs-coordinates [coords]
   {:x (aget coords "y")
    :y (aget coords "x")})

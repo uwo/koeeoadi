@@ -24,7 +24,7 @@
         widgets-tree  {:widgets {:code-display {:code-chunks/list [:data :code-chunks/list]
                                                 :code-background [:faces/by-name "background"]}
                                  :palette-picker (get st :palette-picker)
-                                 :sidebar      {:theme-actions (select-keys st [:base-theme])
+                                 :sidebar      {:theme-actions (select-keys st [:current-theme :name-temp :theme/map])
                                                 :faces   {:faces/list [:data :faces/list]}
                                                 :palette {:colors/list [:data :colors/list]}}}}
         widgets       (om/db->tree widgets-query widgets-tree st)]
@@ -89,14 +89,29 @@
     (merge state theme)
     theme))
 
-(defmethod mutate 'theme/change
-  [{:keys [state] :as env} _ {:keys [theme]}]
+(defmethod mutate 'theme/edit-name
+  [{:keys [state] :as env} _ args]
   {:action
    (fn []
-     (println "in mutate")
-     (.log js/console theme)
-     (.log js/console (merge-with theme-merge @state theme))
-     (reset! state (merge-with theme-merge @state theme)))})
+     (swap! state merge args))})
+
+(defmethod mutate 'theme/change-name
+  [{:keys [state] :as env} _ {:keys [new-name prev-name]}]
+  {:action
+   (fn []
+     (let [st   @state
+           st'  (assoc st :current-theme new-name :name-temp nil)
+           st'' (update-in st' [:theme/map] clojure.set/rename-keys {prev-name new-name})]
+       (reset! state st'')))})
+
+(defmethod mutate 'theme/change
+  [{:keys [state] :as env} _ {:keys [new-theme]}]
+  {:action
+   (fn []
+     (let [st @state
+           current-theme (:current-theme st)
+           merge-data (assoc new-theme :theme/map {current-theme (select-keys st [:data :colors/by-id :faces/by-name])})]
+       (reset! state (merge-with theme-merge st merge-data))))})
 
 (defn new-color-id [colors]
   (let [ids (sort-by #(- (last %)) colors)]

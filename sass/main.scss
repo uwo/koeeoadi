@@ -8,6 +8,7 @@ $sidebarContent: 235px;
 $sidebarWidth: 2*$sidebarPadding + 2*$sidebarBorder + $sidebarContent;
 
 $backgroundColor: #292929;
+$black: $backgroundColor;
 $white: #FFF;
 
 /* Overrides for skeleton.css */
@@ -59,6 +60,10 @@ body {
     height: $colorInputSize;
 }
 
+input, select {
+    color: $black;
+}
+
 /* Sidebar */
 
 #sidebar{
@@ -73,10 +78,6 @@ body {
     border: $sidebarBorder solid $white;
     padding: $sidebarPadding;
     width: 100%;
-}
-
-#theme-select {
-    color: black;
 }
 
 /* Code Display */
