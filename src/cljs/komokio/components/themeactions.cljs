@@ -43,7 +43,7 @@
       (dom/div #js {:id        "actions"
                     :className "widget"}
         (dom/h5 nil "Theme")
-        (dom/label nil "Current theme:"
+        (dom/div #js {:className "row control-row"}
           (apply dom/select
             #js {:id "theme-select"
                  :className (when name-temp "hide")
@@ -52,27 +52,31 @@
                               ;; TODO CLENAUP
                               (assoc (get theme-map (.. % -target -value))
                                 :current-theme (.. % -target -value)))}
-            (map #(theme-option % current-theme) (keys theme-map))))
+            (map #(theme-option % current-theme) (keys theme-map)))
 
-        (dom/input #js {:id        "theme-name-input"
-                        :className (when-not name-temp "hide")
-                        :value     (or name-temp current-theme)
-                        :placeholder current-theme
-                        :onKeyDown (fn [e]
-                                     (let [keycode    (util/keycode e)
-                                           input-text (.. e -target -value)]
-                                       (when (= keycode 13)
-                                         (handle-name-change this input-text current-theme))))
+          (dom/input #js {:id        "theme-name-input"
+                          :className (when-not name-temp "hide")
+                          :value     (or name-temp current-theme)
+                          :placeholder current-theme
+                          :onKeyDown (fn [e]
+                                       (let [keycode    (util/keycode e)
+                                             input-text (.. e -target -value)]
+                                         (when (= keycode 13)
+                                           (handle-name-change this input-text current-theme))))
 
-                        :onBlur    (fn [e]
-                                     (let [input-text (.. e -target -value)]
-                                       (handle-name-change this input-text current-theme)))
+                          :onBlur    (fn [e]
+                                       (let [input-text (.. e -target -value)]
+                                         (handle-name-change this input-text current-theme)))
 
-                        :onChange  (fn [e]
-                                     (let [input-text (.. e -target -value)]
-                                       (om/transact! this `[(theme/edit-name {:name-temp ~input-text})])))})
+                          :onChange  (fn [e]
+                                       (let [input-text (.. e -target -value)]
+                                         (om/transact! this `[(theme/edit-name {:name-temp ~input-text})])))})
+          
+          (dom/button #js {:className "inline-button"
+                           :onClick #(om/transact! this `[(theme/edit-name {:name-temp ""})])}
+            (dom/i #js {:className "fa fa-edit fa-3x"})))
         ;; TODO Why won't this reload
-        (dom/button #js {:onClick #(om/transact! this `[(theme/edit-name {:name-temp ""})])} "Rename Theme")
+        
         (dom/button #js {:onClick #(tb/build-emacs)} "Export to Emacs")
         ;; (dom/a #js {:target "_blank"
         ;;             ;:download "blahbla.txt"

@@ -8,7 +8,7 @@ $sidebarContent: 235px;
 $sidebarWidth: 2*$sidebarPadding + 2*$sidebarBorder + $sidebarContent;
 
 $grayDark: #292929;
-$grayDarkest: #2a2a2a;
+$grayDarkest: black;
 $white: #FFF;
 $backgroundColor: $grayDark;
 
@@ -16,6 +16,20 @@ $backgroundColor: $grayDark;
 .container {
     width: 100% !important;
     max-width: initial !important;
+}
+
+select {
+    border-radius: initial;
+    padding: initial;
+    width: initial;
+    height: initial;
+}
+
+select,input {
+    box-sizing: border-box;
+    width: 150px;
+    line-height: normal;
+    border: none;
 }
 
 code {
@@ -55,6 +69,10 @@ button {
 
 button:hover {
     color: $white;
+}
+
+i {
+    pointer-events: none;
 }
 
 /* General Classes */
@@ -202,6 +220,25 @@ input[type="color"] {
     text-align: center;
 }
 
+
+/* Theme */
+.inline-button {
+    padding: 0;
+    height: auto;
+    border: none;
+    margin: 0 0 0 5px;
+}
+
+.inline-button:before {
+    content: '';
+    vertical-align: middle;
+    height: 100%;
+    pointer-events: none;
+}
+
+.control-row > * {
+    vertical-align: middle;
+}
 
 /* Face Editor */
 
