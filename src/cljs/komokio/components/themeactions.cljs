@@ -1,5 +1,6 @@
 (ns komokio.components.themeactions
-  (:require [om.next :as om :refer-macros [defui]]
+  (:require [goog.dom :as gdom]
+            [om.next :as om :refer-macros [defui]]
             [om.dom :as dom]
 
             [komokio.util :as util]
@@ -25,10 +26,15 @@
 (defui ThemeActions
   static om/IQuery
   (query [this]
-    [:current-theme
+    [:name-temp
+     :current-theme
      :theme/map])
 
   Object
+  (componentDidUpdate [this prev-props prev-state]
+    (if  (:name-temp (om/props this))
+      (.focus (gdom/getElement "theme-name-input"))))
+
   (render [this]
     (println "rendering again")
     (let [{current-theme :current-theme
@@ -40,15 +46,18 @@
         (dom/label nil "Current theme:"
           (apply dom/select
             #js {:id "theme-select"
+                 :className (when name-temp "hide")
                  :onChange #(select-theme
                               this
                               ;; TODO CLENAUP
                               (assoc (get theme-map (.. % -target -value))
                                 :current-theme (.. % -target -value)))}
             (map #(theme-option % current-theme) (keys theme-map))))
-        (dom/input #js {:id        "theme-name-input"
-                        :value     (or name-temp current-theme)
 
+        (dom/input #js {:id        "theme-name-input"
+                        :className (when-not name-temp "hide")
+                        :value     (or name-temp current-theme)
+                        :placeholder current-theme
                         :onKeyDown (fn [e]
                                      (let [keycode    (util/keycode e)
                                            input-text (.. e -target -value)]
@@ -61,8 +70,10 @@
 
                         :onChange  (fn [e]
                                      (let [input-text (.. e -target -value)]
-                                       (om/transact! this `[(theme/edit-name {:name-editing ~input-text})])))})
-        (dom/button #js {:onClick (tb/build-emacs)} "Export to Emacs")
+                                       (om/transact! this `[(theme/edit-name {:name-temp ~input-text})])))})
+        ;; TODO Why won't this reload
+        (dom/button #js {:onClick #(om/transact! this `[(theme/edit-name {:name-temp ""})])} "Rename Theme")
+        (dom/button #js {:onClick #(tb/build-emacs)} "Export to Emacs")
         ;; (dom/a #js {:target "_blank"
         ;;             ;:download "blahbla.txt"
         ;;             ;:href (str "data:text/plain;charset=utf-8;base64," (.btoa js/window))

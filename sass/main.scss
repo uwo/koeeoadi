@@ -7,9 +7,10 @@ $sidebarBorder: 1px;
 $sidebarContent: 235px;
 $sidebarWidth: 2*$sidebarPadding + 2*$sidebarBorder + $sidebarContent;
 
-$backgroundColor: #292929;
-$black: $backgroundColor;
+$grayDark: #292929;
+$grayDarkest: #2a2a2a;
 $white: #FFF;
+$backgroundColor: $grayDark;
 
 /* Overrides for skeleton.css */
 .container {
@@ -40,8 +41,20 @@ html {
 
 body {
     background-color: $backgroundColor;
-    color: #FFFFFF;
+    color: $white;
     font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+}
+
+input, select {
+    color: $grayDark;
+}
+
+button {
+    color: $white;
+}
+
+button:hover {
+    color: $white;
 }
 
 /* General Classes */
@@ -54,14 +67,15 @@ body {
     left: 0;
 }
 
+
 .color {
     display: inline-block;
     width: $colorInputSize;
     height: $colorInputSize;
 }
 
-input, select {
-    color: $black;
+.hide {
+    display: none;
 }
 
 /* Sidebar */
@@ -234,7 +248,7 @@ input[type="color"] {
     content: "";
     max-width: 100px + $colorInputSize/2;
     border-radius: 0px 15px 15px 15px;
-    background-color: #1a1a1a;
+    background-color: $grayDarkest;
     opacity: 0.95;
     top: 0;
     left: 0;
