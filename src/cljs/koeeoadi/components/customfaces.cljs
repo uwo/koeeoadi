@@ -76,10 +76,9 @@
 
       (dom/td nil
         (apply dom/select #js {:style    #js {:backgroundColor (or bg-rgb nil)}
-                               :onChange #(do (.log js/console (util/target-value %))
-                                              (om/transact! comp `[(custom-face/update
-                                                                     {:face/name ~name
-                                                                      :face/color-bg ~(get colors-by-id (.parseInt js/window (util/target-value %)))})]))}
+                               :onChange #(om/transact! comp `[(custom-face/update
+                                                                 {:face/name ~name
+                                                                  :face/color-bg ~(get colors-by-id (.parseInt js/window (util/target-value %)))})])}
           (when-not bg-rgb
             (dom/option #js {:selected true
                              :disabled true} "Select a color"))
@@ -131,8 +130,6 @@
            custom-faces-map  :custom-faces/map}  (om/props this)
 
           {:keys [active]}   (om/get-state this)]
-      (println "reloading")
-      (.log js/console (om/props this))
       (dom/div #js {:id "custom-face-map"
                     :className (str "modal widget "
                                  (if active "" "hide"))}

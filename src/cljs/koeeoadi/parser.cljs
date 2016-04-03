@@ -186,8 +186,6 @@
   {:value {:keys [:faces/list]}
    :action
    (fn []
-     (println "in color-update")
-     (.log js/console props)
      (swap! state update-in [:faces/by-name name] merge props))})
 
 (defmethod mutate 'palette-picker/update

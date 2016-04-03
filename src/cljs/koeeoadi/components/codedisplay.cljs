@@ -81,8 +81,6 @@
                   code-chunks/list]} (om/props this)
           code-lines                 (group-lines list)
           ]
-      (println "rendering code display")
-      (.log js/console (om/props this))
       (apply dom/code
         #js {:className (util/code-face-class "background")
              :id        "code-display"

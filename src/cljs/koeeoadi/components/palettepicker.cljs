@@ -61,8 +61,6 @@
         (util/update-code-elements #(gclasses/remove % "code-temp-minimize")))))
 
   (render [this]
-    (println "palettepicker")
-    (.log js/console (om/props this))
     (let [{:keys [colors/list
                   color-type
                   palette-picker/coordinates

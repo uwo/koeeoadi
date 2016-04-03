@@ -26,9 +26,6 @@
 ;; TODO consider saving a compressed file
 (defn save-theme-file [comp current-theme]
   (let [link (gdom/getElement "download-link")]
-    (println "SAVING THIS THEME")
-    (.log js/console {current-theme (select-keys @reconciler [:theme/name :colors/by-id :faces/by-name])})
-    (pprint/pprint {current-theme (select-keys @reconciler [:theme/name :colors/by-id :faces/by-name])})
     (aset link "download" (str current-theme ".koee"))
     ;; TODO cleanup
     (aset link "href" (str
