@@ -19,22 +19,19 @@
   {:value (get-colors state)})
 
 (defn get-face [state face-ident]
-  (let [face  (get-in state face-ident)]
-    (merge face (select-keys face [:face/color-fg :face/color-bg]))))
+  (get-in state face-ident))
 
 (defn get-faces [state key]
   (let [st @state]
     (into [] (map #(get-face st %)) (get st key))))
 
 (defmethod read :faces/list
-  [{:keys [state query]} k params]
+  [{:keys [state query]} k _]
   {:value (get-faces state k)})
 
-(defmethod read :custom-faces
-  [{:keys [state query]} _ _]
-  {:value
-   (let [st @state]
-     (om/db->tree query st st))})
+(defmethod read :user-faces/list
+  [{:keys [state query]} k _]
+  {:value (get-faces state k)})
 
 (defmethod read :palette-picker
   [{:keys [state query]} _ _]
@@ -60,6 +57,12 @@
      (om/db->tree query st st))})
 
 (defmethod read :face-editor
+  [{:keys [state query]} _ _]
+  {:value
+   (let [st @state]
+     (om/db->tree query st st))})
+
+(defmethod read :user-faces
   [{:keys [state query]} _ _]
   {:value
    (let [st @state]
@@ -195,40 +198,40 @@
    (fn []
      (swap! state merge props))})
 
-(defmethod mutate 'custom-face/add
+(defmethod mutate 'user-face/add
   [{:keys [state]} _ props]
   {:action
    (fn []
-     (swap! state update :custom-faces/map merge props))})
+     (swap! state update :user-faces/map merge props))})
 
-(defmethod mutate 'custom-face/remove
+(defmethod mutate 'user-face/remove
   [{:keys [state]} _ {:keys [face/name]}]
   {:action
    (fn []
-     (swap! state update :custom-faces/map dissoc name))})
+     (swap! state update :user-faces/map dissoc name))})
 
-(defmethod mutate 'custom-face/edit-name
+(defmethod mutate 'user-face/edit-name
   [{:keys [state]} _ {:keys [face/name] :as props}]
   {:action
    (fn []
-     (swap! state update-in [:custom-faces/map name] merge props))})
+     (swap! state update-in [:user-faces/map name] merge props))})
 
-(defmethod mutate 'custom-face/change-name
+(defmethod mutate 'user-face/change-name
   [{:keys [state]} _ {:keys [current-name]}]
   {:action
    (fn []
      (let [st       @state
-           new-name (get-in st [:custom-faces/map current-name :face/name-temp])]
+           new-name (get-in st [:user-faces/map current-name :face/name-temp])]
        (swap! state merge
-         {:custom-faces/map (-> (:custom-faces/map st)
+         {:user-faces/map (-> (:user-faces/map st)
                               (clojure.set/rename-keys {current-name new-name})
                               (update new-name merge {:face/name new-name
                                                       :face/name-temp nil}))})))})
 
-(defmethod mutate 'custom-face/update
+(defmethod mutate 'user-face/update
   [{:keys [state]} _ {:keys [face/name] :as props}]
   {:action
    (fn []
-     (swap! state update-in [:custom-faces/map name] merge props))})
+     (swap! state update-in [:user-faces/map name] merge props))})
 
 (def parser (om/parser {:read read :mutate mutate}))

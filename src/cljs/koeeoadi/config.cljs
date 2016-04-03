@@ -43,16 +43,19 @@
    {:face/id 16 :face/name "variable-name"              :face/color-fg {:color/id 0  :color/rgb  "#6c71c4"} :face/underline nil :face/bold nil :face/italic nil}
    {:face/id 17 :face/name "warning"                    :face/color-fg {:color/id 2  :color/rgb  "#268bd2"} :face/underline nil :face/bold nil :face/italic nil}])
 
+(def user-faces-list
+  [{:user-face/id 0 :user-face/name "user-face-1" :user-face/color-fg {:color/id 0 :color/rgb "#93a1a1"}  :user-face/underline true :user-face/bold true :user-face/italic true :user-face/editor :emacs}])
+
 (def initial-code "c")
 
 ;; TODO Initialize this using theme/data
 (def app-state
-  {:custom-faces/map  {}
-   :code/name         initial-code
+  {:code/name         initial-code
    :theme/name        "solarized-dark"
    :code-background   [:faces/by-name "background"]
    :theme/map         themes
    :code/map          code
    :faces/list        faces-list
+   :user-faces/list   user-faces-list
    :colors/list       colors-list
    :code-chunks/list  (get-in code [initial-code :code-chunks/list])})

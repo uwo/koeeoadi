@@ -360,7 +360,7 @@ input[type="color"] {
     }
 }
 
-#custom-face-map-button {
+#user-face-map-button {
     margin-top: 10px;
     width: 100%;
 }
@@ -443,14 +443,14 @@ input[type="color"] {
     border: none;
 }
 
-/* Custom Face Map */
+/* User Face Map */
 
 .modal {
     position: fixed;
     z-index: 300;
 }
 
-#custom-face-map {
+#user-faces-modal {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -460,12 +460,12 @@ input[type="color"] {
     height: $modalHeight;
 }
 
-#custom-faces-scroll-container {
+#user-faces-scroll-container {
     overflow: auto;
     height: 300px;
 }
 
-#custom-faces-container {
+#user-faces-container {
     width: 95%;
     margin: 0 auto;
     font-size: .95em;

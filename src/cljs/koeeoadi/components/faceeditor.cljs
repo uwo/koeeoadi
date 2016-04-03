@@ -8,7 +8,7 @@
             [koeeoadi.util :as util]
             [koeeoadi.reconciler :refer [reconciler]]
             [koeeoadi.components.palettepicker :refer [palette-picker-comp]]
-            [koeeoadi.components.customfaces :refer [custom-faces-comp]]
+            [koeeoadi.components.userfaces :refer [user-faces-comp]]
             [koeeoadi.components.codedisplay :refer [code-display-comp]]))
 
 (declare face-editor-comp)
@@ -99,9 +99,9 @@
                     :id         "face-editor"}
         (dom/h5 #js {:className "widget-title"} "Faces")
         (dom/button
-          #js {:id      "custom-face-map-button"
-               :onClick #(om/update-state! (custom-faces-comp) assoc :active true)}
-          "Edit Custom Face Map")
+          #js {:id      "user-face-map-button"
+               :onClick #(om/update-state! (user-faces-comp) assoc :active true)}
+          "Edit User Face Map")
         (dom/div #js {:id "faces-container"}
           (map #(face (om/computed % {:active-face active-face})) list))))))
 

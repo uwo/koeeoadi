@@ -15,7 +15,7 @@
             [koeeoadi.components.palettepicker :refer [PalettePicker palette-picker]]
             [koeeoadi.components.codedisplay :refer [CodeDisplay code-display CodeChunk]]
             [koeeoadi.components.palette :refer [Color]]
-            [koeeoadi.components.customfaces :refer [CustomFaces custom-faces]]
+            [koeeoadi.components.userfaces :refer [UserFaces user-faces UserFace]]
             [koeeoadi.reconciler :refer [reconciler]]))
 
 ;; TODO separate out this dev stuff
@@ -45,7 +45,8 @@
      {:palette          (om/get-query Palette)}
      {:palette-picker   (om/get-query PalettePicker)}
 
-     {:custom-faces     (om/get-query CustomFaces)}])
+     {:user-faces/list (om/get-query UserFace)}      
+     {:user-faces      (om/get-query UserFaces)}])
 
   Object
   (render [this]
@@ -55,7 +56,9 @@
            code-display-data   :code-display
            palette-data        :palette
            face-editor-data    :face-editor
-           custom-faces-data   :custom-faces :as props} (om/props this)]
+           user-faces-data     :user-faces :as props} (om/props this)]
+      (println "Root")
+      (.log js/console user-faces-data)
       (dom/div nil
         (dom/div #js {:className "sidebar" :id "sidebar-left"}
           (app-info)
@@ -65,7 +68,7 @@
         (dom/div #js {:className "sidebar" :id "sidebar-right"}
           (palette palette-data)
           (face-editor face-editor-data))
-        (custom-faces custom-faces-data)
+        (user-faces user-faces-data)
         (palette-picker palette-picker-data)))))
 
 (om/add-root! reconciler
