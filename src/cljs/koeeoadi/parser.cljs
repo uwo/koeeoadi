@@ -155,10 +155,10 @@
    :action
    (fn []
      (let [st      @state
-           new-id  (new-color-id (:colors/list st))
-           state'  (update st :colors/by-id merge {new-id {:color/id new-id}})
-           state'' (update state' :colors/list conj [:colors/by-id new-id])]
-       (reset! state state'')))})
+           new-id  (new-color-id (:colors/list st))]
+       (reset! state (-> @state
+                       (assoc-in [:colors/by-id new-id] {:color/id new-id})
+                       (update :colors/list conj [:colors/by-id new-id])))))})
 
 (defmethod mutate 'color/remove
   [{:keys [state ref]} _ _]
@@ -169,11 +169,11 @@
                      (update :colors/list #(filterv (partial not= ref) %)))))})
 
 (defmethod mutate 'color/update
-  [{:keys [state]} _ {:keys [id rgb] :as props}]
-  {:value {:keys [:faces/list]}
+  [{:keys [state ref]} _ props]
+  {:value {:keys [:colors/list]}
    :action
    (fn []
-     (swap! state assoc-in [:colors/by-id id :color/rgb] rgb))})
+     (swap! state update-in ref merge props))})
 
 (defmethod mutate 'face/update
   [{:keys [state]} _ {:keys [:face/name] :as props}]

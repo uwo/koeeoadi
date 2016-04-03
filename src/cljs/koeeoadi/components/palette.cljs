@@ -2,15 +2,16 @@
   (:require [goog.dom :as gdom]
             [goog.events :as gevents]
             [om.dom :as dom]
-            [om.next :as om :refer-macros [defui]]))
+            [om.next :as om :refer-macros [defui]]
+
+            [koeeoadi.util :refer [target-value]]))
 
 ;; TODO this is choppy.  This could be fixed by either
 ;; some sort of rate limiting or updating the css of only
 ;; the affected faces
-(defn color-change [e comp {:keys [color/id] :as color}]
-  (let [rgb-editing (.. e -target -value)]
-    (om/transact! comp
-      `[(color/update {:id ~id :rgb ~rgb-editing}) :faces/list])))
+(defn color-update [comp e]
+  (om/transact! comp
+    `[(color/update {:color/rgb ~(target-value e)}) :palette]))
 
 ;; TODO this will cause issues since I'm not ussing idents for custom-faces list
 (defn color-remove [comp {:keys [color/id] :as color}]
@@ -33,7 +34,7 @@
       (dom/div #js {:className "color color-input"}
         (dom/div #js {:className (str "color input-overlay" (if rgb "" " color-missing"))
                       :style     (when rgb #js {:backgroundColor rgb})})
-        (dom/input #js {:onChange #(color-change % this color)
+        (dom/input #js {:onChange #(color-update this %)
                         :type     "color"
                         :value    rgb})
         (dom/button #js {:className "color-remove"
