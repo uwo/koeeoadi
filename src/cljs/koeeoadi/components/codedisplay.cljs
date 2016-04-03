@@ -56,14 +56,13 @@
 (def code-chunk (om/factory CodeChunk {:keyfn :code-chunk/line-chunk}))
 
 (defn code-line [line]
-  (let [code-chunks (sort-by :line-chunk line)]
-    (apply dom/div #js {:className "code-line"}
-      (map code-chunk code-chunks))))
+  (apply dom/div #js {:className "code-line"}
+    (map code-chunk line)))
 
 (defn group-lines [code-chunks]
-  (sort-by first (sort-by first
-                   (group-by #(.floor js/Math (/ (:code-chunk/line-chunk %) 1000))
-                     code-chunks))))
+  (sort-by first (group-by #(.floor js/Math (/ (:code-chunk/line-chunk %) 1000))
+                   code-chunks)))
+
 
 (defui CodeDisplay
   static om/IQuery
