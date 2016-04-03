@@ -60,11 +60,11 @@
   (query [this]
     `[:face/id
       :face/name
-      {:face/color-fg ~(om/get-query Color)}
-      {:face/color-bg ~(om/get-query Color)}
       :face/bold
       :face/italic
-      :face/underline])
+      :face/underline
+      {:face/color-fg ~(om/get-query Color)}
+      {:face/color-bg ~(om/get-query Color)}])
 
   Object
   (render [this]
