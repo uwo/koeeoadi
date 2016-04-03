@@ -93,9 +93,11 @@
   "Extracts current theme data from the current state"
   (let [current-theme-name (:theme/name state)
         current-theme-data (select-keys state [:colors/list
-                                               :faces/list
                                                :colors/by-id
-                                               :faces/by-name])]
+                                               :faces/list
+                                               :faces/by-name
+                                               :user-faces/list
+                                               :user-faces/by-name])]
     {current-theme-name current-theme-data}))
 
 (defn theme-map

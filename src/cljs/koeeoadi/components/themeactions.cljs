@@ -36,7 +36,9 @@
                                                       :colors/by-id
                                                       :colors/list
                                                       :faces/by-name
-                                                      :faces/list])))))
+                                                      :faces/list
+                                                      :user-faces/list
+                                                      :user-faces/by-name])))))
     (.click link)))
 
 (defn export-theme-file [current-theme editor]
