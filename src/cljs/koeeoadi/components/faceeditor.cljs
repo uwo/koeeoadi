@@ -25,15 +25,18 @@
            :style     #js {:backgroundColor rgb}
            :tabIndex  (when-not disabled? "0")})))
 
+(defn face-update [name prop e]
+  (let [checked (util/target-checked e)]
+    (om/transact! (code-display-comp)
+      `[(face/update {:face/name ~name
+                      ~prop      ~checked})])))
+
 (defn face-style [comp prop]
   (let [{:keys [face/name]} (om/props comp)]
     (dom/li nil
       (dom/input #js
         {:type    "checkbox"
-         :onClick #(let [checked (util/target-checked %)]
-                     (om/transact! (code-display-comp)
-                       `[(face/update {:face/name  ~name
-                                       ~prop       ~checked})]))})
+         :onClick #(face-update name prop %)})
       (clojure.core/name prop))))
 
 (defn face-styles [comp]
