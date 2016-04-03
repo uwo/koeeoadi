@@ -82,10 +82,9 @@
   [{:keys [state]} _ {:keys [new-name prev-name]}]
   {:action
    (fn []
-     (let [st   @state
-           st'  (assoc st :theme/name new-name :theme/name-temp nil)
-           st'' (update-in st' [:theme/map] clojure.set/rename-keys {prev-name new-name})]
-       (reset! state st'')))})
+     (reset! state (-> @state
+                     (assoc :theme/name new-name :theme/name-temp nil)
+                     (update :theme/map clojure.set/rename-keys {prev-name new-name}))))})
 
 (defn current-theme [state]
   "Extracts current theme data from the current state"
@@ -157,7 +156,7 @@
    (fn []
      (let [st      @state
            new-id  (new-color-id (:colors/list st))
-           state'  (update-in st [:colors/by-id] merge {new-id {:color/id new-id}})
+           state'  (update st :colors/by-id merge {new-id {:color/id new-id}})
            state'' (update state' :colors/list conj [:colors/by-id new-id])]
        (reset! state state'')))})
 
@@ -166,15 +165,15 @@
   {:action
    (fn []
      (reset! state (-> @state
-                     (update-in [:colors/by-id] dissoc (last ref))
-                     (update-in [:colors/list] #(filterv (partial not= ref) %)))))})
+                     (update :colors/by-id dissoc (last ref))
+                     (update :colors/list #(filterv (partial not= ref) %)))))})
 
 (defmethod mutate 'color/update
   [{:keys [state]} _ {:keys [id rgb] :as props}]
   {:value {:keys [:faces/list]}
    :action
    (fn []
-     (swap! state update-in [:colors/by-id id] assoc :color/rgb rgb))})
+     (swap! state assoc-in [:colors/by-id id :color/rgb] rgb))})
 
 (defmethod mutate 'face/update
   [{:keys [state]} _ {:keys [:face/name] :as props}]
@@ -202,13 +201,13 @@
   [{:keys [state]} _ props]
   {:action
    (fn []
-     (swap! state update-in [:custom-faces/map] merge props))})
+     (swap! state update :custom-faces/map merge props))})
 
 (defmethod mutate 'custom-face/remove
   [{:keys [state]} _ {:keys [face/name]}]
   {:action
    (fn []
-     (swap! state update-in [:custom-faces/map] dissoc name))})
+     (swap! state update :custom-faces/map dissoc name))})
 
 (defmethod mutate 'custom-face/edit-name
   [{:keys [state]} _ {:keys [face/name] :as props}]
