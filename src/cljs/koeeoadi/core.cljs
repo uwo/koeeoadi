@@ -20,7 +20,7 @@
 
 ;; TODO separate out this dev stuff
 (enable-console-print!)
-                                        ; this enables additional features, :custom-formatters is enabled by default
+; this enables additional features, :custom-formatters is enabled by default
 (devtools/enable-feature! :sanity-hints :dirac)
 (devtools/install!)
 
@@ -45,7 +45,7 @@
      {:palette          (om/get-query Palette)}
      {:palette-picker   (om/get-query PalettePicker)}
 
-     {:user-faces/list (om/get-query UserFace)}      
+     {:user-faces/list (om/get-query UserFace)}
      {:user-faces      (om/get-query UserFaces)}])
 
   Object
@@ -57,8 +57,6 @@
            palette-data        :palette
            face-editor-data    :face-editor
            user-faces-data     :user-faces :as props} (om/props this)]
-      (println "Root")
-      (.log js/console user-faces-data)
       (dom/div nil
         (dom/div #js {:className "sidebar" :id "sidebar-left"}
           (app-info)

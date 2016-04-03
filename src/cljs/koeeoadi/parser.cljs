@@ -199,39 +199,39 @@
      (swap! state merge props))})
 
 (defmethod mutate 'user-face/add
-  [{:keys [state]} _ props]
+  [{:keys [state]} _ {:keys [user-face/name] :as props}]
   {:action
    (fn []
-     (swap! state update :user-faces/map merge props))})
+     (reset! state (-> @state
+                     (assoc-in [:user-faces/by-name name] props)
+                     (update :user-faces/list conj [:user-faces/by-name name]))))})
 
 (defmethod mutate 'user-face/remove
-  [{:keys [state]} _ {:keys [face/name]}]
+  [{:keys [state ref]} _ _]
   {:action
    (fn []
-     (swap! state update :user-faces/map dissoc name))})
-
-(defmethod mutate 'user-face/edit-name
-  [{:keys [state]} _ {:keys [face/name] :as props}]
-  {:action
-   (fn []
-     (swap! state update-in [:user-faces/map name] merge props))})
-
-(defmethod mutate 'user-face/change-name
-  [{:keys [state]} _ {:keys [current-name]}]
-  {:action
-   (fn []
-     (let [st       @state
-           new-name (get-in st [:user-faces/map current-name :face/name-temp])]
-       (swap! state merge
-         {:user-faces/map (-> (:user-faces/map st)
-                              (clojure.set/rename-keys {current-name new-name})
-                              (update new-name merge {:face/name new-name
-                                                      :face/name-temp nil}))})))})
+     (reset! state (-> @state
+                     (update :user-faces/by-name dissoc (last ref))
+                     (update :user-faces/list #(filterv (partial not= ref) %)))))})
 
 (defmethod mutate 'user-face/update
-  [{:keys [state]} _ {:keys [face/name] :as props}]
+  [{:keys [state ref]} _ props]
   {:action
    (fn []
-     (swap! state update-in [:user-faces/map name] merge props))})
+     (swap! state update-in ref merge props))})
+
+(defmethod mutate 'user-face/change-name
+  [{:keys [state ref]} _ _]
+  {:action
+   (fn []
+     (let [st        @state
+           prev-name (last ref)
+           new-name  (:user-face/name-temp (get-in st ref))]
+       (reset! state (-> @state
+                       (update-in ref merge {:user-face/name      new-name
+                                             :user-face/name-temp nil})
+                       (update :user-faces/by-name clojure.set/rename-keys {prev-name new-name})
+                       (update :user-faces/list #(filterv (partial not= ref)
+                                                   (conj % [:user-faces/by-name new-name])))))))})
 
 (def parser (om/parser {:read read :mutate mutate}))
