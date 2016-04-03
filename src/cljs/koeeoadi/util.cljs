@@ -5,6 +5,12 @@
             [om.next :as om]
             [om.dom :as dom]))
 
+(defn profile-start []
+  (.profile js/console "Profile Run"))
+
+(defn profile-stop []
+  (.profileEnd js/console))
+
 (defn keycode [e]
   (.-keyCode e))
 
