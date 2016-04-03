@@ -1,0 +1,5 @@
+* KOEEOADI
+  Koeeoadi is a web app that lets you build color themes for emacs, vim, and sublime text.
+
+  Koeeoadi was built with Clojurescript and Om Next.
+
