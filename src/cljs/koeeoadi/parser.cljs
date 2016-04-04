@@ -156,8 +156,7 @@
 
 (defmethod mutate 'color/add
   [{:keys [state]} _ _]
-  {:value {:keys [:faces/list]}
-   :action
+  {:action
    (fn []
      (let [st      @state
            new-id  (new-color-id (:colors/list st))]
@@ -175,8 +174,7 @@
 
 (defmethod mutate 'color/update
   [{:keys [state ref]} _ props]
-  {:value {:keys [:colors/list]}
-   :action
+  {:action
    (fn []
      (swap! state update-in ref merge props))})
 
@@ -188,15 +186,13 @@
 
 (defmethod mutate 'face/color-update
   [{:keys [state]} _ {:keys [face/name] :as props}]
-  {:value {:keys [:faces/list]}
-   :action
+  {:action
    (fn []
      (swap! state update-in [:faces/by-name name] merge props))})
 
 (defmethod mutate 'palette-picker/update
   [{:keys [state]} _ props]
-  {:value {:keys [:palette-picker]}
-   :action
+  {:action
    (fn []
      (swap! state merge props))})
 
