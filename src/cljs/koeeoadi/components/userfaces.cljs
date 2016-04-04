@@ -34,10 +34,25 @@
 (defn face-remove [comp]
   (om/transact! comp `[(user-face/remove) :user-faces]))
 
+(defn color-change [comp color-type e]
+  (let [{face-name    :face/name}    (om/props comp)
+        {colors-by-id :colors/by-id} (om/get-computed comp)
+
+        value (util/target-value e)
+        color (if (= value "None")
+                nil
+                [:colors/by-id (.parseInt js/window
+                                 (util/target-value e))])]
+    (face-update comp {:face/name face-name
+                       color-type color})))
+
 (defn color-option [{:keys [color/rgb color/id] :as color} current-color]
   (let [selected? (= current-color color)]
-    (dom/option #js {:style #js {:backgroundColor rgb}
-                     :value id} rgb)))
+    (dom/option
+      #js {:style     #js {:backgroundColor rgb}
+           :selected  selected?
+           :value     id}
+      rgb)))
 
 (defui UserFace
   static om/Ident
@@ -93,27 +108,15 @@
         (dom/td nil
           (apply dom/select
             #js {:style    #js {:backgroundColor (or bg-rgb nil)}
-                 :onChange #(face-update this
-                              {:face/name     name
-                               :face/color-bg (get colors-by-id
-                                                     (.parseInt js/window
-                                                       (util/target-value %)))})}
-            (when-not bg-rgb
-              (dom/option #js {:selected true
-                               :disabled true} "Select a color"))
+                 :onChange #(color-change this :face/color-bg %)}
+            (dom/option #js {:value "None"} "None")
             (map #(color-option % color-bg) colors-list)))
 
         (dom/td nil
-          ;; TODO refactor with above
           (apply dom/select
             #js {:style    #js {:backgroundColor (or fg-rgb nil)}
-                 :onChange #(face-update this
-                              {:face/name     name
-                               :face/color-fg (get colors-by-id
-                                                     (.parseInt js/window
-                                                       (util/target-value %)))})}
-            (when-not fg-rgb
-              (dom/option #js {:selected true :disabled true} "Select a color"))
+                 :onChange #(color-change this :face/color-fg %)}
+            (dom/option #js {:value "None"} "None")
             (map #(color-option % color-fg) colors-list)))
 
         ;; BOLD
