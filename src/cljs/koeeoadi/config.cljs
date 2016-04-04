@@ -39,14 +39,14 @@
    {:face/id 12 :face/name "variable-name"              :face/color-fg {:color/id 0  :color/rgb  "#6c71c4"} :face/underline nil :face/bold nil :face/italic nil}])
 
 (def user-faces-list
-  [{:user-face/id 0
-    :user-face/name "user-face-1"
-    :user-face/color-fg nil
-    :user-face/color-bg nil
-    :user-face/underline true
-    :user-face/bold true
-    :user-face/italic true
-    :user-face/editor :emacs}])
+  [{:face/id 0
+    :face/name "user-face-1"
+    :face/color-fg nil
+    :face/color-bg nil
+    :face/underline true
+    :face/bold true
+    :face/italic true
+    :face/editor :emacs}])
 
 (def initial-code "c")
 

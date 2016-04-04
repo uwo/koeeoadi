@@ -13,23 +13,23 @@
 
 (defn face-edit-name [comp face-name new-name]
   (om/transact! comp `[(user-face/update
-                         {:user-face/name      ~face-name
-                          :user-face/name-temp ~new-name}) ]))
+                         {:face/name      ~face-name
+                          :face/name-temp ~new-name}) ]))
 
 (defn face-add [comp]
   (let [{user-faces :user-faces/list} (om/props comp)
-        faces-sorted (sort-by #(- (:user-face/id %)) user-faces)
-        new-id       (inc (:user-face/id (first faces-sorted)))
+        faces-sorted (sort-by #(- (:face/id %)) user-faces)
+        new-id       (inc (:face/id (first faces-sorted)))
         new-name     (str "new-face-" new-id)]
     (om/transact! comp
-      `[(user-face/add {:user-face/id        ~new-id
-                        :user-face/name      ~new-name
-                        :user-face/editor    :emacs
-                        :user-face/color-bg  nil
-                        :user-face/color-fg  nil
-                        :user-face/bold      false
-                        :user-face/italic    false
-                        :user-face/underline false})])))
+      `[(user-face/add {:face/id        ~new-id
+                        :face/name      ~new-name
+                        :face/editor    :emacs
+                        :face/color-bg  nil
+                        :face/color-fg  nil
+                        :face/bold      false
+                        :face/italic    false
+                        :face/underline false})])))
 
 (defn face-remove [comp]
   (om/transact! comp `[(user-face/remove) :user-faces]))
@@ -41,33 +41,33 @@
 
 (defui UserFace
   static om/Ident
-  (ident [this {:keys [user-face/name]}]
+  (ident [this {:keys [face/name]}]
     [:user-faces/by-name name])
 
   static om/IQuery
   (query [this]
     [:colors/by-id
-     :user-face/id
-     :user-face/name
-     :user-face/name-temp
-     :user-face/bold
-     :user-face/italic
-     :user-face/underline
-     :user-face/editor
-     {:user-face/color-bg [:color/id :color/rgb]}
-     {:user-face/color-fg [:color/id :color/rgb]}])
+     :face/id
+     :face/name
+     :face/name-temp
+     :face/bold
+     :face/italic
+     :face/underline
+     :face/editor
+     {:face/color-bg [:color/id :color/rgb]}
+     {:face/color-fg [:color/id :color/rgb]}])
 
   Object
   (render [this]
-    (let [{id           :user-face/id
-           name         :user-face/name
-           name-temp    :user-face/name-temp
-           bold         :user-face/bold
-           italic       :user-face/italic
-           color-bg     :user-face/color-bg
-           color-fg     :user-face/color-fg
-           underline    :user-face/underline
-           editor       :user-face/editor}   (om/props this)
+    (let [{id           :face/id
+           name         :face/name
+           name-temp    :face/name-temp
+           bold         :face/bold
+           italic       :face/italic
+           color-bg     :face/color-bg
+           color-fg     :face/color-fg
+           underline    :face/underline
+           editor       :face/editor}   (om/props this)
 
           colors-by-id (:colors/by-id (om/get-computed this))
           colors-list  (vals colors-by-id)
@@ -80,9 +80,9 @@
             (dom/input #js {:value      name-temp
                             :autoFocus  true
                             :onBlur     #(when (util/valid-face-name? name-temp)
-                                           (om/transact! this `[(user-face/change-name)]))
+                                           (om/transact! this `[(user-face/change-name) :user-faces]))
                             :onKeyDown  #(when (and (util/valid-face-name? name-temp) (= 13 (util/keycode %)))
-                                           (om/transact! this `[(user-face/change-name)]))
+                                           (om/transact! this `[(user-face/change-name) :user-faces]))
                             :onChange   #(face-edit-name this name (util/target-value %))})
             (dom/div #js {:className "row"
                           :onClick #(face-edit-name this name "")}
@@ -94,8 +94,8 @@
           (apply dom/select
             #js {:style    #js {:backgroundColor (or bg-rgb nil)}
                  :onChange #(face-update this
-                              {:user-face/name     name
-                               :user-face/color-bg (get colors-by-id
+                              {:face/name     name
+                               :face/color-bg (get colors-by-id
                                                      (.parseInt js/window
                                                        (util/target-value %)))})}
             (when-not bg-rgb
@@ -108,8 +108,8 @@
           (apply dom/select
             #js {:style    #js {:backgroundColor (or fg-rgb nil)}
                  :onChange #(face-update this
-                              {:user-face/name     name
-                               :user-face/color-fg (get colors-by-id
+                              {:face/name     name
+                               :face/color-fg (get colors-by-id
                                                      (.parseInt js/window
                                                        (util/target-value %)))})}
             (when-not fg-rgb
@@ -119,26 +119,26 @@
         ;; BOLD
         (dom/td nil
           (dom/input #js {:type "checkbox"
-                          :onClick #(face-update this {:user-face/name name :user-face/bold (util/target-checked %)})}))
+                          :onClick #(face-update this {:face/name name :face/bold (util/target-checked %)})}))
         ;; ITALIC
         (dom/td nil
           (dom/input #js {:type "checkbox"
-                          :onClick #(face-update this {:user-face/name name :user-face/italic (util/target-checked %)})}))
+                          :onClick #(face-update this {:face/name name :face/italic (util/target-checked %)})}))
         ;; UNDERLINE
         (dom/td nil
           (dom/input #js {:type "checkbox"
-                          :onClick #(face-update this {:user-face/name name :user-face/underline (util/target-checked %)})}))
+                          :onClick #(face-update this {:face/name name :face/underline (util/target-checked %)})}))
 
         (dom/td nil
-          (apply dom/select #js {:onChange #(face-update this {:user-face/name   name
-                                                               :user-face/editor (keyword (util/target-value %))})}
+          (apply dom/select #js {:onChange #(face-update this {:face/name   name
+                                                               :face/editor (keyword (util/target-value %))})}
             (map #(util/option (clojure.core/name %) (clojure.core/name editor)) editors)))
 
         (dom/td nil
           (dom/button #js {:onClick #(face-remove this)}
             (dom/i #js {:className "fa fa-close fa-2x"})))))))
 
-(def user-face (om/factory UserFace {:keyfn :user-face/name}))
+(def user-face (om/factory UserFace {:keyfn :face/name}))
 
 (defui UserFaces
   static om/IQuery
@@ -179,7 +179,7 @@
                 (dom/td nil "Editor")
                 (dom/td nil ""))
               ;; TODO is it the right thing to be sorting here?
-              (map #(user-face (om/computed % {:colors/by-id colors-by-id})) (sort-by :user-face/id user-faces-list)))))
+              (map #(user-face (om/computed % {:colors/by-id colors-by-id})) (sort-by :face/id user-faces-list)))))
         (dom/button #js {:onClick #(om/update-state! this assoc :active false)} "CLOSE")))))
 
 (def user-faces (om/factory UserFaces))

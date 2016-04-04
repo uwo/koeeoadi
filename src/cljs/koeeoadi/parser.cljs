@@ -197,7 +197,7 @@
      (swap! state merge props))})
 
 (defmethod mutate 'user-face/add
-  [{:keys [state]} _ {:keys [user-face/name] :as props}]
+  [{:keys [state]} _ {:keys [face/name] :as props}]
   {:action
    (fn []
      (reset! state (-> @state
@@ -224,10 +224,10 @@
    (fn []
      (let [st        @state
            prev-name (last ref)
-           new-name  (:user-face/name-temp (get-in st ref))]
+           new-name  (:face/name-temp (get-in st ref))]
        (reset! state (-> @state
-                       (update-in ref merge {:user-face/name      new-name
-                                             :user-face/name-temp nil})
+                       (update-in ref merge {:face/name      new-name
+                                             :face/name-temp nil})
                        (update :user-faces/by-name clojure.set/rename-keys {prev-name new-name})
                        (update :user-faces/list #(filterv (partial not= ref)
                                                    (conj % [:user-faces/by-name new-name])))))))})
