@@ -3,3 +3,20 @@
 
   Koeeoadi was built with Clojurescript and Om Next.
 
+* Editor Face Map
+| Koeeoadi Default Faces | Emacs Face                       | Vim Syntax Group                                   |
+|------------------------+----------------------------------+----------------------------------------------------|
+| background             | default                          | Normal                                             |
+| default                | default                          | Normal                                             |
+| builtin                | font-lock-builtin-face           | -                                                  |
+| comment-delimiter      | font-lock-comment-delimiter-face | Comment                                            |
+| comment                | font-lock-comment-face           | Comment                                            |
+| constant               | font-lock-constant-face          | Constant                                           |
+| doc                    | font-lock-doc-face               | Comment                                            |
+| function-name          | font-lock-function-name-face     | Function                                           |
+| keyword                | font-lock-keyword-face           | Exception - Label - Repeat - Conditional - Keyword |
+| preprocessor           | font-lock-preprocessor-face      | PreProc - Include - Define - Macro - PreCondit     |
+| string                 | font-lock-string-face            | String                                             |
+| type                   | font-lock-type-face              | Type                                               |
+| variable-name          | font-lock-variable-name-face     | Identifier                                         |
+
