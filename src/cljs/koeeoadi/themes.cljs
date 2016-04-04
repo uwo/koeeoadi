@@ -20,17 +20,12 @@
                                  [:faces/by-name "comment"]
                                  [:faces/by-name "constant"]
                                  [:faces/by-name "doc"]
-                                 [:faces/by-name "doc-string"]
                                  [:faces/by-name "function-name"]
                                  [:faces/by-name "keyword"]
-                                 [:faces/by-name "negation-char"]
                                  [:faces/by-name "preprocessor"]
-                                 [:faces/by-name "regexp-grouping-backslash"]
-                                 [:faces/by-name "regexp-grouping-construct"]
                                  [:faces/by-name "string"]
                                  [:faces/by-name "type"]
-                                 [:faces/by-name "variable-name"]
-                                 [:faces/by-name "warning"]],
+                                 [:faces/by-name "variable-name"]],
                                 :colors/by-id
                                 {0 {:color/id 0, :color/rgb "#6c71c4"},
                                  1 {:color/id 1, :color/rgb "#586e75"},
@@ -53,34 +48,18 @@
                                  {:face/id 3,
                                   :face/name "comment-delimiter",
                                   :face/color-fg [:colors/by-id 1]},
-                                 "warning"
-                                 {:face/id 17, :face/name "warning", :face/color-fg [:colors/by-id 7]},
-                                 "regexp-grouping-backslash"
-                                 {:face/id 12,
-                                  :face/name "regexp-grouping-backslash",
-                                  :face/color-fg [:colors/by-id 0]},
                                  "constant"
                                  {:face/id 5, :face/name "constant", :face/color-fg [:colors/by-id 2]},
-                                 "regexp-grouping-construct"
-                                 {:face/id 13,
-                                  :face/name "regexp-grouping-construct",
-                                  :face/color-fg [:colors/by-id 3]},
                                  "preprocessor"
                                  {:face/id 11,
                                   :face/name "preprocessor",
                                   :face/color-fg [:colors/by-id 3]},
-                                 "negation-char"
-                                 {:face/id 10,
-                                  :face/name "negation-char",
-                                  :face/color-fg [:colors/by-id 2]},
                                  "keyword"
                                  {:face/id 9, :face/name "keyword", :face/color-fg [:colors/by-id 5]},
                                  "variable-name"
                                  {:face/id 16,
                                   :face/name "variable-name",
                                   :face/color-fg [:colors/by-id 0]},
-                                 "doc-string"
-                                 {:face/id 7, :face/name "doc-string", :face/color-fg [:colors/by-id 0]},
                                  "type"
                                  {:face/id 15, :face/name "type", :face/color-fg [:colors/by-id 2]},
                                  "comment"
@@ -103,17 +82,12 @@
                            [:faces/by-name "comment"]
                            [:faces/by-name "constant"]
                            [:faces/by-name "doc"]
-                           [:faces/by-name "doc-string"]
                            [:faces/by-name "function-name"]
                            [:faces/by-name "keyword"]
-                           [:faces/by-name "negation-char"]
                            [:faces/by-name "preprocessor"]
-                           [:faces/by-name "regexp-grouping-backslash"]
-                           [:faces/by-name "regexp-grouping-construct"]
                            [:faces/by-name "string"]
                            [:faces/by-name "type"]
-                           [:faces/by-name "variable-name"]
-                           [:faces/by-name "warning"]],
+                           [:faces/by-name "variable-name"]],
                           :colors/by-id
                           {0 {:color/id 0, :color/rgb "#000000"},
                            1 {:color/id 1, :color/rgb "#FFFFFF"}},
@@ -128,25 +102,11 @@
                            {:face/id 3,
                             :face/name "comment-delimiter",
                             :face/color-fg [:colors/by-id 0]},
-                           "warning"
-                           {:face/id 17, :face/name "warning", :face/color-fg [:colors/by-id 0]},
-                           "regexp-grouping-backslash"
-                           {:face/id 12,
-                            :face/name "regexp-grouping-backslash",
-                            :face/color-fg [:colors/by-id 0]},
                            "constant"
                            {:face/id 5, :face/name "constant", :face/color-fg [:colors/by-id 0]},
-                           "regexp-grouping-construct"
-                           {:face/id 13,
-                            :face/name "regexp-grouping-construct",
-                            :face/color-fg [:colors/by-id 0]},
                            "preprocessor"
                            {:face/id 11,
                             :face/name "preprocessor",
-                            :face/color-fg [:colors/by-id 0]},
-                           "negation-char"
-                           {:face/id 10,
-                            :face/name "negation-char",
                             :face/color-fg [:colors/by-id 0]},
                            "keyword"
                            {:face/id 9, :face/name "keyword", :face/color-fg [:colors/by-id 0]},
@@ -154,8 +114,6 @@
                            {:face/id 16,
                             :face/name "variable-name",
                             :face/color-fg [:colors/by-id 0]},
-                           "doc-string"
-                           {:face/id 7, :face/name "doc-string", :face/color-fg [:colors/by-id 0]},
                            "type"
                            {:face/id 15, :face/name "type", :face/color-fg [:colors/by-id 0]},
                            "comment"
@@ -185,17 +143,12 @@
                               [:faces/by-name "comment"]
                               [:faces/by-name "constant"]
                               [:faces/by-name "doc"]
-                              [:faces/by-name "doc-string"]
                               [:faces/by-name "function-name"]
                               [:faces/by-name "keyword"]
-                              [:faces/by-name "negation-char"]
                               [:faces/by-name "preprocessor"]
-                              [:faces/by-name "regexp-grouping-backslash"]
-                              [:faces/by-name "regexp-grouping-construct"]
                               [:faces/by-name "string"]
                               [:faces/by-name "type"]
-                              [:faces/by-name "variable-name"]
-                              [:faces/by-name "warning"]],
+                              [:faces/by-name "variable-name"]],
                              :colors/by-id
                              {0 {:color/id 0, :color/rgb "#000000"},
                               1 {:color/id 1, :color/rgb "#e6e6e6"},
@@ -215,34 +168,18 @@
                               {:face/id 3,
                                :face/name "comment-delimiter",
                                :face/color-fg [:colors/by-id 2]},
-                              "warning"
-                              {:face/id 17, :face/name "warning", :face/color-fg [:colors/by-id 3]},
-                              "regexp-grouping-backslash"
-                              {:face/id 12,
-                               :face/name "regexp-grouping-backslash",
-                               :face/color-fg [:colors/by-id 0]},
                               "constant"
                               {:face/id 5, :face/name "constant", :face/color-fg [:colors/by-id 0]},
-                              "regexp-grouping-construct"
-                              {:face/id 13,
-                               :face/name "regexp-grouping-construct",
-                               :face/color-fg [:colors/by-id 0]},
                               "preprocessor"
                               {:face/id 11,
                                :face/name "preprocessor",
                                :face/color-fg [:colors/by-id 6]},
-                              "negation-char"
-                              {:face/id 10,
-                               :face/name "negation-char",
-                               :face/color-fg [:colors/by-id 0]},
                               "keyword"
                               {:face/id 9, :face/name "keyword", :face/color-fg [:colors/by-id 3]},
                               "variable-name"
                               {:face/id 16,
                                :face/name "variable-name",
                                :face/color-fg [:colors/by-id 5]},
-                              "doc-string"
-                              {:face/id 7, :face/name "doc-string", :face/color-fg [:colors/by-id 4]},
                               "type"
                               {:face/id 15, :face/name "type", :face/color-fg [:colors/by-id 3]},
                               "comment"
@@ -271,17 +208,12 @@
                         [:faces/by-name "comment"]
                         [:faces/by-name "constant"]
                         [:faces/by-name "doc"]
-                        [:faces/by-name "doc-string"]
                         [:faces/by-name "function-name"]
                         [:faces/by-name "keyword"]
-                        [:faces/by-name "negation-char"]
                         [:faces/by-name "preprocessor"]
-                        [:faces/by-name "regexp-grouping-backslash"]
-                        [:faces/by-name "regexp-grouping-construct"]
                         [:faces/by-name "string"]
                         [:faces/by-name "type"]
-                        [:faces/by-name "variable-name"]
-                        [:faces/by-name "warning"]],
+                        [:faces/by-name "variable-name"]],
                        :colors/by-id
                        {0 {:color/id 0, :color/rgb "#737272"},
                         1 {:color/id 1, :color/rgb "#2e2e2e"},
@@ -304,25 +236,11 @@
                         {:face/id 3,
                          :face/name "comment-delimiter",
                          :face/color-fg [:colors/by-id 0]},
-                        "warning"
-                        {:face/id 17, :face/name "warning", :face/color-fg [:colors/by-id 0]},
-                        "regexp-grouping-backslash"
-                        {:face/id 12,
-                         :face/name "regexp-grouping-backslash",
-                         :face/color-fg [:colors/by-id 0]},
                         "constant"
                         {:face/id 5, :face/name "constant", :face/color-fg [:colors/by-id 4]},
-                        "regexp-grouping-construct"
-                        {:face/id 13,
-                         :face/name "regexp-grouping-construct",
-                         :face/color-fg [:colors/by-id 0]},
                         "preprocessor"
                         {:face/id 11,
                          :face/name "preprocessor",
-                         :face/color-fg [:colors/by-id 0]},
-                        "negation-char"
-                        {:face/id 10,
-                         :face/name "negation-char",
                          :face/color-fg [:colors/by-id 0]},
                         "keyword"
                         {:face/id 9, :face/name "keyword", :face/color-fg [:colors/by-id 2]},
@@ -330,8 +248,6 @@
                         {:face/id 16,
                          :face/name "variable-name",
                          :face/color-fg [:colors/by-id 4]},
-                        "doc-string"
-                        {:face/id 7, :face/name "doc-string", :face/color-fg [:colors/by-id 0]},
                         "type"
                         {:face/id 15, :face/name "type", :face/color-fg [:colors/by-id 0]},
                         "comment"
@@ -364,17 +280,12 @@
                                      [:faces/by-name "comment"]
                                      [:faces/by-name "constant"]
                                      [:faces/by-name "doc"]
-                                     [:faces/by-name "doc-string"]
                                      [:faces/by-name "function-name"]
                                      [:faces/by-name "keyword"]
-                                     [:faces/by-name "negation-char"]
                                      [:faces/by-name "preprocessor"]
-                                     [:faces/by-name "regexp-grouping-backslash"]
-                                     [:faces/by-name "regexp-grouping-construct"]
                                      [:faces/by-name "string"]
                                      [:faces/by-name "type"]
-                                     [:faces/by-name "variable-name"]
-                                     [:faces/by-name "warning"]],
+                                     [:faces/by-name "variable-name"]],
                                     :colors/by-id
                                     {0 {:color/id 0, :color/rgb "#151a73"},
                                      1 {:color/id 1, :color/rgb "#4c5557"},
@@ -397,34 +308,18 @@
                                      {:face/id 3,
                                       :face/name "comment-delimiter",
                                       :face/color-fg [:colors/by-id 1]},
-                                     "warning"
-                                     {:face/id 17, :face/name "warning", :face/color-fg [:colors/by-id 7]},
-                                     "regexp-grouping-backslash"
-                                     {:face/id 12,
-                                      :face/name "regexp-grouping-backslash",
-                                      :face/color-fg [:colors/by-id 0]},
                                      "constant"
                                      {:face/id 5, :face/name "constant", :face/color-fg [:colors/by-id 2]},
-                                     "regexp-grouping-construct"
-                                     {:face/id 13,
-                                      :face/name "regexp-grouping-construct",
-                                      :face/color-fg [:colors/by-id 3]},
                                      "preprocessor"
                                      {:face/id 11,
                                       :face/name "preprocessor",
                                       :face/color-fg [:colors/by-id 3]},
-                                     "negation-char"
-                                     {:face/id 10,
-                                      :face/name "negation-char",
-                                      :face/color-fg [:colors/by-id 2]},
                                      "keyword"
                                      {:face/id 9, :face/name "keyword", :face/color-fg [:colors/by-id 5]},
                                      "variable-name"
                                      {:face/id 16,
                                       :face/name "variable-name",
                                       :face/color-fg [:colors/by-id 0]},
-                                     "doc-string"
-                                     {:face/id 7, :face/name "doc-string", :face/color-fg [:colors/by-id 0]},
                                      "type"
                                      {:face/id 15, :face/name "type", :face/color-fg [:colors/by-id 2]},
                                      "comment"

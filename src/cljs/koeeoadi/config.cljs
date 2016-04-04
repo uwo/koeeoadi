@@ -27,24 +27,26 @@
   [{:face/id 0 :face/name "default"                     :face/color-fg {:color/id 9  :color/rgb  "#93a1a1"} :face/underline nil :face/bold nil :face/italic nil}
    {:face/id 1 :face/name "background"                  :face/color-fg {:color/id 8  :color/rgb  "#073642"} :face/underline nil :face/bold nil :face/italic nil}
    {:face/id 2 :face/name "builtin"                     :face/color-fg {:color/id 0  :color/rgb  "#6c71c4"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 3 :face/name "comment-delimiter"           :face/color-fg {:color/id 1  :color/rgb  "#586e75"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 4 :face/name "comment"                     :face/color-fg {:color/id 1  :color/rgb  "#586e75"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 3 :face/name "comment"                     :face/color-fg {:color/id 1  :color/rgb  "#586e75"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 4 :face/name "comment-delimiter"           :face/color-fg {:color/id 1  :color/rgb  "#586e75"} :face/underline nil :face/bold nil :face/italic nil}
    {:face/id 5 :face/name "constant"                    :face/color-fg {:color/id 2  :color/rgb  "#268bd2"} :face/underline nil :face/bold nil :face/italic nil}
    {:face/id 6 :face/name "doc"                         :face/color-fg {:color/id 3  :color/rgb  "#d33682"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 7 :face/name "doc-string"                  :face/color-fg {:color/id 0  :color/rgb  "#6c71c4"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 8 :face/name "function-name"               :face/color-fg {:color/id 4  :color/rgb  "#b58900"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 9 :face/name "keyword"                     :face/color-fg {:color/id 5  :color/rgb  "#859900"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 10 :face/name "negation-char"              :face/color-fg {:color/id 2  :color/rgb  "#268bd2"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 11 :face/name "preprocessor"               :face/color-fg {:color/id 3  :color/rgb  "#d33682"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 12 :face/name "regexp-grouping-backslash"  :face/color-fg {:color/id 0  :color/rgb  "#6c71c4"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 13 :face/name "regexp-grouping-construct"  :face/color-fg {:color/id 3  :color/rgb  "#d33682"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 14 :face/name "string"                     :face/color-fg {:color/id 0  :color/rgb  "#6c71c4"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 15 :face/name "type"                       :face/color-fg {:color/id 2  :color/rgb  "#268bd2"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 16 :face/name "variable-name"              :face/color-fg {:color/id 0  :color/rgb  "#6c71c4"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 17 :face/name "warning"                    :face/color-fg {:color/id 2  :color/rgb  "#268bd2"} :face/underline nil :face/bold nil :face/italic nil}])
+   {:face/id 7 :face/name "function-name"               :face/color-fg {:color/id 4  :color/rgb  "#b58900"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 8 :face/name "keyword"                     :face/color-fg {:color/id 5  :color/rgb  "#859900"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 9 :face/name "preprocessor"                :face/color-fg {:color/id 3  :color/rgb  "#d33682"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 10 :face/name "string"                     :face/color-fg {:color/id 0  :color/rgb  "#6c71c4"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 11 :face/name "type"                       :face/color-fg {:color/id 2  :color/rgb  "#268bd2"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 12 :face/name "variable-name"              :face/color-fg {:color/id 0  :color/rgb  "#6c71c4"} :face/underline nil :face/bold nil :face/italic nil}])
 
 (def user-faces-list
-  [{:user-face/id 0 :user-face/name "user-face-1" :user-face/color-fg {:color/id 0 :color/rgb "#93a1a1"}  :user-face/underline true :user-face/bold true :user-face/italic true :user-face/editor :emacs}])
+  [{:user-face/id 0
+    :user-face/name "user-face-1"
+    :user-face/color-fg nil
+    :user-face/color-bg nil
+    :user-face/underline true
+    :user-face/bold true
+    :user-face/italic true
+    :user-face/editor :emacs}])
 
 (def initial-code "c")
 
