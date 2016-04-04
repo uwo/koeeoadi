@@ -13,13 +13,23 @@
 
 (declare face-editor-comp)
 
+(defn face-color-class [disabled? rgb]
+  (cond disabled?  "color-void"
+        (nil? rgb) "color-undefined"
+        :else      ""))
+
+(defn face-disabled? [name color-type]
+  (and (or (= name "background") (= name "default"))
+    (= :face/color-bg color-type)))
+
 (defn face-color [comp color-type]
   (let [{:keys [face/name] :as props} (om/props comp)
         {rgb :color/rgb}              (color-type props)
         {:keys [editing?] :as state}  (om/get-state comp)
-        disabled?                     (and (= color-type :face/background) (= "background" name))]
+        disabled?                     (face-disabled? name color-type)
+        clazz                         (face-color-class disabled? rgb)]
     (dom/div
-      #js {:className (str "color color-trigger " (if (nil? rgb) "color-void" ""))
+      #js {:className (str "color color-trigger " clazz)
            :onBlur    (if-not disabled? #(util/palette-picker-hide (palette-picker-comp)) #(do))
            :onClick   (if-not disabled? #(util/palette-picker-show (palette-picker-comp) (om/props comp) color-type %) #(do))
            :style     #js {:backgroundColor rgb}

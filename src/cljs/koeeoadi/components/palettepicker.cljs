@@ -11,7 +11,7 @@
 
 (defn color-option-void [{:keys [color-update-temp color-update-void]}]
   (dom/button #js
-    {:className    "color color-option color-void"
+    {:className    "color color-option color-undefined"
      :onMouseLeave #(color-update-temp nil)
      :onMouseDown  #(color-update-void)}))
 

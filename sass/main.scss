@@ -135,6 +135,11 @@ i {
 }
 
 .color-void {
+    pointer-events: none;
+    visibility: hidden;
+}
+
+.color-undefined {
     background-color: $grayDarkest;
     border: 1px solid $grayLighter !important;
 }
