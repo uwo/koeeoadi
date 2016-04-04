@@ -161,7 +161,7 @@
      (let [st      @state
            new-id  (new-color-id (:colors/list st))]
        (reset! state (-> @state
-                       (assoc-in [:colors/by-id new-id] {:color/id new-id})
+                       (assoc-in [:colors/by-id new-id] {:color/id new-id :color/rgb "#FFFFFF"})
                        (update :colors/list conj [:colors/by-id new-id])))))})
 
 (defmethod mutate 'color/remove
