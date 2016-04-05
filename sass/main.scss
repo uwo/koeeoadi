@@ -29,6 +29,7 @@ $sidebarWidth: 2*$sidebarPadding + 2*$widgetPadding + 2*$widgetBorder + 1*$widge
 
 /* Overrides for skeleton.css */
 .container {
+    overflow-y: scroll;
     min-height: 100%;
     width: 100% !important;
     max-width: initial !important;
