@@ -176,7 +176,7 @@
         (dom/div #js {:className "modal-content-container"}
           (dom/div #js {:className "modal-content"}
             (dom/h5
-              #js {:className "widget-title"}
+              #js {:className "modal-title"}
               "User Faces")
             (dom/button
               #js {:onClick #(face-add this)}
