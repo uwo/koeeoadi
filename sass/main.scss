@@ -26,6 +26,7 @@ $widgetTitleBorderColor: $grayLight;
 $sidebarHeight: 500px;
 $sidebarPadding: 5px;
 $sidebarWidth: 2*$sidebarPadding + 2*$widgetPadding + 2*$widgetBorder + 1*$widgetContent;
+$userFacesModalWidth: 920px;
 
 /* Overrides for skeleton.css */
 .container {
@@ -86,6 +87,7 @@ input, select {
 
 button {
     width: $buttonWidth;
+    padding: 0;
     color: $grayLighter;
 }
 
@@ -186,7 +188,7 @@ ul, ol {
     border: 1px solid $grayLight;
     background-color: $grayDarker;
 
-    button {
+    .modal-close-button {
         position: absolute;
         margin-left: - $buttonWidth/2;
         bottom: 10px;
@@ -525,25 +527,13 @@ input[type="color"] {
 
 /* User Face Map */
 #user-faces-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    margin-left: -$modalWidth/2;
-    margin-top: -$modalHeight/2;
-    width: $modalWidth;
-    height: $modalHeight;
-}
-
-#user-faces-scroll-container {
-    overflow: auto;
-    height: 300px;
+    > .modal-content-container {
+        width: $userFacesModalWidth;
+        margin-left: -$userFacesModalWidth/2;
+    }
 }
 
 #user-faces-container {
-    width: 95%;
-    margin: 0 auto;
-    font-size: .95em;
-
     button, input {
         margin: 0;
     }
@@ -570,6 +560,11 @@ input[type="color"] {
     /* Face name */
     td:nth-child(1){
         width: 200px + $tdSpacing;
+        overflow-x: hidden;
+
+        > span {
+            overflow-x: hidden;
+        }
     }
 
     td:nth-child(2),
@@ -595,4 +590,5 @@ input[type="color"] {
         padding: 0;
         margin: 0;
     }
+
 }

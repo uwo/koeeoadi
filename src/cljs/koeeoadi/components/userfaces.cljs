@@ -172,34 +172,36 @@
 
           {:keys [active]} (om/get-state this)]
       (dom/div #js {:id "user-faces-modal"
-                    :className (str "modal widget "
-                                 (if active "" "hide"))}
-        (dom/h5
-          #js {:className "widget-title"}
-          "User Faces")
-        (dom/button
-          #js {:onClick #(face-add this)}
-          "Add New Face")
-        (dom/div #js {:id          "user-faces-scroll-container"
-                      :cellSpacing 0
-                      :cellPadding 0
-                      :border      0}
-          (dom/table #js {:id "user-faces-container"
+                    :className (str "modal " (if active "" "hide"))}
+        (dom/div #js {:className "modal-content-container"}
+          (dom/div #js {:className "modal-content"}
+            (dom/h5
+              #js {:className "widget-title"}
+              "User Faces")
+            (dom/button
+              #js {:onClick #(face-add this)}
+              "Add Face")
+            (dom/div #js {:id          "user-faces-scroll-container"
+                          :cellSpacing 0
                           :cellPadding 0
-                          :cellSpacing 0}
-            (apply dom/tbody nil
-              (dom/tr nil
-                (dom/td nil "Name")
-                (dom/td nil "Background")
-                (dom/td nil "Foreground")
-                (dom/td nil "Bold")
-                (dom/td nil "Italic")
-                (dom/td nil "Underline")
-                (dom/td nil "Editor")
-                (dom/td nil ""))
-              ;; TODO is it the right thing to be sorting here?
-              (map #(user-face (om/computed % {:colors/by-id colors-by-id})) (sort-by :face/id user-faces-list)))))
-        (dom/button #js {:onClick #(om/update-state! this assoc :active false)} "CLOSE")))))
+                          :border      0}
+              (dom/table #js {:id "user-faces-container"
+                              :cellPadding 0
+                              :cellSpacing 0}
+                (apply dom/tbody nil
+                  (dom/tr nil
+                    (dom/td nil "Name")
+                    (dom/td nil "Background")
+                    (dom/td nil "Foreground")
+                    (dom/td nil "Bold")
+                    (dom/td nil "Italic")
+                    (dom/td nil "Underline")
+                    (dom/td nil "Editor")
+                    (dom/td nil ""))
+                  ;; TODO is it the right thing to be sorting here?
+                  (map #(user-face (om/computed % {:colors/by-id colors-by-id})) (sort-by :face/id user-faces-list)))))
+            (dom/button #js {:className "modal-close-button"
+                             :onClick #(om/update-state! this assoc :active false)} "CLOSE")))))))
 
 (def user-faces (om/factory UserFaces))
 

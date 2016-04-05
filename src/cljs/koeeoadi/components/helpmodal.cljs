@@ -43,5 +43,5 @@
             "Thanks for trying out Koeeoadi and have a nice day.")
           (dom/p nil
             "- sean"))
-        (dom/button #js {:className "modal-close"
+        (dom/button #js {:className "modal-close-button"
                          :onClick #(om/update-state! comp assoc :show-help false)} "CLOSE")))))
