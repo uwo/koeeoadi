@@ -45,6 +45,7 @@ select,input[type="text"] {
     background-color: $grayLighter;
     box-sizing: border-box;
     width: 150px;
+    height: 20px;
     line-height: normal;
     border: none;
 }
@@ -219,6 +220,15 @@ ul, ol {
     top: 0;
 }
 
+
+/* Code Picker */
+#code-picker{
+    > select {
+        width: 200px;
+        margin-bottom: 3px;
+    }
+}
+
 /* Code Display */
 #code-display {
     transition: background-color $colorTransitionPeriod;
@@ -372,16 +382,19 @@ input[type="color"] {
 
 /* Theme */
 #theme-select,#theme-name-input {
-    margin: 0 10px 0 0;
+    width: 200px;
 }
 
 #theme-name-edit-button {
+    width: 40px;
     position: relative;
     top: 1px;
 }
 
-.control-row {
-    margin: 0;
+#actions{
+    .control-row {
+        margin: -10px 0 7px 0;
+    }
 }
 
 .column {
@@ -392,6 +405,7 @@ input[type="color"] {
     padding: 0;
     height: auto;
     border: none;
+    width: auto;
     margin: 0 0 0 0px;
 }
 
