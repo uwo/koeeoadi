@@ -24,19 +24,19 @@
    {:color/id 9 :color/hex "#93a1a1"}])
 
 (def faces-list
-  [{:face/id 0 :face/name "background"                  :face/color-fg {:color/id 8  :color/hex  "#073642"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 1 :face/name "default"                     :face/color-fg {:color/id 9  :color/hex  "#93a1a1"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 2 :face/name "builtin"                     :face/color-fg {:color/id 0  :color/hex  "#6c71c4"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 3 :face/name "comment"                     :face/color-fg {:color/id 1  :color/hex  "#586e75"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 4 :face/name "comment-delimiter"           :face/color-fg {:color/id 1  :color/hex  "#586e75"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 5 :face/name "constant"                    :face/color-fg {:color/id 2  :color/hex  "#268bd2"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 6 :face/name "doc"                         :face/color-fg {:color/id 3  :color/hex  "#d33682"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 7 :face/name "function-name"               :face/color-fg {:color/id 4  :color/hex  "#b58900"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 8 :face/name "keyword"                     :face/color-fg {:color/id 5  :color/hex  "#859900"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 9 :face/name "preprocessor"                :face/color-fg {:color/id 3  :color/hex  "#d33682"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 10 :face/name "string"                     :face/color-fg {:color/id 0  :color/hex  "#6c71c4"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 11 :face/name "type"                       :face/color-fg {:color/id 2  :color/hex  "#268bd2"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 12 :face/name "variable-name"              :face/color-fg {:color/id 0  :color/hex  "#6c71c4"} :face/underline nil :face/bold nil :face/italic nil}])
+  [{:face/id 0  :face/name "background"        :face/color-fg {:color/id 8 :color/hex "#073642"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 1  :face/name "default"           :face/color-fg {:color/id 9 :color/hex "#93a1a1"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 2  :face/name "builtin"           :face/color-fg {:color/id 0 :color/hex "#6c71c4"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 3  :face/name "comment"           :face/color-fg {:color/id 1 :color/hex "#586e75"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 4  :face/name "comment-delimiter" :face/color-fg {:color/id 1 :color/hex "#586e75"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 5  :face/name "constant"          :face/color-fg {:color/id 2 :color/hex "#268bd2"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 6  :face/name "doc"               :face/color-fg {:color/id 3 :color/hex "#d33682"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 7  :face/name "function-name"     :face/color-fg {:color/id 4 :color/hex "#b58900"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 8  :face/name "keyword"           :face/color-fg {:color/id 5 :color/hex "#859900"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 9  :face/name "preprocessor"      :face/color-fg {:color/id 3 :color/hex "#d33682"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 10 :face/name "string"            :face/color-fg {:color/id 0 :color/hex "#6c71c4"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 11 :face/name "type"              :face/color-fg {:color/id 2 :color/hex "#268bd2"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 12 :face/name "variable-name"     :face/color-fg {:color/id 0 :color/hex "#6c71c4"} :face/underline nil :face/bold nil :face/italic nil}])
 
 (def initial-code "c")
 
