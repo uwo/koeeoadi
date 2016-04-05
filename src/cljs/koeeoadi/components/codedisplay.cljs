@@ -14,8 +14,8 @@
 (defn face-styles [{:keys [face/color-fg face/color-bg face/bold face/italic face/underline]}]
   (clj->js
     (merge
-      {:color                (:color/rgb color-fg)}
-      {:backgroundColor      (:color/rgb color-bg)}
+      {:color                (:color/hex color-fg)}
+      {:backgroundColor      (:color/hex color-bg)}
       (style-maybe bold      {:fontWeight "bold"})
       (style-maybe italic    {:fontStyle "italic"})
       (style-maybe underline {:textDecoration "underline"}))))
@@ -33,8 +33,8 @@
                         :face/bold
                         :face/italic
                         :face/underline
-                        {:face/color-fg [:color/id :color/rgb]}
-                        {:face/color-bg [:color/id :color/rgb]}
+                        {:face/color-fg [:color/id :color/hex]}
+                        {:face/color-bg [:color/id :color/hex]}
                         ]}
      :code-chunk/line-chunk
      :code-chunk/string])
@@ -72,7 +72,7 @@
                          :face/name
                          {:face/color-fg [:color/id
                                           :color/name
-                                          :color/rgb]}]}])
+                                          :color/hex]}]}])
 
   Object
   (render [this]
@@ -85,7 +85,7 @@
              :id        "code-display"
              :onBlur    #(util/palette-picker-hide (palette-picker-comp))
              :onClick   #(util/palette-picker-show (palette-picker-comp) code-background :face/color-fg %)
-             :style     #js {:backgroundColor (get-in code-background [:face/color-fg :color/rgb])}
+             :style     #js {:backgroundColor (get-in code-background [:face/color-fg :color/hex])}
              :tabIndex  0}
         (map #(code-line (last %)) code-lines)))))
 

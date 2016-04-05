@@ -48,13 +48,13 @@
     (face-update comp {:face/name face-name
                        color-type color})))
 
-(defn color-option [{:keys [color/rgb color/id] :as color} current-color]
+(defn color-option [{:keys [color/hex color/id] :as color} current-color]
   (let [selected? (= current-color color)]
     (dom/option
-      #js {:style     #js {:backgroundColor rgb}
+      #js {:style     #js {:backgroundColor hex}
            :selected  selected?
            :value     id}
-      rgb)))
+      hex)))
 
 (defui UserFace
   static om/Ident
@@ -71,8 +71,8 @@
      :face/italic
      :face/underline
      :face/editor
-     {:face/color-bg [:color/id :color/rgb]}
-     {:face/color-fg [:color/id :color/rgb]}])
+     {:face/color-bg [:color/id :color/hex]}
+     {:face/color-fg [:color/id :color/hex]}])
 
   Object
   (componentDidUpdate [this prev-props prev-state]
@@ -96,8 +96,8 @@
 
           colors-by-id (:colors/by-id (om/get-computed this))
           colors-list  (vals colors-by-id)
-          bg-rgb       (:color/rgb color-bg)
-          fg-rgb       (:color/rgb color-fg)
+          bg-hex       (:color/hex color-bg)
+          fg-hex       (:color/hex color-fg)
           editors      (keys config/editor-file-map)]
       (dom/tr nil
         (dom/td nil
@@ -120,14 +120,14 @@
 
         (dom/td nil
           (apply dom/select
-            #js {:style    #js {:backgroundColor (or bg-rgb nil)}
+            #js {:style    #js {:backgroundColor (or bg-hex nil)}
                  :onChange #(color-change this :face/color-bg %)}
             (dom/option #js {:value "None"} "None")
             (map #(color-option % color-bg) colors-list)))
 
         (dom/td nil
           (apply dom/select
-            #js {:style    #js {:backgroundColor (or fg-rgb nil)}
+            #js {:style    #js {:backgroundColor (or fg-hex nil)}
                  :onChange #(color-change this :face/color-fg %)}
             (dom/option #js {:value "None"} "None")
             (map #(color-option % color-fg) colors-list)))

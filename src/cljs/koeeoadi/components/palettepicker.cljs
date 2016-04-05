@@ -22,19 +22,19 @@
 
   static om/IQuery
   (query [this]
-    [:color/id :color/rgb])
+    [:color/id :color/hex])
 
   Object
   (render [this]
-    (let [{:keys [color/rgb]}         (om/props this)
+    (let [{:keys [color/hex]}         (om/props this)
           {:keys [color-update-temp
                   color-update]} (om/get-computed this)]
       (dom/button #js
         {:className    "color color-option"
-         :onMouseEnter #(color-update-temp rgb)
+         :onMouseEnter #(color-update-temp hex)
          :onMouseLeave #(color-update-temp nil)
          :onMouseDown  #(color-update (om/props this))
-         :style        #js {:backgroundColor rgb}}))))
+         :style        #js {:backgroundColor hex}}))))
 
 (def color-option (om/factory ColorOption {:keyfn :color/id}))
 
@@ -47,10 +47,10 @@
                                    :face/name
                                    {:face/color-bg [:color/id
                                                     :color/name
-                                                    :color/rgb]}
+                                                    :color/hex]}
                                    {:face/color-fg [:color/id
                                                     :color/name
-                                                    :color/rgb]}]}
+                                                    :color/hex]}]}
      {:colors/list (om/get-query Color)}])
 
   Object
@@ -86,15 +86,15 @@
                                       :face/name  ~name
                                       ~color-type [:colors/by-id ~(:color/id color)]})])))
           color-update-temp
-          (fn [hover-color-rgb]
+          (fn [hover-color-hex]
             (let [prop (if (and
                              (not (= face-name "background"))
                              (= color-type :face/color-fg))
                          "color"
                          "background-color")]
-              (if hover-color-rgb
-                (util/update-code-face-elements face-name #(gstyle/setStyle % prop hover-color-rgb))
-                (util/update-code-face-elements face-name #(gstyle/setStyle % prop (:color/rgb (get active-face color-type)))))))
+              (if hover-color-hex
+                (util/update-code-face-elements face-name #(gstyle/setStyle % prop hover-color-hex))
+                (util/update-code-face-elements face-name #(gstyle/setStyle % prop (:color/hex (get active-face color-type)))))))
 
           computed
           {:color-update-temp color-update-temp

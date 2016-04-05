@@ -27,16 +27,16 @@
                                  [:faces/by-name "type"]
                                  [:faces/by-name "variable-name"]],
                                 :colors/by-id
-                                {0 {:color/id 0, :color/rgb "#6c71c4"},
-                                 1 {:color/id 1, :color/rgb "#586e75"},
-                                 2 {:color/id 2, :color/rgb "#268bd2"},
-                                 3 {:color/id 3, :color/rgb "#d33682"},
-                                 4 {:color/id 4, :color/rgb "#b58900"},
-                                 5 {:color/id 5, :color/rgb "#859900"},
-                                 6 {:color/id 6, :color/rgb "#2aa198"},
-                                 7 {:color/id 7, :color/rgb "#dc322f"},
-                                 8 {:color/id 8, :color/rgb "#073642"},
-                                 9 {:color/id 9, :color/rgb "#93a1a1"}},
+                                {0 {:color/id 0, :color/hex "#6c71c4"},
+                                 1 {:color/id 1, :color/hex "#586e75"},
+                                 2 {:color/id 2, :color/hex "#268bd2"},
+                                 3 {:color/id 3, :color/hex "#d33682"},
+                                 4 {:color/id 4, :color/hex "#b58900"},
+                                 5 {:color/id 5, :color/hex "#859900"},
+                                 6 {:color/id 6, :color/hex "#2aa198"},
+                                 7 {:color/id 7, :color/hex "#dc322f"},
+                                 8 {:color/id 8, :color/hex "#073642"},
+                                 9 {:color/id 9, :color/hex "#93a1a1"}},
                                 :faces/by-name
                                 {"function-name"
                                  {:face/id 8,
@@ -89,8 +89,8 @@
                            [:faces/by-name "type"]
                            [:faces/by-name "variable-name"]],
                           :colors/by-id
-                          {0 {:color/id 0, :color/rgb "#000000"},
-                           1 {:color/id 1, :color/rgb "#FFFFFF"}},
+                          {0 {:color/id 0, :color/hex "#000000"},
+                           1 {:color/id 1, :color/hex "#FFFFFF"}},
                           :faces/by-name
                           {"function-name"
                            {:face/id 8,
@@ -150,13 +150,13 @@
                               [:faces/by-name "type"]
                               [:faces/by-name "variable-name"]],
                              :colors/by-id
-                             {0 {:color/id 0, :color/rgb "#000000"},
-                              1 {:color/id 1, :color/rgb "#e6e6e6"},
-                              2 {:color/id 2, :color/rgb "#656565"},
-                              3 {:color/id 3, :color/rgb "#ff0000"},
-                              4 {:color/id 4, :color/rgb "#0c5f27"},
-                              5 {:color/id 5, :color/rgb "#7a0888"},
-                              6 {:color/id 6, :color/rgb "#d8cd28"}},
+                             {0 {:color/id 0, :color/hex "#000000"},
+                              1 {:color/id 1, :color/hex "#e6e6e6"},
+                              2 {:color/id 2, :color/hex "#656565"},
+                              3 {:color/id 3, :color/hex "#ff0000"},
+                              4 {:color/id 4, :color/hex "#0c5f27"},
+                              5 {:color/id 5, :color/hex "#7a0888"},
+                              6 {:color/id 6, :color/hex "#d8cd28"}},
                              :faces/by-name
                              {"function-name"
                               {:face/id 8,
@@ -215,16 +215,16 @@
                         [:faces/by-name "type"]
                         [:faces/by-name "variable-name"]],
                        :colors/by-id
-                       {0 {:color/id 0, :color/rgb "#737272"},
-                        1 {:color/id 1, :color/rgb "#2e2e2e"},
-                        2 {:color/id 2, :color/rgb "#ff2fd3"},
-                        3 {:color/id 3, :color/rgb "#bfbfbf"},
-                        4 {:color/id 4, :color/rgb "#dfde31"},
-                        5 {:color/id 5, :color/rgb "#ffffff"},
-                        6 {:color/id 6, :color/rgb "#2aa198"},
-                        7 {:color/id 7, :color/rgb "#dc322f"},
-                        8 {:color/id 8, :color/rgb "#073642"},
-                        9 {:color/id 9, :color/rgb "#93a1a1"}},
+                       {0 {:color/id 0, :color/hex "#737272"},
+                        1 {:color/id 1, :color/hex "#2e2e2e"},
+                        2 {:color/id 2, :color/hex "#ff2fd3"},
+                        3 {:color/id 3, :color/hex "#bfbfbf"},
+                        4 {:color/id 4, :color/hex "#dfde31"},
+                        5 {:color/id 5, :color/hex "#ffffff"},
+                        6 {:color/id 6, :color/hex "#2aa198"},
+                        7 {:color/id 7, :color/hex "#dc322f"},
+                        8 {:color/id 8, :color/hex "#073642"},
+                        9 {:color/id 9, :color/hex "#93a1a1"}},
                        :faces/by-name
                        {"function-name"
                         {:face/id 8,
@@ -287,16 +287,16 @@
                                      [:faces/by-name "type"]
                                      [:faces/by-name "variable-name"]],
                                     :colors/by-id
-                                    {0 {:color/id 0, :color/rgb "#151a73"},
-                                     1 {:color/id 1, :color/rgb "#4c5557"},
-                                     2 {:color/id 2, :color/rgb "#0096ff"},
-                                     3 {:color/id 3, :color/rgb "#ffa3d0"},
-                                     4 {:color/id 4, :color/rgb "#ffc200"},
-                                     5 {:color/id 5, :color/rgb "#d9fa00"},
-                                     6 {:color/id 6, :color/rgb "#7ffff6"},
-                                     7 {:color/id 7, :color/rgb "#dc322f"},
-                                     8 {:color/id 8, :color/rgb "#8d8d8d"},
-                                     9 {:color/id 9, :color/rgb "#8e0081"}},
+                                    {0 {:color/id 0, :color/hex "#151a73"},
+                                     1 {:color/id 1, :color/hex "#4c5557"},
+                                     2 {:color/id 2, :color/hex "#0096ff"},
+                                     3 {:color/id 3, :color/hex "#ffa3d0"},
+                                     4 {:color/id 4, :color/hex "#ffc200"},
+                                     5 {:color/id 5, :color/hex "#d9fa00"},
+                                     6 {:color/id 6, :color/hex "#7ffff6"},
+                                     7 {:color/id 7, :color/hex "#dc322f"},
+                                     8 {:color/id 8, :color/hex "#8d8d8d"},
+                                     9 {:color/id 9, :color/hex "#8e0081"}},
                                     :faces/by-name
                                     {"function-name"
                                      {:face/id 8,

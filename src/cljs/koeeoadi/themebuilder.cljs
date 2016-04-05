@@ -30,8 +30,8 @@
   (when v
     (let [rec @reconciler]
       (case (name k)
-        "color-fg"  `(:foreground ~(:color/rgb (get-in rec v)))
-        "color-bg"  `(:background ~(:color/rgb (get-in rec v)))
+        "color-fg"  `(:foreground ~(:color/hex (get-in rec v)))
+        "color-bg"  `(:background ~(:color/hex (get-in rec v)))
         "bold"      `(:weight     ~'bold)
         "italic"    `(:italic     ~'t)
         "underline" `(:underline  ~'t)
