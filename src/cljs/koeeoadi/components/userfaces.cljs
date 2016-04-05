@@ -135,17 +135,20 @@
         ;; BOLD
         (dom/td nil
           (dom/input
-            #js {:type "checkbox"
+            #js {:type    "checkbox"
+                 :checked bold
                  :onClick #(face-update this {:face/name name :face/bold (util/target-checked %)})}))
         ;; ITALIC
         (dom/td nil
           (dom/input
-            #js {:type "checkbox"
+            #js {:type    "checkbox"
+                 :checked italic
                  :onClick #(face-update this {:face/name name :face/italic (util/target-checked %)})}))
         ;; UNDERLINE
         (dom/td nil
           (dom/input
-            #js {:type "checkbox"
+            #js {:type    "checkbox"
+                 :checked underline
                  :onClick #(face-update this {:face/name name :face/underline (util/target-checked %)})}))
 
         (dom/td nil

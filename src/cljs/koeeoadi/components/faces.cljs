@@ -43,10 +43,11 @@
                       ~prop      ~checked})])))
 
 (defn face-style [comp prop]
-  (let [{:keys [face/name]} (om/props comp)]
+  (let [{:keys [face/name] :as props} (om/props comp)]
     (dom/li nil
       (dom/input #js
         {:type    "checkbox"
+         :checked (get props prop)
          :onClick #(face-update name prop %)})
       (clojure.core/name prop))))
 
