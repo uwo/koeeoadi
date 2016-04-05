@@ -1,9 +1,27 @@
 (ns koeeoadi.util
-  (:require [goog.dom :refer [getElementsByTagNameAndClass $$]]
+  (:require [cljs.reader :refer [read-string]]
+            [goog.dom :refer [getElementsByTagNameAndClass $$]]
             [goog.style :refer [setStyle getClientPosition]]
             [goog.array :refer [forEach]]
             [om.next :as om]
             [om.dom :as dom]))
+
+(defn hex-to-rgb [hex]
+  "Converts a 6 digit hex number or color string to an RGB map"
+  (let [hex'       (if (string? hex) hex (str "#" hex))
+        xform-pair (fn [byte]
+                     (.parseInt js/window (apply str "0x" byte)))]
+    (zipmap
+      [:r :g :b]
+      (map xform-pair (partition 2 (vec (subs hex 1)))))))
+
+(defn brightness [hex]
+  (let [{:keys [r g b]} (hex-to-rgb hex)]
+    (.sqrt js/Math (+ (* .299 r) (* .587 g) (* .114 b)))))
+
+;;from: http://alienryderflex.com/hsp.html
+(defn dark? [hex]
+  (< (brightness hex) 8))
 
 (defn display [pred]
   (when-not pred #js {:display "none"}))

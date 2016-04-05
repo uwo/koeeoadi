@@ -45,7 +45,7 @@
   (let [link      (gdom/getElement "download-link")
         extension (editor config/editor-file-map)]
     (aset link "download" (str current-theme "-theme." extension))
-    (aset link "href" (str "data:text/plain;charset=utf-8," (tb/build-emacs)))
+    (aset link "href" (str "data:text/plain;charset=utf-8," (tb/build-theme editor)))
     (.click link)))
 
 ;; TODO figure out how this works
@@ -168,13 +168,12 @@
 
         (dom/label nil "Export to:")
         (dom/button #js {:className "export-button"
-                         :onClick #(export-theme-file current-theme :emacs)} "Emacs")
+                         :onClick #(export-theme-file current-theme :emacs)} "Emacs (GUI only)")
 
-        ;;;; Wishful thinking :)
-        ;; (dom/button #js {:className "export-button"
-        ;;                  :onClick #(tb/build-vim)} "Vim")
-        ;; (dom/button #js {:className "export-button"
-        ;;                  :onClick #(tb/build-sublime-text)} "Sublime Text")
-        ))))
+        (dom/button #js {:className "export-button"
+                         :onClick #(export-theme-file current-theme :vim)} "Vim (GUI only)")
+
+        (dom/button #js {:className "export-button"
+                         :onClick #(tb/build-sublime-text)} "Sublime Text")))))
 
 (def theme-actions (om/factory ThemeActions))
