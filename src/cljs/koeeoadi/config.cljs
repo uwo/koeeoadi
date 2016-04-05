@@ -38,16 +38,6 @@
    {:face/id 11 :face/name "type"                       :face/color-fg {:color/id 2  :color/hex  "#268bd2"} :face/underline nil :face/bold nil :face/italic nil}
    {:face/id 12 :face/name "variable-name"              :face/color-fg {:color/id 0  :color/hex  "#6c71c4"} :face/underline nil :face/bold nil :face/italic nil}])
 
-(def user-faces-list
-  [{:face/id 0
-    :face/name "user-face-1"
-    :face/color-fg nil
-    :face/color-bg nil
-    :face/underline true
-    :face/bold true
-    :face/italic true
-    :face/editor :emacs}])
-
 (def initial-code "c")
 
 ;; TODO Initialize this using theme/data
@@ -58,6 +48,6 @@
    :theme/map         themes
    :code/map          code
    :faces/list        faces-list
-   :user-faces/list   user-faces-list
+   :user-faces/list   []
    :colors/list       colors-list
    :code-chunks/list  (get-in code [initial-code :code-chunks/list])})
