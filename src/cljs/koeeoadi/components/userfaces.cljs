@@ -11,10 +11,12 @@
 (defn face-update [comp props]
   (om/transact! comp `[(user-face/update ~props)]))
 
-(defn face-edit-name [comp face-name new-name]
+(defn face-edit-name [comp face-name new-name needs-focus]
   (om/transact! comp `[(user-face/update
                          {:face/name      ~face-name
-                          :face/name-temp ~new-name}) ]))
+                          :face/name-temp ~new-name})])
+  (when needs-focus
+    (om/update-state! comp assoc :needs-focus true)))
 
 (defn face-add [comp]
   (let [{user-faces :user-faces/list} (om/props comp)
@@ -73,16 +75,24 @@
      {:face/color-fg [:color/id :color/rgb]}])
 
   Object
+  (componentDidUpdate [this prev-props prev-state]
+    (when (om/get-state this :needs-focus)
+      (let [node (dom/node this "editField")
+            len  (.. node -value -length)]
+        (.focus node)
+        (.setSelectionRange node len len))
+      (om/update-state! this assoc :needs-focus nil)))
+
   (render [this]
-    (let [{id           :face/id
-           name         :face/name
-           name-temp    :face/name-temp
-           bold         :face/bold
-           italic       :face/italic
-           color-bg     :face/color-bg
-           color-fg     :face/color-fg
-           underline    :face/underline
-           editor       :face/editor}   (om/props this)
+    (let [{id        :face/id
+           name      :face/name
+           name-temp :face/name-temp
+           bold      :face/bold
+           italic    :face/italic
+           color-bg  :face/color-bg
+           color-fg  :face/color-fg
+           underline :face/underline
+           editor    :face/editor}   (om/props this)
 
           colors-by-id (:colors/by-id (om/get-computed this))
           colors-list  (vals colors-by-id)
@@ -91,19 +101,22 @@
           editors      (keys config/editor-file-map)]
       (dom/tr nil
         (dom/td nil
-          (if name-temp
-            (dom/input #js {:value      name-temp
-                            :autoFocus  true
-                            :onBlur     #(when (util/valid-face-name? name-temp)
-                                           (om/transact! this `[(user-face/change-name) :user-faces]))
-                            :onKeyDown  #(when (and (util/valid-face-name? name-temp) (= 13 (util/keycode %)))
-                                           (om/transact! this `[(user-face/change-name) :user-faces]))
-                            :onChange   #(face-edit-name this name (util/target-value %))})
-            (dom/div #js {:className "row"
-                          :onClick #(face-edit-name this name "")}
-              (dom/span nil name)
-              (dom/button #js {:className "inline-button"}
-                (dom/i #js {:className "fa fa-edit fa-2x"})))))
+          (dom/input #js {:value     name-temp
+                          :onBlur    #(when (and (not= name name-temp)
+                                              (util/valid-face-name? name-temp))
+                                        (om/transact! this `[(user-face/change-name) :user-faces]))
+                          :onKeyDown #(when (and (not= name name-temp)
+                                              (util/valid-face-name? name-temp) (= 13 (util/keycode %)))
+                                        (om/transact! this `[(user-face/change-name) :user-faces]))
+                          :onChange  #(face-edit-name this name (util/target-value %) false)
+                          :style     (util/display name-temp)
+                          :ref       "editField"})
+          (dom/div #js {:className "row"
+                        :onClick   #(face-edit-name this name name true)
+                        :style     (util/display (not name-temp))}
+            (dom/span nil name)
+            (dom/button #js {:className "inline-button"}
+              (dom/i #js {:className "fa fa-edit fa-2x"}))))
 
         (dom/td nil
           (apply dom/select
@@ -121,16 +134,19 @@
 
         ;; BOLD
         (dom/td nil
-          (dom/input #js {:type "checkbox"
-                          :onClick #(face-update this {:face/name name :face/bold (util/target-checked %)})}))
+          (dom/input
+            #js {:type "checkbox"
+                 :onClick #(face-update this {:face/name name :face/bold (util/target-checked %)})}))
         ;; ITALIC
         (dom/td nil
-          (dom/input #js {:type "checkbox"
-                          :onClick #(face-update this {:face/name name :face/italic (util/target-checked %)})}))
+          (dom/input
+            #js {:type "checkbox"
+                 :onClick #(face-update this {:face/name name :face/italic (util/target-checked %)})}))
         ;; UNDERLINE
         (dom/td nil
-          (dom/input #js {:type "checkbox"
-                          :onClick #(face-update this {:face/name name :face/underline (util/target-checked %)})}))
+          (dom/input
+            #js {:type "checkbox"
+                 :onClick #(face-update this {:face/name name :face/underline (util/target-checked %)})}))
 
         (dom/td nil
           (apply dom/select #js {:onChange #(face-update this {:face/name   name
