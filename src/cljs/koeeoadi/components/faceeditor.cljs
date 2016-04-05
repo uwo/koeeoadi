@@ -54,9 +54,9 @@
                 face/bold
                 face/italic
                 face/underline]} (om/props comp)
-        {:keys [active-face]}    (om/get-computed comp)
-        active?                  (= name active-face)]
-    (dom/ul #js {:className (str (if active? "" "hide") "face-styles")}
+        {:keys [active-face]}    (om/get-computed comp)]
+    (dom/ul #js {:className "face-styles"
+                 :style (util/display (= name active-face))}
       (face-style comp :face/bold)
       (face-style comp :face/italic)
       (face-style comp :face/underline))))
