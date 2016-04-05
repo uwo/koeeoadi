@@ -1,4 +1,4 @@
-(ns koeeoadi.components.themeactions
+(ns koeeoadi.components.theme
   (:require [goog.dom :as gdom]
             [goog.events :as gevents]
             [cljs.reader :as reader]
@@ -84,7 +84,7 @@
                                            :prev-name ~prev-name})]))
 
 ;; TODO needs a serious refactor
-(defui ThemeActions
+(defui Theme
   static om/IQuery
   (query [this]
     [:theme/name-temp
@@ -178,4 +178,4 @@
         ;;                  :onClick #(tb/build-sublime-text)} "Sublime Text")
         ))))
 
-(def theme-actions (om/factory ThemeActions))
+(def theme (om/factory Theme))

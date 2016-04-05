@@ -49,20 +49,20 @@
   {:x (aget coords "y")
    :y (aget coords "x")})
 
-(defn palette-picker-show [comp face color-type e]
+(defn color-picker-show [comp face color-type e]
   (.preventDefault e)
   (.stopPropagation e)
   (let [coordinates (-> (getClientPosition e)
                       switch-coordinates)]
-    (om/transact! comp `[(palette-picker/update
-                           {:palette-picker/active-face ~face
+    (om/transact! comp `[(color-picker/update
+                           {:color-picker/active-face ~face
                             :color-type                 ~color-type
-                            :palette-picker/coordinates ~coordinates})])))
+                            :color-picker/coordinates ~coordinates})])))
 
-(defn palette-picker-hide [comp]
-  (om/transact! comp `[(palette-picker/update
-                         {:palette-picker/active-face nil
-                          :palette-picker/coordinates nil}) :faces/list]))
+(defn color-picker-hide [comp]
+  (om/transact! comp `[(color-picker/update
+                         {:color-picker/active-face nil
+                          :color-picker/coordinates nil}) :faces/list]))
 
 (defn valid-face-name? [str]
   (re-matches #"^[0-9a-zA-Z\-]+$" str))

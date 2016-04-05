@@ -1,4 +1,4 @@
-(ns koeeoadi.components.palettepicker
+(ns koeeoadi.components.colorpicker
   (:require [goog.style :as gstyle]
             [goog.dom.classes :as gclasses]
             [om.next :as om :refer-macros [defui]]
@@ -38,12 +38,12 @@
 
 (def color-option (om/factory ColorOption {:keyfn :color/id}))
 
-(defui PalettePicker
+(defui ColorPicker
   static om/IQuery
   (query [this]
-    [:palette-picker/coordinates
+    [:color-picker/coordinates
      :color-type
-     {:palette-picker/active-face [:face/id
+     {:color-picker/active-face [:face/id
                                    :face/name
                                    {:face/color-bg [:color/id
                                                     :color/name
@@ -55,7 +55,7 @@
 
   Object
   (componentDidUpdate [this prev-props prev-state]
-    (let [{:keys [face/name]} (:palette-picker/active-face (:palette-picker (om/props this)))]
+    (let [{:keys [face/name]} (:color-picker/active-face (:color-picker (om/props this)))]
       (if name
         (util/update-other-code-face-elements name #(gclasses/add % "code-temp-minimize"))
         (util/update-code-elements #(gclasses/remove % "code-temp-minimize")))))
@@ -63,8 +63,8 @@
   (render [this]
     (let [{:keys [colors/list
                   color-type
-                  palette-picker/coordinates
-                  palette-picker/active-face] :as props}
+                  color-picker/coordinates
+                  color-picker/active-face] :as props}
           (om/props this)
 
           {face-name :face/name}
@@ -106,7 +106,7 @@
       (when coordinates
         (apply
           dom/div
-          #js {:id    "palette-picker"
+          #js {:id    "color-picker"
                :style #js {:position "absolute"
                            :top      (:x coordinates)
                            :left     (:y coordinates)}}
@@ -114,7 +114,7 @@
           (map color-option color-options-computed))))))
 
 
-(def palette-picker (om/factory PalettePicker))
+(def color-picker (om/factory ColorPicker))
 
-(defn palette-picker-comp []
-  (om/class->any reconciler PalettePicker))
+(defn color-picker-comp []
+  (om/class->any reconciler ColorPicker))

@@ -1,4 +1,4 @@
-(ns koeeoadi.components.faceeditor
+(ns koeeoadi.components.faces
   (:require [goog.dom :as gdom]
             [goog.style :as gstyle]
             [om.next :as om :refer-macros [defui]]
@@ -7,11 +7,12 @@
             [koeeoadi.components.palette :refer [Color]]
             [koeeoadi.util :as util]
             [koeeoadi.reconciler :refer [reconciler]]
-            [koeeoadi.components.palettepicker :refer [palette-picker-comp]]
+            [koeeoadi.components.colorpicker :refer [color-picker-comp]]
+            
             [koeeoadi.components.userfaces :refer [user-faces-comp]]
-            [koeeoadi.components.codedisplay :refer [code-display-comp]]))
+            [koeeoadi.components.code :refer [code-comp]]))
 
-(declare face-editor-comp)
+(declare faces-comp)
 
 (defn face-color-class [disabled? hex]
   (cond disabled?  "color-void"
@@ -30,14 +31,14 @@
         clazz                         (face-color-class disabled? hex)]
     (dom/div
       #js {:className (str "color color-trigger " clazz)
-           :onBlur    (if-not disabled? #(util/palette-picker-hide (palette-picker-comp)) #(do))
-           :onClick   (if-not disabled? #(util/palette-picker-show (palette-picker-comp) (om/props comp) color-type %) #(do))
+           :onBlur    (if-not disabled? #(util/color-picker-hide (color-picker-comp)) #(do))
+           :onClick   (if-not disabled? #(util/color-picker-show (color-picker-comp) (om/props comp) color-type %) #(do))
            :style     #js {:backgroundColor hex}
            :tabIndex  (when-not disabled? "0")})))
 
 (defn face-update [name prop e]
   (let [checked (util/target-checked e)]
-    (om/transact! (code-display-comp)
+    (om/transact! (code-comp)
       `[(face/update {:face/name ~name
                       ~prop      ~checked})])))
 
@@ -89,7 +90,7 @@
         (face-color this :face/color-bg)
         (face-color this :face/color-fg)
         (dom/div #js {:className "face-name"
-                      :onClick   #(om/update-state! (face-editor-comp) assoc :active-face (if active? nil face-name))}
+                      :onClick   #(om/update-state! (faces-comp) assoc :active-face (if active? nil face-name))}
           (clojure.core/name face-name))
         (dom/i #js {:className icon-classes})
         (when active?
@@ -97,7 +98,7 @@
 
 (def face (om/factory Face {:keyfn :face/name}))
 
-(defui FaceEditor
+(defui Faces
   static om/IQuery
   (query [this]
     [{:faces/list (om/get-query Face)}])
@@ -106,7 +107,7 @@
     (let [{:keys [faces/list]}  (om/props this)
           {:keys [active-face]} (om/get-state this)]
       (dom/div #js {:className  "widget"
-                    :id         "face-editor"}
+                    :id         "faces"}
         (dom/h5 #js {:className "widget-title"} "Faces")
         (dom/button
           #js {:id      "user-face-map-button"
@@ -115,7 +116,7 @@
         (dom/div #js {:id "faces-container"}
           (map #(face (om/computed % {:active-face active-face})) list))))))
 
-(def face-editor (om/factory FaceEditor))
+(def faces (om/factory Faces))
 
-(defn face-editor-comp []
-  (om/class->any reconciler FaceEditor))
+(defn faces-comp []
+  (om/class->any reconciler Faces))

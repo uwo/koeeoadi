@@ -1,11 +1,11 @@
-(ns koeeoadi.components.codedisplay
+(ns koeeoadi.components.code
   (:require [goog.dom :as gdom]
             [goog.style :as gstyle] [om.next :as om :refer-macros [defui]]
             [om.dom :as dom]
 
             [koeeoadi.util :as util]
             [koeeoadi.reconciler :refer [reconciler]]
-            [koeeoadi.components.palettepicker :refer [palette-picker-comp]]))
+            [koeeoadi.components.colorpicker :refer [color-picker-comp]]))
 
 (defn style-maybe [prop style]
   (if prop style {}))
@@ -33,6 +33,7 @@
                         :face/bold
                         :face/italic
                         :face/underline
+
                         {:face/color-fg [:color/id :color/hex]}
                         {:face/color-bg [:color/id :color/hex]}
                         ]}
@@ -47,8 +48,8 @@
           {:keys [face/name]}           face]
       (dom/span
         #js {:className    (str util/code-class " " (util/code-face-class name))
-             :onBlur       #(util/palette-picker-hide (palette-picker-comp))
-             :onClick      #(util/palette-picker-show (palette-picker-comp) face :face/color-fg %)
+             :onBlur       #(util/color-picker-hide (color-picker-comp))
+             :onClick      #(util/color-picker-show (color-picker-comp) face :face/color-fg %)
              :style        (face-styles face)
              :tabIndex     0}
         string))))
@@ -64,7 +65,7 @@
                    code-chunks)))
 
 
-(defui CodeDisplay
+(defui Code
   static om/IQuery
   (query [this]
     [{:code-chunks/list (om/get-query CodeChunk)}
@@ -82,14 +83,14 @@
           ]
       (apply dom/code
         #js {:className (util/code-face-class "background")
-             :id        "code-display"
-             :onBlur    #(util/palette-picker-hide (palette-picker-comp))
-             :onClick   #(util/palette-picker-show (palette-picker-comp) code-background :face/color-fg %)
+             :id        "code"
+             :onBlur    #(util/color-picker-hide (color-picker-comp))
+             :onClick   #(util/color-picker-show (color-picker-comp) code-background :face/color-fg %)
              :style     #js {:backgroundColor (get-in code-background [:face/color-fg :color/hex])}
              :tabIndex  0}
         (map #(code-line (last %)) code-lines)))))
 
-(def code-display (om/factory CodeDisplay))
+(def code (om/factory Code))
 
-(defn code-display-comp []
-  (om/class->any reconciler CodeDisplay))
+(defn code-comp []
+  (om/class->any reconciler Code))

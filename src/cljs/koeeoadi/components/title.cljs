@@ -1,12 +1,12 @@
-(ns koeeoadi.components.appinfo
+(ns koeeoadi.components.title
   (:require [om.next :as om :refer-macros [defui]]
             [om.dom :as dom]))
 
-(defn app-info [comp]
+(defn title [comp]
   (let [{:keys [show-help]} (om/get-state comp)]
     (dom/div #js {:className "widget"
                   :id        "app-info"}
-      (dom/h2 #js {:id "app-title"} "KOEEOADI")
+      (dom/h2 #js {:id "title"} "KOEEOADI")
       (dom/p nil "A theme creator for Emacs and Vim")
       (dom/div #js {:className "row"}
         (dom/div #js {:className "column one-third"}

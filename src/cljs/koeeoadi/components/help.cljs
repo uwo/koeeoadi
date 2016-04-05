@@ -1,9 +1,9 @@
-(ns koeeoadi.components.helpmodal
+(ns koeeoadi.components.help
   (:require [om.next :as om]
             [om.dom :as dom]
             [koeeoadi.util :as util]))
 
-(defn help-modal [comp]
+(defn help [comp]
   (let [show-help (:show-help (om/get-state comp))]
     (dom/div #js {:id "help-modal"
                   :className "modal"

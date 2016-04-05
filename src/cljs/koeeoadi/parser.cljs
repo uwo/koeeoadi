@@ -1,5 +1,6 @@
 (ns koeeoadi.parser
-  (:require [om.next :as om]))
+  (:require [om.next :as om]
+            [clojure.set :refer [rename-keys]]))
 
 (defmulti read om/dispatch)
 
@@ -33,17 +34,17 @@
   [{:keys [state query]} k _]
   {:value (get-faces state k)})
 
-(defmethod read :palette-picker
+(defmethod read :color-picker
   [{:keys [state query]} _ _]
   {:value
    (let [st @state]
      (om/db->tree query st st))})
 
-(defmethod read :theme-actions
+(defmethod read :theme
   [{:keys [state]} _ _]
   {:value (select-keys @state [:theme/name :theme/name-temp :theme/map])})
 
-(defmethod read :code-display
+(defmethod read :code
   [{:keys [state query]} _ _]
   {:value
    (let [st @state]
@@ -56,7 +57,7 @@
    (let [st @state]
      (om/db->tree query st st))})
 
-(defmethod read :face-editor
+(defmethod read :faces
   [{:keys [state query]} _ _]
   {:value
    (let [st @state]
@@ -87,7 +88,7 @@
    (fn []
      (reset! state (-> @state
                      (assoc :theme/name new-name :theme/name-temp nil)
-                     (update :theme/map clojure.set/rename-keys {prev-name new-name}))))})
+                     (update :theme/map rename-keys {prev-name new-name}))))})
 
 (defn current-theme [state]
   "Extracts current theme data from the current state"
@@ -190,7 +191,7 @@
    (fn []
      (swap! state update-in [:faces/by-name name] merge props))})
 
-(defmethod mutate 'palette-picker/update
+(defmethod mutate 'color-picker/update
   [{:keys [state]} _ props]
   {:action
    (fn []
@@ -228,7 +229,7 @@
        (reset! state (-> @state
                        (update-in ref merge {:face/name      new-name
                                              :face/name-temp nil})
-                       (update :user-faces/by-name clojure.set/rename-keys {prev-name new-name})
+                       (update :user-faces/by-name rename-keys {prev-name new-name})
                        (update :user-faces/list #(filterv (partial not= ref)
                                                    (conj % [:user-faces/by-name new-name])))))))})
 

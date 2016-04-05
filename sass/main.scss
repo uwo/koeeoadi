@@ -232,8 +232,8 @@ ul, ol {
     }
 }
 
-/* Code Display */
-#code-display {
+/* Code */
+#code {
     transition: background-color $colorTransitionPeriod;
     padding: 5px;
     border-radius: 0;
@@ -377,7 +377,7 @@ input[type="color"] {
     text-align: center;
 }
 
-#app-title {
+#title {
     border:  1px solid $grayLighter;
     font-size: 3em;
     border-radius: $borderRadius;
@@ -495,14 +495,14 @@ input[type="color"] {
 
 
 /* Palette Picker */
-#palette-picker {
+#color-picker {
     max-width: 3*$colorInputSize + 3*$colorMargin;
     padding: 10px;
     position: absolute;
     z-index: 200;
 }
 
-#palette-picker::after {
+#color-picker::after {
     content: "";
     box-sizing: border-box;
     border-radius: 0px 15px 15px 15px;
