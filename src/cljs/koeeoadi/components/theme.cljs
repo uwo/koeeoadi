@@ -23,22 +23,20 @@
 (defn new-theme [comp]
   (om/transact! comp `[(theme/new) :theme/map]))
 
-;; TODO consider saving a compressed file
+(defn encode-props [props]
+  (str "data:text/plain;charset=utf-8;base64,"
+    (.btoa js/window
+      (pr-str props))))
+
 (defn save-theme-file [comp current-theme]
   (let [link (gdom/getElement "download-link")]
     (aset link "download" (str current-theme ".koee"))
-    ;; TODO cleanup
-    (aset link "href" (str
-                        "data:text/plain;charset=utf-8;base64,"
-                        (.btoa js/window
-                          (pr-str
-                            (select-keys @reconciler [:theme/name
-                                                      :colors/by-id
-                                                      :colors/list
-                                                      :faces/by-name
-                                                      :faces/list
-                                                      :user-faces/list
-                                                      :user-faces/by-name])))))
+    (aset link "href" (encode-props
+                        (select-keys @reconciler
+                          [:theme/name  :colors/by-id
+                           :colors/list :faces/by-name
+                           :faces/list  :user-faces/list
+                           :user-faces/by-name])))
     (.click link)))
 
 (defn export-theme-file [current-theme editor]
