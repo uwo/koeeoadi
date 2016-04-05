@@ -93,8 +93,12 @@
 
   Object
   (componentDidUpdate [this prev-props prev-state]
-    (if  (:theme/name-temp (om/props this))
-      (.focus (gdom/getElement "theme-name-input"))))
+    (when (om/get-state this :needs-focus)
+      (let [node (dom/node this "editField")
+            len  (.. node -value -length)]
+        (.focus node)
+        (.setSelectionRange node len len))
+      (om/update-state! this assoc :needs-focus nil)))
 
   (render [this]
     (let [{current-theme :theme/name
@@ -106,16 +110,15 @@
         (dom/div #js {:className "row control-row"}
           (apply dom/select
             #js {:id "theme-select"
-                 :className (when name-temp "hide")
                  :onChange #(select-theme
                               ;; TODO CLENAUP
                               this
                               (assoc (get theme-map (.. % -target -value))
-                                :theme/name (.. % -target -value)))}
+                                :theme/name (.. % -target -value)))
+                 :style    (util/display (not name-temp))}
             (map #(util/option % current-theme) (keys theme-map)))
 
-          (dom/input #js {:className   (when-not name-temp "hide")
-                          :id          "theme-name-input"
+          (dom/input #js {:id          "theme-name-input"
                           :onBlur      (fn [e]
                                          (let [input-text (.. e -target -value)]
                                            (when (util/valid-file-name? input-text)
@@ -132,11 +135,15 @@
                                                    (= keycode 13))
                                              (handle-name-change this input-text current-theme))))
                           :placeholder current-theme
-                          :value       (or name-temp current-theme)})
+                          :ref         "editField"
+                          :value       (or name-temp current-theme)
+                          :style       (util/display name-temp)})
 
           (dom/button #js {:className "inline-button"
                            :id        "theme-name-edit-button"
-                           :onClick #(om/transact! this `[(theme/edit-name {:theme/name-temp ""})])}
+                           :onClick   (fn [_]
+                                        (om/transact! this `[(theme/edit-name {:theme/name-temp ~current-theme})])
+                                        (om/update-state! this assoc :needs-focus true))}
 
             (dom/i #js {:className "fa fa-edit fa-2x"})))
 
