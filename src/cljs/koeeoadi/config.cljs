@@ -24,8 +24,8 @@
    {:color/id 9 :color/rgb "#93a1a1"}])
 
 (def faces-list
-  [{:face/id 0 :face/name "default"                     :face/color-fg {:color/id 9  :color/rgb  "#93a1a1"} :face/underline nil :face/bold nil :face/italic nil}
-   {:face/id 1 :face/name "background"                  :face/color-fg {:color/id 8  :color/rgb  "#073642"} :face/underline nil :face/bold nil :face/italic nil}
+  [{:face/id 0 :face/name "background"                  :face/color-fg {:color/id 8  :color/rgb  "#073642"} :face/underline nil :face/bold nil :face/italic nil}
+   {:face/id 1 :face/name "default"                     :face/color-fg {:color/id 9  :color/rgb  "#93a1a1"} :face/underline nil :face/bold nil :face/italic nil}
    {:face/id 2 :face/name "builtin"                     :face/color-fg {:color/id 0  :color/rgb  "#6c71c4"} :face/underline nil :face/bold nil :face/italic nil}
    {:face/id 3 :face/name "comment"                     :face/color-fg {:color/id 1  :color/rgb  "#586e75"} :face/underline nil :face/bold nil :face/italic nil}
    {:face/id 4 :face/name "comment-delimiter"           :face/color-fg {:color/id 1  :color/rgb  "#586e75"} :face/underline nil :face/bold nil :face/italic nil}

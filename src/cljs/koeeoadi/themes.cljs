@@ -1,6 +1,6 @@
 (ns koeeoadi.themes)
 
-(def themes {"solarized-dark" {:theme/name "solarized-dark" 
+(def themes {"solarized-dark" {:theme/name "solarized-dark"
                                :colors/list
                                 [[:colors/by-id 0]
                                  [:colors/by-id 1]
@@ -13,8 +13,8 @@
                                  [:colors/by-id 8]
                                  [:colors/by-id 9]],
                                 :faces/list
-                                [[:faces/by-name "default"]
-                                 [:faces/by-name "background"]
+                                [[:faces/by-name "background"]
+                                 [:faces/by-name "default"]
                                  [:faces/by-name "builtin"]
                                  [:faces/by-name "comment-delimiter"]
                                  [:faces/by-name "comment"]
@@ -67,16 +67,16 @@
                                  "builtin"
                                  {:face/id 2, :face/name "builtin", :face/color-fg [:colors/by-id 0]},
                                  "background"
-                                 {:face/id 1, :face/name "background", :face/color-fg [:colors/by-id 8]},
+                                 {:face/id 0, :face/name "background", :face/color-fg [:colors/by-id 8]},
                                  "default"
-                                 {:face/id 0, :face/name "default", :face/color-fg [:colors/by-id 9]},
+                                 {:face/id 1, :face/name "default", :face/color-fg [:colors/by-id 9]},
                                  "doc" {:face/id 6, :face/name "doc", :face/color-fg [:colors/by-id 3]}}}
 
-             "basic-bw" {:theme/name "basic-bw" 
+             "basic-bw" {:theme/name "basic-bw"
                          :colors/list [[:colors/by-id 0] [:colors/by-id 1]],
                           :faces/list
-                          [[:faces/by-name "default"]
-                           [:faces/by-name "background"]
+                          [[:faces/by-name "background"]
+                           [:faces/by-name "default"]
                            [:faces/by-name "builtin"]
                            [:faces/by-name "comment-delimiter"]
                            [:faces/by-name "comment"]
@@ -121,12 +121,12 @@
                            "builtin"
                            {:face/id 2, :face/name "builtin", :face/color-fg [:colors/by-id 0]},
                            "background"
-                           {:face/id 1, :face/name "background", :face/color-fg [:colors/by-id 1]},
+                           {:face/id 0, :face/name "background", :face/color-fg [:colors/by-id 1]},
                            "default"
-                           {:face/id 0, :face/name "default", :face/color-fg [:colors/by-id 0]},
+                           {:face/id 1, :face/name "default", :face/color-fg [:colors/by-id 0]},
                            "doc" {:face/id 6, :face/name "doc", :face/color-fg [:colors/by-id 0]}}}
 
-             "basic-light" {:theme/name "basic-light" 
+             "basic-light" {:theme/name "basic-light"
                             :colors/list
                              [[:colors/by-id 0]
                               [:colors/by-id 1]
@@ -192,7 +192,7 @@
                               {:face/id 0, :face/name "default", :face/color-fg [:colors/by-id 0]},
                               "doc" {:face/id 6, :face/name "doc", :face/color-fg [:colors/by-id 4]}}}
 
-             "mouse" {:theme/name "mouse" 
+             "mouse" {:theme/name "mouse"
                       :colors/list
                        [[:colors/by-id 0]
                         [:colors/by-id 1]
@@ -201,8 +201,8 @@
                         [:colors/by-id 4]
                         [:colors/by-id 5]],
                        :faces/list
-                       [[:faces/by-name "default"]
-                        [:faces/by-name "background"]
+                       [[:faces/by-name "background"]
+                        [:faces/by-name "default"]
                         [:faces/by-name "builtin"]
                         [:faces/by-name "comment-delimiter"]
                         [:faces/by-name "comment"]
@@ -255,12 +255,12 @@
                         "builtin"
                         {:face/id 2, :face/name "builtin", :face/color-fg [:colors/by-id 4]},
                         "background"
-                        {:face/id 1, :face/name "background", :face/color-fg [:colors/by-id 1]},
+                        {:face/id 0, :face/name "background", :face/color-fg [:colors/by-id 1]},
                         "default"
-                        {:face/id 0, :face/name "default", :face/color-fg [:colors/by-id 3]},
+                        {:face/id 1, :face/name "default", :face/color-fg [:colors/by-id 3]},
                         "doc" {:face/id 6, :face/name "doc", :face/color-fg [:colors/by-id 0]}}}
 
-             "electric-toothbrush" {:theme/name "electric-toothbrush" 
+             "electric-toothbrush" {:theme/name "electric-toothbrush"
                                     :colors/list
                                     [[:colors/by-id 0]
                                      [:colors/by-id 1]
@@ -273,8 +273,8 @@
                                      [:colors/by-id 8]
                                      [:colors/by-id 9]],
                                     :faces/list
-                                    [[:faces/by-name "default"]
-                                     [:faces/by-name "background"]
+                                    [[:faces/by-name "background"]
+                                     [:faces/by-name "default"]
                                      [:faces/by-name "builtin"]
                                      [:faces/by-name "comment-delimiter"]
                                      [:faces/by-name "comment"]
@@ -327,7 +327,7 @@
                                      "builtin"
                                      {:face/id 2, :face/name "builtin", :face/color-fg [:colors/by-id 0]},
                                      "background"
-                                     {:face/id 1, :face/name "background", :face/color-fg [:colors/by-id 8]},
+                                     {:face/id 0, :face/name "background", :face/color-fg [:colors/by-id 8]},
                                      "default"
-                                     {:face/id 0, :face/name "default", :face/color-fg [:colors/by-id 9]},
+                                     {:face/id 1, :face/name "default", :face/color-fg [:colors/by-id 9]},
                                      "doc" {:face/id 6, :face/name "doc", :face/color-fg [:colors/by-id 3]}}}})
