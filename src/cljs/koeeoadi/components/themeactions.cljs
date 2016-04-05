@@ -173,7 +173,9 @@
         (dom/button #js {:className "export-button"
                          :onClick #(export-theme-file current-theme :vim)} "Vim (GUI only)")
 
-        (dom/button #js {:className "export-button"
-                         :onClick #(tb/build-sublime-text)} "Sublime Text")))))
+        ;;;; Wishful thinking
+        ;; (dom/button #js {:className "export-button"
+        ;;                  :onClick #(tb/build-sublime-text)} "Sublime Text")
+        ))))
 
 (def theme-actions (om/factory ThemeActions))
