@@ -120,10 +120,10 @@
                                      "limit"
                                      ,:code-chunk/line-chunk 7007}
                                     {:code-chunk/face [:faces/by-name "default"],:code-chunk/string
-                                     ")"
+                                     ") - 2;"
                                      ,:code-chunk/line-chunk 7008}
                                     {:code-chunk/face [:faces/by-name "default"],:code-chunk/string
-                                     " - 2;\n        "
+                                     "        "
                                      ,:code-chunk/line-chunk 8001}
                                     {:code-chunk/face [:faces/by-name "keyword"],:code-chunk/string
                                      "var"
@@ -333,10 +333,10 @@
                                      "j"
                                      ,:code-chunk/line-chunk 15003}
                                     {:code-chunk/face [:faces/by-name "default"],:code-chunk/string
-                                     "]"
+                                     "] = 0;"
                                      ,:code-chunk/line-chunk 15004}
                                     {:code-chunk/face [:faces/by-name "default"],:code-chunk/string
-                                     " = 0;\n        "
+                                     "        "
                                      ,:code-chunk/line-chunk 16001}
                                     {:code-chunk/face [:faces/by-name "default"],:code-chunk/string
                                      "}"
@@ -432,10 +432,10 @@
                                      "p"
                                      ,:code-chunk/line-chunk 20003}
                                     {:code-chunk/face [:faces/by-name "default"],:code-chunk/string
-                                     ")"
+                                     ");"
                                      ,:code-chunk/line-chunk 20004}
                                     {:code-chunk/face [:faces/by-name "default"],:code-chunk/string
-                                     ";\n        "
+                                     "        "
                                      ,:code-chunk/line-chunk 21001}
                                     {:code-chunk/face [:faces/by-name "default"],:code-chunk/string
                                      "}"
@@ -480,10 +480,10 @@
                                      "100"
                                      ,:code-chunk/line-chunk 26006}
                                     {:code-chunk/face [:faces/by-name "default"],:code-chunk/string
-                                     ")"
+                                     ");"
                                      ,:code-chunk/line-chunk 26007}
                                     {:code-chunk/face [:faces/by-name "default"],:code-chunk/string
-                                     ";\n "
+                                     " "
                                      ,:code-chunk/line-chunk 27001}
                                     {:code-chunk/face [:faces/by-name "keyword"],:code-chunk/string
                                      "if"
@@ -726,10 +726,10 @@
                                      "* i i"
                                      ,:code-chunk/line-chunk 9005}
                                     {:code-chunk/face [:faces/by-name "default"],:code-chunk/string
-                                     ")"
+                                     ") to limit by i"
                                      ,:code-chunk/line-chunk 9006}
                                     {:code-chunk/face [:faces/by-name "default"],:code-chunk/string
-                                     " to limit by i\n                   do "
+                                     "                   do "
                                      ,:code-chunk/line-chunk 10001}
                                     {:code-chunk/face [:faces/by-name "default"],:code-chunk/string
                                      "("
@@ -1543,7 +1543,7 @@
                                "  \n"
                                ,:code-chunk/line-chunk 7001}
                               {:code-chunk/face [:faces/by-name "default"],:code-chunk/string
-                               "("
+                               "   ("
                                ,:code-chunk/line-chunk 7002}
                               {:code-chunk/face [:faces/by-name "default"],:code-chunk/string
                                "i**2..n"
