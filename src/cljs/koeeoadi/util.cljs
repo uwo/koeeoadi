@@ -5,6 +5,9 @@
             [om.next :as om]
             [om.dom :as dom]))
 
+(defn display [pred]
+  (when-not pred #js {:display "none"}))
+
 (defn profile-start []
   (.profile js/console "Profile Run"))
 
