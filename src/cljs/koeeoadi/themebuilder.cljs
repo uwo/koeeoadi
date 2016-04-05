@@ -81,7 +81,6 @@
                             ;; combine with the user defined emacs faces
                             (concat (filter #(= :emacs (:face/editor %)) (vals user-faces-map)))))))
 
-;; TODO use a multimethod here
 (defmethod build-theme :emacs
   [_]
   (let [{current-theme      :theme/name

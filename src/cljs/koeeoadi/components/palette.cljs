@@ -13,7 +13,6 @@
   (om/transact! comp
     `[(color/update {:color/hex ~(target-value e)}) :palette]))
 
-;; TODO this will cause issues since I'm not ussing idents for user-faces list
 (defn color-remove [comp {:keys [color/id] :as color}]
   (om/transact! comp
     `[(color/remove) :palette]))
