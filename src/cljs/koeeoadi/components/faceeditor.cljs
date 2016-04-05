@@ -111,7 +111,7 @@
         (dom/button
           #js {:id      "user-face-map-button"
                :onClick #(om/update-state! (user-faces-comp) assoc :active true)}
-          "Edit User Face Map")
+          "Edit User Faces")
         (dom/div #js {:id "faces-container"}
           (map #(face (om/computed % {:active-face active-face})) list))))))
 

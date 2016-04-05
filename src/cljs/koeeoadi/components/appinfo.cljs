@@ -1,8 +1,22 @@
 (ns koeeoadi.components.appinfo
-  (:require [om.dom :as dom]))
+  (:require [om.next :as om :refer-macros [defui]]
+            [om.dom :as dom]))
 
-(defn app-info []
-  (dom/div #js {:className "widget"
-                :id        "app-info"}
-    (dom/h2 #js {:id "app-title"} "KOEEOADI")
-    (dom/div nil "A theme creator for Emacs")))
+(defn app-info [comp]
+  (let [{:keys [show-help]} (om/get-state comp)]
+    (dom/div #js {:className "widget"
+                  :id        "app-info"}
+      (dom/h2 #js {:id "app-title"} "KOEEOADI")
+      (dom/p nil "A theme creator for Emacs and Vim")
+      (dom/div #js {:className "row"}
+        (dom/div #js {:className "column one-third"}
+          (dom/a #js {:href "https://twitter.com/sean_irbyy"
+                      :target "_blank"} "Twitter"))
+
+        (dom/div #js {:className "column one-third"}
+          (dom/a #js {:href "https://github.com/seanirby/koeeoadi.git"
+                      :target "_blank"} "Github"))
+
+        (dom/div #js {:className "column one-third"}
+          (dom/a #js {:href "#"
+                      :onClick #(om/update-state! comp assoc :show-help true)} "Help"))))))

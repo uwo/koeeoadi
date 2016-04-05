@@ -9,11 +9,12 @@ $grayDarker: #202020;
 $grayDarkest: #1a1a1a;
 $backgroundColor: $grayDarker;
 
+$buttonWidth: 100px;
 $colorInputSize: 20px;
 $colorMargin: 2px;
 $colorTransitionPeriod: 0.5s;
 $borderRadius: 0px;
-$modalWidth: 800px;
+$modalWidth: 900px;
 $modalHeight: 500px;
 $smallSelectSize: 100px;
 $tdSpacing: 20px;
@@ -72,7 +73,7 @@ body {
     min-height: 100%;
     font-size: 1.25em;
     background-color: $backgroundColor;
-    color: $grayLightest;
+    color: $grayLighter;
     font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
     background-color: $gray;
 }
@@ -82,6 +83,7 @@ input, select {
 }
 
 button {
+    width: $buttonWidth;
     color: $grayLighter;
 }
 
@@ -99,15 +101,10 @@ i {
     pointer-events: none;
 }
 
-/* General Classes */
-
-#app {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+ul, ol {
 }
+
+/* General Classes */
 
 .sidebar{
     box-sizing: border-box;
@@ -149,7 +146,7 @@ i {
     display: none;
 }
 
-.widget-title {
+.widget-title,.modal-title {
     border: 1px solid $widgetTitleBorderColor;
     border-radius: $borderRadius;
     margin-bottom: 20px !important;
@@ -158,6 +155,55 @@ i {
     font-size: 1.1em !important;
     background-color: $grayDark;
     text-transform: uppercase;
+}
+
+.modal-title {
+    margin-right: 10px;
+}
+
+.modal {
+    position: fixed;
+    z-index: 300;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: transparent;
+}
+
+.modal-content-container {
+    box-sizing: border-box;
+    font-size: 1.2em;
+    height: $modalHeight;
+    position: absolute;
+    margin-top: -$modalHeight/2;
+    top: 50%;
+    z-index: 300;
+    left: 50%;
+    padding: 20px;
+    border: 1px solid $grayLight;
+    background-color: $grayDarker;
+
+    button {
+        position: absolute;
+        margin-left: - $buttonWidth/2;
+        bottom: 10px;
+        left: 50%;
+    }
+}
+
+.modal-content {
+    height: 80%;
+    overflow-y: scroll;
+}
+
+#help-modal > .modal-content-container{
+    width: $modalWidth;
+    margin-left: - $modalWidth/2;
+}
+
+#help-modal > *{
+    text-align: left;
 }
 
 /* Sidebar */
@@ -301,6 +347,15 @@ input[type="color"] {
     background-color: $grayDarker;
 }
 
+/* App */
+#app {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
 /* App Info */
 #app-info > *{
     text-align: center;
@@ -370,6 +425,7 @@ input[type="color"] {
     margin-top: 10px;
     width: 100%;
 }
+
 .face:nth-child(odd) {
     background-color: $gray;
 }
@@ -450,12 +506,6 @@ input[type="color"] {
 }
 
 /* User Face Map */
-
-.modal {
-    position: fixed;
-    z-index: 300;
-}
-
 #user-faces-modal {
     position: fixed;
     top: 50%;

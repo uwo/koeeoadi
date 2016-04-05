@@ -11,6 +11,7 @@
             [koeeoadi.components.themeactions :refer [ThemeActions theme-actions]]
             [koeeoadi.components.codepicker :refer [code-picker]]
             [koeeoadi.components.faceeditor :refer [FaceEditor face-editor Face]]
+            [koeeoadi.components.helpmodal :refer [help-modal]]
             [koeeoadi.components.palette :refer [Palette palette]]
             [koeeoadi.components.palettepicker :refer [PalettePicker palette-picker]]
             [koeeoadi.components.codedisplay :refer [CodeDisplay code-display CodeChunk]]
@@ -59,7 +60,7 @@
            user-faces-data     :user-faces :as props} (om/props this)]
       (dom/div nil
         (dom/div #js {:className "sidebar" :id "sidebar-left"}
-          (app-info)
+          (app-info this)
           (theme-actions theme-actions-data)
           (code-picker props))
         (code-display code-display-data)
@@ -67,7 +68,8 @@
           (palette palette-data)
           (face-editor face-editor-data))
         (user-faces user-faces-data)
-        (palette-picker palette-picker-data)))))
+        (palette-picker palette-picker-data)
+        (help-modal this)))))
 
 (om/add-root! reconciler
   Root (getElement "app"))
