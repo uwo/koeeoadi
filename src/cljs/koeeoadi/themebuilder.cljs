@@ -122,6 +122,11 @@
    "String"      "string"
    "Type"        "type"})
 
+(defn vim-position-normal [face-names]
+  "Moves the Normal syntax name to the beginning.  Needed for VIM
+   to set colors properly"
+  (sort-by #(not= "Normal" %) face-names))
+
 (defn vim-build-style [style-type prop-separator styles]
   (let [styles' (filter identity styles)]
     (if (empty? styles')
@@ -152,7 +157,7 @@
   (let [rec            @reconciler
         faces-by-name  (:faces/by-name rec)
         faces-by-name' (inject-bg-color-ident faces-by-name)
-        faces          (map #(vim-build-face % faces-by-name') (keys vim-face-map))
+        faces          (map #(vim-build-face % faces-by-name') (vim-position-normal (keys vim-face-map)))
         user-faces     (filter-by-editor :vim (vals (:user-faces/by-name rec)))
         all-faces      (sub-colors (concat faces user-faces))]
     (map vim-build-syntax-config-line all-faces)))
