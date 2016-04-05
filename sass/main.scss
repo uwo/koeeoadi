@@ -275,9 +275,12 @@ ul, ol {
 
 /* Palette */
 
+#palette-colors {
+    margin: -15px 0 3px 0;
 
-.palette-colors > * {
-    vertical-align: middle;
+    > * {
+        vertical-align: middle;
+    }
 }
 
 .color-input,.color-add {

@@ -68,7 +68,7 @@
       (dom/div #js {:className "widget"
                     :id "palette"}
         (dom/h5 #js {:className "widget-title"} "Palette")
-        (apply dom/div #js {:className "palette-colors"}
+        (apply dom/div #js {:id "palette-colors"}
           (conj (mapv color list)
             (color-adder (om/computed {} {:callback callback}))))))))
 
