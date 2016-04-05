@@ -178,6 +178,3 @@
          ""]
         vim-highlight-init
         face-specs))))
-
-(defn build-sublime-text []
-  "stub")

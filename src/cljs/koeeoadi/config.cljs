@@ -8,8 +8,7 @@
 
 (def editor-file-map
   {:emacs        "el"
-   :vim          "vim"
-   :sublime-text "sublime-theme"})
+   :vim          "vim"})
 
 (def colors-list
   [{:color/id 0 :color/hex "#6c71c4"}
