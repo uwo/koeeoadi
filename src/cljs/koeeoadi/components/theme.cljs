@@ -108,11 +108,11 @@
         (dom/div #js {:className "row control-row"}
           (apply dom/select
             #js {:id "theme-select"
-                 :onChange #(select-theme
-                              ;; TODO CLENAUP
-                              this
-                              (assoc (get theme-map (.. % -target -value))
-                                :theme/name (.. % -target -value)))
+                 :onChange (fn [e]
+                             (let [theme-name (util/target-value e)]
+                               (select-theme this
+                                 (assoc (get theme-map theme-name)
+                                   :theme/name theme-name))))
                  :style    (util/display (not name-temp))}
             (map #(util/option % current-theme) (keys theme-map)))
 
