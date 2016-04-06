@@ -177,5 +177,3 @@
          ""]
         vim-highlight-init
         face-specs))))
-
-(build-theme :vim)
