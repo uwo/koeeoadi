@@ -19,7 +19,7 @@
 (defn inject-bg-color-ident [faces-by-name]
   "Injects the bg color ident from the background face into the
   default face/colo-rbg property"
-  (let [bg-color-ident (get-in faces-by-name ["background" :face/color-fg])]
+  (let [bg-color-ident (get-in faces-by-name ["background" :face/color-bg])]
     (assoc-in faces-by-name ["default" :face/color-bg] bg-color-ident)))
 
 (defmulti build-theme
@@ -70,7 +70,7 @@
 
 (defn xform-faces-emacs [default-faces-map user-faces-map]
   (let [default-faces-map' (into {} (map font-lock-faceify default-faces-map))
-        bg-color           (get-in default-faces-map ["background" :face/color-fg])]
+        bg-color           (get-in default-faces-map ["background" :face/color-bg])]
     (map xform-face-emacs (-> default-faces-map'
                             ;; remove background face
                             (dissoc "background")
@@ -164,7 +164,7 @@
 (defmethod build-theme :vim
   [_]
   (let [rec        @reconciler
-        set-bg     (->> (get-in rec [:faces/by-name "background" :face/color-fg])
+        set-bg     (->> (get-in rec [:faces/by-name "background" :face/color-bg])
                      (get-in rec)
                      :color/hex
                      vim-set-bg)
@@ -177,3 +177,5 @@
          ""]
         vim-highlight-init
         face-specs))))
+
+(build-theme :vim)

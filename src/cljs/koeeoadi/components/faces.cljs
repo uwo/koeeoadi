@@ -20,8 +20,11 @@
         :else      ""))
 
 (defn face-disabled? [name color-type]
-  (and (or (= name "background") (= name "default"))
-    (= :face/color-bg color-type)))
+  (or
+    (and (= name "background")
+      (= :face/color-fg color-type))
+    (and (= name "default")
+      (= :face/color-bg color-type))))
 
 (defn face-color [comp color-type]
   (let [{:keys [face/name] :as props} (om/props comp)

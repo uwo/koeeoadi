@@ -23,7 +23,7 @@
    {:color/id 9 :color/hex "#93a1a1"}])
 
 (def faces-list
-  [{:face/id 0  :face/name "background"        :face/color-fg {:color/id 8 :color/hex "#073642"} :face/underline nil :face/bold nil :face/italic nil}
+  [{:face/id 0  :face/name "background"        :face/color-bg {:color/id 8 :color/hex "#073642"} :face/underline nil :face/bold nil :face/italic nil}
    {:face/id 1  :face/name "default"           :face/color-fg {:color/id 9 :color/hex "#93a1a1"} :face/underline nil :face/bold nil :face/italic nil}
    {:face/id 2  :face/name "builtin"           :face/color-fg {:color/id 0 :color/hex "#6c71c4"} :face/underline nil :face/bold nil :face/italic nil}
    {:face/id 3  :face/name "comment"           :face/color-fg {:color/id 1 :color/hex "#586e75"} :face/underline nil :face/bold nil :face/italic nil}

@@ -71,7 +71,7 @@
     [{:code-chunks/list (om/get-query CodeChunk)}
      {:code-background  [:face/id
                          :face/name
-                         {:face/color-fg [:color/id
+                         {:face/color-bg [:color/id
                                           :color/name
                                           :color/hex]}]}])
 
@@ -79,14 +79,13 @@
   (render [this]
     (let [{:keys [code-background
                   code-chunks/list]} (om/props this)
-          code-lines                 (group-lines list)
-          ]
+          code-lines                 (group-lines list)]
       (apply dom/code
         #js {:className (util/code-face-class "background")
              :id        "code"
              :onBlur    #(util/color-picker-hide (color-picker-comp))
-             :onClick   #(util/color-picker-show (color-picker-comp) code-background :face/color-fg %)
-             :style     #js {:backgroundColor (get-in code-background [:face/color-fg :color/hex])}
+             :onClick   #(util/color-picker-show (color-picker-comp) code-background :face/color-bg %)
+             :style     #js {:backgroundColor (get-in code-background [:face/color-bg :color/hex])}
              :tabIndex  0}
         (map #(code-line (last %)) code-lines)))))
 

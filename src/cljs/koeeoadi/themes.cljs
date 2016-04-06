@@ -67,7 +67,7 @@
                                  "builtin"
                                  {:face/id 2, :face/name "builtin", :face/color-fg [:colors/by-id 0]},
                                  "background"
-                                 {:face/id 0, :face/name "background", :face/color-fg [:colors/by-id 8]},
+                                 {:face/id 0, :face/name "background", :face/color-bg [:colors/by-id 8]},
                                  "default"
                                  {:face/id 1, :face/name "default", :face/color-fg [:colors/by-id 9]},
                                  "doc" {:face/id 6, :face/name "doc", :face/color-fg [:colors/by-id 3]}}}
@@ -121,7 +121,7 @@
                            "builtin"
                            {:face/id 2, :face/name "builtin", :face/color-fg [:colors/by-id 0]},
                            "background"
-                           {:face/id 0, :face/name "background", :face/color-fg [:colors/by-id 1]},
+                           {:face/id 0, :face/name "background", :face/color-bg [:colors/by-id 1]},
                            "default"
                            {:face/id 1, :face/name "default", :face/color-fg [:colors/by-id 0]},
                            "doc" {:face/id 6, :face/name "doc", :face/color-fg [:colors/by-id 0]}}}
@@ -187,7 +187,7 @@
                               "builtin"
                               {:face/id 2, :face/name "builtin", :face/color-fg [:colors/by-id 3]},
                               "background"
-                              {:face/id 1, :face/name "background", :face/color-fg [:colors/by-id 1]},
+                              {:face/id 1, :face/name "background", :face/color-bg [:colors/by-id 1]},
                               "default"
                               {:face/id 0, :face/name "default", :face/color-fg [:colors/by-id 0]},
                               "doc" {:face/id 6, :face/name "doc", :face/color-fg [:colors/by-id 4]}}}
@@ -255,7 +255,7 @@
                         "builtin"
                         {:face/id 2, :face/name "builtin", :face/color-fg [:colors/by-id 4]},
                         "background"
-                        {:face/id 0, :face/name "background", :face/color-fg [:colors/by-id 1]},
+                        {:face/id 0, :face/name "background", :face/color-bg [:colors/by-id 1]},
                         "default"
                         {:face/id 1, :face/name "default", :face/color-fg [:colors/by-id 3]},
                         "doc" {:face/id 6, :face/name "doc", :face/color-fg [:colors/by-id 0]}}}
@@ -327,7 +327,7 @@
                                      "builtin"
                                      {:face/id 2, :face/name "builtin", :face/color-fg [:colors/by-id 0]},
                                      "background"
-                                     {:face/id 0, :face/name "background", :face/color-fg [:colors/by-id 8]},
+                                     {:face/id 0, :face/name "background", :face/color-bg [:colors/by-id 8]},
                                      "default"
                                      {:face/id 1, :face/name "default", :face/color-fg [:colors/by-id 9]},
                                      "doc" {:face/id 6, :face/name "doc", :face/color-fg [:colors/by-id 3]}}}})
