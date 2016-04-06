@@ -129,6 +129,7 @@ ul, ol {
 }
 
 .color {
+    box-sizing: border-box;
     display: inline-block;
     width: $colorInputSize;
     height: $colorInputSize;
