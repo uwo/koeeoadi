@@ -12,16 +12,38 @@
             [koeeoadi.config :as config]
             [koeeoadi.themebuilder :as tb]))
 
+(defn theme-name-begin-edit [comp]
+  (om/transact! comp `[(theme/update {:theme/name-temp ~(:theme/name (om/props comp))})])
+  (om/update-state! comp assoc :needs-focus true))
 
-(defn select-theme [comp new-theme]
-  (om/transact! comp `[(theme/change ~new-theme) :theme/map]))
+(defn theme-rename [comp e]
+  (let [input (util/target-value e)]
+    (when (and
+            (util/no-keycode-or-keycode-is-valid? (util/keycode e))
+            (util/valid-file-name? input))
+      (om/transact! comp
+        `[(theme/rename
+            {:new-name  ~input
+             :prev-name ~(:theme/name (om/props comp))})]))))
+
+(defn theme-update [comp e]
+  (let [input (util/target-value e)]
+    (om/transact! comp
+      `[(theme/update {:theme/name-temp ~input})])))
+
+(defn select-theme [comp e]
+  (let [theme-map  (:theme/map (om/props comp))
+        theme-name (util/target-value e)]
+    (om/transact! comp `[(theme/change ~(assoc (get theme-map theme-name)
+                                          :theme/name theme-name)) :theme/map])))
 
 ;; TODO This is slow because of the follow read
 ;; could probably use local component state to update
 ;; the themeactions component and update everything
 ;; when the input loses focus
 (defn new-theme [comp]
-  (om/transact! comp `[(theme/new) :theme/map]))
+  (om/transact! comp `[(theme/new) :theme/map])
+  (om/update-state! comp assoc :needs-focus true))
 
 (defn encode-props [props]
   (str "data:text/plain;charset=utf-8;base64,"
@@ -46,7 +68,6 @@
     (aset link "href" (str "data:text/plain;charset=utf-8," (tb/build-theme editor)))
     (.click link)))
 
-;; TODO figure out how this works
 (defn file-list-to-cljs [js-col]
   (-> (clj->js [])
     (.-slice)
@@ -77,11 +98,66 @@
 (defn export-theme []
   (println "stub"))
 
-(defn handle-name-change [comp new-name prev-name]
-  (om/transact! comp `[(theme/change-name {:new-name  ~new-name
-                                           :prev-name ~prev-name})]))
+(defn theme-actions [comp]
+  (dom/div #js {:className "row control-row"}
+    (dom/div #js {:className "one-third column"}
+      (dom/button #js {:className "inline-button"
+                       :onClick #(new-theme comp)}
+        (dom/i #js {:className "fa fa-file fa-3x"}))
+      (dom/div nil "New"))
+    (dom/div #js {:className "one-third column"}
+      (dom/button #js {:className "inline-button" :onClick #(save-theme-file comp (:theme/name (om/props comp)))}
+        (dom/i #js {:className "fa fa-save fa-3x"}))
+      (dom/div nil "Save"))
+    (dom/div #js {:className "one-third column"}
+      (dom/input  #js {:type "file"
+                       :id "file-input"
+                       :accept ".koee"
+                       :onChange #(read-theme-file comp %)
+                       :style #js {:display "none"}})
+      (dom/button #js {:className "inline-button" :onClick load-theme-file}
+        (dom/i #js {:className "fa fa-upload fa-3x"}))
+      (dom/div nil "Load"))))
 
-;; TODO needs a serious refactor
+(defn theme-select-edit [comp]
+  (let [{theme-name      :theme/name
+         theme-name-temp :theme/name-temp
+         theme-map       :theme/map} (om/props comp)]
+    (dom/label nil "Choose theme:"
+      (dom/div #js {:className "row control-row"}
+        (apply dom/select
+          #js {:id "theme-select"
+               :onChange #(select-theme comp %)
+               :style    (util/display (not theme-name-temp))}
+          (map #(util/option % theme-name) (keys theme-map)))
+
+        (dom/input #js {:id          "theme-name-input"
+                        :onBlur      #(theme-rename comp %)
+                        :onChange    #(theme-update comp %) 
+                        :onKeyDown   #(theme-rename comp %)
+                        :placeholder theme-name
+                        :ref         "editField"
+                        :value       (or theme-name-temp theme-name)
+                        :style       (util/display theme-name-temp)})
+
+        (dom/button #js {:className "inline-button"
+                         :id        "theme-name-edit-button"
+                         :onClick   #(theme-name-begin-edit comp)}
+
+          (dom/i #js {:className "fa fa-edit fa-2x"}))))))
+
+(defn theme-export-button [theme-name button-text]
+  (dom/button
+    #js {:className "export-button"
+         :onClick   #(export-theme-file theme-name :emacs)}
+    button-text))
+
+(defn theme-export [comp]
+  (let [theme-name (:theme/name (om/props comp))]
+    (dom/label #js {:className "widget-label"} "Export to:"
+      (theme-export-button theme-name "Emacs (GUI only)")
+      (theme-export-button theme-name "Vim (GUI only)"))))
+
 (defui Theme
   static om/IQuery
   (query [this]
@@ -104,71 +180,8 @@
            theme-map     :theme/map} (om/props this)]
       (dom/div #js {:className "widget" :id "actions"}
         (util/widget-title "Theme")
-        (dom/label nil "Choose theme:")
-        (dom/div #js {:className "row control-row"}
-          (apply dom/select
-            #js {:id "theme-select"
-                 :onChange (fn [e]
-                             (let [theme-name (util/target-value e)]
-                               (select-theme this
-                                 (assoc (get theme-map theme-name)
-                                   :theme/name theme-name))))
-                 :style    (util/display (not name-temp))}
-            (map #(util/option % current-theme) (keys theme-map)))
-
-          (dom/input #js {:id          "theme-name-input"
-                          :onBlur      (fn [e]
-                                         (let [input-text (.. e -target -value)]
-                                           (when (util/valid-file-name? input-text)
-                                             (handle-name-change this input-text current-theme))))
-                          :onChange    (fn [e]
-                                         (let [input-text (.. e -target -value)]
-                                           (om/transact! this
-                                             `[(theme/edit-name {:theme/name-temp ~input-text})])))
-                          :onKeyDown   (fn [e]
-                                         (let [keycode    (util/keycode e)
-                                               input-text (.. e -target -value)]
-                                           (when (and
-                                                   (util/valid-file-name? input-text)
-                                                   (= keycode 13))
-                                             (handle-name-change this input-text current-theme))))
-                          :placeholder current-theme
-                          :ref         "editField"
-                          :value       (or name-temp current-theme)
-                          :style       (util/display name-temp)})
-
-          (dom/button #js {:className "inline-button"
-                           :id        "theme-name-edit-button"
-                           :onClick   (fn [_]
-                                        (om/transact! this `[(theme/edit-name {:theme/name-temp ~current-theme})])
-                                        (om/update-state! this assoc :needs-focus true))}
-
-            (dom/i #js {:className "fa fa-edit fa-2x"})))
-
-        ;; TODO refactor into a theme action method
-        (dom/div #js {:className "row control-row"}
-          (dom/div #js {:className "one-third column"}
-            (dom/button #js {:className "inline-button"
-                             :onClick #(new-theme this)}
-
-              (dom/i #js {:className "fa fa-file fa-3x"})))
-          (dom/div #js {:className "one-third column"}
-            (dom/button #js {:className "inline-button" :onClick #(save-theme-file this current-theme)}
-              (dom/i #js {:className "fa fa-save fa-3x"})))
-          (dom/div #js {:className "one-third column"}
-            (dom/input  #js {:type "file"
-                             :id "file-input"
-                             :accept ".koee"
-                             :onChange #(read-theme-file this %)
-                             :style #js {:display "none"}})
-            (dom/button #js {:className "inline-button" :onClick load-theme-file}
-              (dom/i #js {:className "fa fa-upload fa-3x"}))))
-
-        (dom/label nil "Export to:")
-        (dom/button #js {:className "export-button"
-                         :onClick #(export-theme-file current-theme :emacs)} "Emacs (GUI only)")
-
-        (dom/button #js {:className "export-button"
-                         :onClick #(export-theme-file current-theme :vim)} "Vim (GUI only)")))))
+        (theme-select-edit this)
+        (theme-actions this)
+        (theme-export this)))))
 
 (def theme (om/factory Theme))

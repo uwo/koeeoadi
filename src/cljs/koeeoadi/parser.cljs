@@ -76,13 +76,13 @@
 (defmethod mutate :default
   [_ _ _] {:remote true})
 
-(defmethod mutate 'theme/edit-name
+(defmethod mutate 'theme/update
   [{:keys [state]} _ props]
   {:action
    (fn []
      (swap! state merge props))})
 
-(defmethod mutate 'theme/change-name
+(defmethod mutate 'theme/rename
   [{:keys [state]} _ {:keys [new-name prev-name]}]
   {:action
    (fn []
@@ -93,12 +93,10 @@
 (defn current-theme [state]
   "Extracts current theme data from the current state"
   (let [current-theme-name (:theme/name state)
-        current-theme-data (select-keys state [:colors/list
-                                               :colors/by-id
-                                               :faces/list
-                                               :faces/by-name
-                                               :user-faces/list
-                                               :user-faces/by-name])]
+        current-theme-data (select-keys state
+                             [:colors/list     :colors/by-id
+                              :faces/list      :faces/by-name
+                              :user-faces/list :user-faces/by-name])]
     {current-theme-name current-theme-data}))
 
 (defn theme-map

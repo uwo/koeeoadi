@@ -38,6 +38,11 @@
 (defn keycode [e]
   (.-keyCode e))
 
+(defn no-keycode-or-keycode-is-valid? [keycode]
+  (if keycode
+    (= 13 keycode)
+    true))
+
 (defn target-checked [e]
   (.. e -target -checked))
 
