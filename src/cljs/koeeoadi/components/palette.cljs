@@ -43,7 +43,7 @@
 (def color (om/factory Color {:keyfn :color/id}))
 
 (defn color-add [comp]
-  (om/transact! comp '[(color/add) :colors/list]))
+  (om/transact! comp '[(color/add)]))
 
 (defui ColorAdder
   Object
