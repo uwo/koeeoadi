@@ -103,7 +103,7 @@
            name-temp     :theme/name-temp
            theme-map     :theme/map} (om/props this)]
       (dom/div #js {:className "widget" :id "actions"}
-        (dom/h5 #js {:className "widget-title"} "Theme")
+        (util/widget-title "Theme")
         (dom/label nil "Choose theme:")
         (dom/div #js {:className "row control-row"}
           (apply dom/select

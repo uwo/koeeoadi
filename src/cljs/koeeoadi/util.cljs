@@ -6,6 +6,9 @@
             [om.next :as om]
             [om.dom :as dom]))
 
+(defn widget-title [title]
+  (dom/h5 #js {:className "widget-title"} title))
+
 (defn hex-to-rgb [hex]
   "Converts a 6 digit hex number or color string to an RGB map"
   (let [hex'       (if (string? hex) hex (str "#" hex))

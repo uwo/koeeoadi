@@ -2,7 +2,8 @@
   (:require [om.dom :as dom]
             [om.next :as om :refer-macros [defui]]
 
-            [koeeoadi.components.code :refer [CodeChunk code-comp]]))
+            [koeeoadi.components.code :refer [CodeChunk code-comp]]
+            [koeeoadi.util :as util]))
 
 (defn code-change [code-map e]
   (let [new-code  (.. e -target -value)
@@ -21,7 +22,7 @@
   (dom/div #js {:className  "widget"
                 :id         "code-picker"
                 :onChange   #(code-change code-map %)}
-    (dom/h5 #js {:className "widget-title"} "Language")
+    (util/widget-title "Language")
     (dom/label nil "Current language:")
     (apply dom/select nil
       (map #(code-option % code-name) (vals code-map)))))

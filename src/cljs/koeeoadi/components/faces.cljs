@@ -109,7 +109,7 @@
           {:keys [active-face]} (om/get-state this)]
       (dom/div #js {:className  "widget"
                     :id         "faces"}
-        (dom/h5 #js {:className "widget-title"} "Faces")
+        (util/widget-title "Faces")
         (dom/button
           #js {:id      "user-face-map-button"
                :onClick #(om/update-state! (user-faces-comp) assoc :active true)}

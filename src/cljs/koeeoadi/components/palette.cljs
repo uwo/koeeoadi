@@ -4,14 +4,14 @@
             [om.dom :as dom]
             [om.next :as om :refer-macros [defui]]
 
-            [koeeoadi.util :refer [target-value]]))
+            [koeeoadi.util :as util]))
 
 ;; TODO this is choppy.  This could be fixed by either
 ;; some sort of rate limiting or updating the css of only
 ;; the affected faces
 (defn color-update [comp e]
   (om/transact! comp
-    `[(color/update {:color/hex ~(target-value e)}) :palette]))
+    `[(color/update {:color/hex ~(util/target-value e)}) :palette]))
 
 (defn color-remove [comp {:keys [color/id] :as color}]
   (om/transact! comp
@@ -66,7 +66,7 @@
           callback (partial color-add this)]
       (dom/div #js {:className "widget"
                     :id "palette"}
-        (dom/h5 #js {:className "widget-title"} "Palette")
+        (util/widget-title "Palette")
         (apply dom/div #js {:id "palette-colors"}
           (conj (mapv color list)
             (color-adder (om/computed {} {:callback callback}))))))))
