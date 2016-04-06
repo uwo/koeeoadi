@@ -235,7 +235,6 @@ ul, ol {
 
 /* Code */
 #code {
-    transition: background-color $colorTransitionPeriod;
     padding: 5px;
     border-radius: 0;
     box-sizing: border-box;
@@ -264,7 +263,6 @@ ul, ol {
     position: relative;
     z-index: 2;
     display: inline-block;
-    transition: color $colorTransitionPeriod, background-color $colorTransitionPeriod;
     cursor: pointer;
 }
 

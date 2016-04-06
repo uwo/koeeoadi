@@ -29,11 +29,11 @@
 (defn face-color [comp color-type]
   (let [{:keys [face/name] :as props} (om/props comp)
         {hex :color/hex}              (color-type props)
-        {:keys [editing?] :as state}  (om/get-state comp)
         disabled?                     (face-disabled? name color-type)
-        clazz                         (face-color-class disabled? hex)]
+        disabled-class                (face-color-class disabled? hex)
+        face-color-type-class         (str (if (= :face/color-fg color-type) "color-fg" "color-bg") "-" name)]
     (dom/div
-      #js {:className (str "color color-trigger " clazz)
+      #js {:className (clojure.string/join " " ["color" "color-trigger" disabled-class face-color-type-class])
            :onBlur    (if-not disabled? #(util/color-picker-hide (color-picker-comp)) #(do))
            :onClick   (if-not disabled? #(util/color-picker-show (color-picker-comp) (om/props comp) color-type %) #(do))
            :style     #js {:backgroundColor hex}
@@ -83,8 +83,8 @@
 
   Object
   (render [this]
-    (let [{id         :face/id
-           face-name  :face/name
+    (let [{id        :face/id
+           face-name :face/name
            :as props}           (om/props this)
           {:keys [active-face]} (om/get-computed this)
           active?               (= face-name active-face)

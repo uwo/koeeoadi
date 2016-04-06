@@ -9,10 +9,10 @@
             [koeeoadi.reconciler :refer [reconciler]]
             [koeeoadi.util :as util]))
 
-(defn color-option-void [{:keys [color-update-temp color-update-void]}]
+(defn color-option-void [{:keys [color-update-temp' color-update-void]}]
   (dom/button #js
     {:className    "color color-option color-undefined"
-     :onMouseLeave #(color-update-temp nil)
+     :onMouseLeave #(color-update-temp')
      :onMouseDown  #(color-update-void)}))
 
 (defui ColorOption
@@ -27,16 +27,33 @@
   Object
   (render [this]
     (let [{:keys [color/hex]}         (om/props this)
-          {:keys [color-update-temp
+          {:keys [color-update-temp'
                   color-update]} (om/get-computed this)]
       (dom/button #js
         {:className    "color color-option"
-         :onMouseEnter #(color-update-temp hex)
-         :onMouseLeave #(color-update-temp nil)
+         :onMouseEnter #(color-update-temp' hex)
+         :onMouseLeave #(color-update-temp')
          :onMouseDown  #(color-update (om/props this))
          :style        #js {:backgroundColor hex}}))))
 
 (def color-option (om/factory ColorOption {:keyfn :color/id}))
+
+(defn color-update-temp
+  ([face-name orig-color color-type]
+   (color-update-temp face-name orig-color color-type orig-color))
+  ([face-name orig-color color-type hover-color-hex]
+   (println "doop")
+   (let [code-update-prop (if (and
+                                (not (= face-name "background"))
+                                (= color-type :face/color-fg))
+                            "color"
+                            "background-color")
+
+         code-selector (str ".code-" face-name)
+
+         face-color-type-selector (str ".color-" (if (= color-type :face/color-bg) "bg-" "fg-") face-name)]
+     (util/update-elements-by-selector code-selector #(gstyle/setStyle % code-update-prop hover-color-hex))
+     (util/update-elements-by-selector face-color-type-selector #(gstyle/setStyle % "background" hover-color-hex)))))
 
 (defui ColorPicker
   static om/IQuery
@@ -44,22 +61,16 @@
     [:color-picker/coordinates
      :color-type
      {:color-picker/active-face [:face/id
-                                   :face/name
-                                   {:face/color-bg [:color/id
-                                                    :color/name
-                                                    :color/hex]}
-                                   {:face/color-fg [:color/id
-                                                    :color/name
-                                                    :color/hex]}]}
+                                 :face/name
+                                 {:face/color-bg [:color/id
+                                                  :color/name
+                                                  :color/hex]}
+                                 {:face/color-fg [:color/id
+                                                  :color/name
+                                                  :color/hex]}]}
      {:colors/list (om/get-query Color)}])
 
   Object
-  (componentDidUpdate [this prev-props prev-state]
-    (let [{:keys [face/name]} (:color-picker/active-face (:color-picker (om/props this)))]
-      (if name
-        (util/update-other-code-face-elements name #(gclasses/add % "code-temp-minimize"))
-        (util/update-code-elements #(gclasses/remove % "code-temp-minimize")))))
-
   (render [this]
     (let [{:keys [colors/list
                   color-type
@@ -85,19 +96,11 @@
                                      {:face/id    ~id
                                       :face/name  ~name
                                       ~color-type [:colors/by-id ~(:color/id color)]})])))
-          color-update-temp
-          (fn [hover-color-hex]
-            (let [prop (if (and
-                             (not (= face-name "background"))
-                             (= color-type :face/color-fg))
-                         "color"
-                         "background-color")]
-              (if hover-color-hex
-                (util/update-code-face-elements face-name #(gstyle/setStyle % prop hover-color-hex))
-                (util/update-code-face-elements face-name #(gstyle/setStyle % prop (:color/hex (get active-face color-type)))))))
+          ;; can factor out of this method and partially apply it
+          color-update-temp' (partial color-update-temp face-name (get-in active-face [color-type :color/hex]) color-type)
 
           computed
-          {:color-update-temp color-update-temp
+          {:color-update-temp' color-update-temp'
            :color-update-void color-update-void
            :color-update      color-update}
 

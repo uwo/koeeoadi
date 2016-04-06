@@ -1,10 +1,11 @@
 (ns koeeoadi.util
   (:require [cljs.reader :refer [read-string]]
-            [goog.dom :refer [getElementsByTagNameAndClass $$]]
-            [goog.style :refer [setStyle getClientPosition]]
+            [goog.dom :refer [getElementsByTagNameAndClass]]
+            [goog.style :refer [getClientPosition]]
             [goog.array :refer [forEach]]
             [om.next :as om]
-            [om.dom :as dom]))
+            [om.dom :as dom])
+  (:import  [goog.dom query]))
 
 (defn widget-title [title]
   (dom/h5 #js {:className "widget-title"} title))
@@ -64,7 +65,7 @@
                       switch-coordinates)]
     (om/transact! comp `[(color-picker/update
                            {:color-picker/active-face ~face
-                            :color-type                 ~color-type
+                            :color-type               ~color-type
                             :color-picker/coordinates ~coordinates})])))
 
 (defn color-picker-hide [comp]
@@ -81,17 +82,12 @@
 (def code-class "code")
 
 (defn code-face-class [face-name]
-  (str code-class "-" (name face-name)))
+  (str "code-" (name face-name)))
 
-(defn update-other-code-face-elements [face-name func]
-  ;; TODO find the non deprecated $$ i should be using
-  (let [code ($$ (str ".code:not(." (code-face-class face-name) ")"))]
-    (forEach code #(func %))))
+(defn update-elements-by-class [class func]
+  (let [elements (getElementsByTagNameAndClass nil class)]
+    (forEach elements func)))
 
-(defn update-code-face-elements [face-name func]
-  (let [code (getElementsByTagNameAndClass nil (code-face-class face-name))]
-    (forEach code #(func %))))
-
-(defn update-code-elements [func]
-  (let [code (getElementsByTagNameAndClass nil code-class)]
-    (forEach code #(func %))))
+(defn update-elements-by-selector [selector func]
+  (let [elements (query selector)]
+    (forEach elements func)))
