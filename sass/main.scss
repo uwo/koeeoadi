@@ -294,6 +294,7 @@ ul, ol {
 
 .color-add {
     margin-top: 20px;
+    padding-top: 5px;
     text-align: center;
     cursor: pointer;
 }
@@ -316,12 +317,12 @@ ul, ol {
     top: -$colorInputSize;
 }
 
-.color-add:before {
-    content: '';
-    vertical-align: middle;
-    height: 100%;
-    pointer-events: none;
-}
+/* .color-add:before { */
+/*     content: ''; */
+/*     vertical-align: middle; */
+/*     height: 100%; */
+/*     pointer-events: none; */
+/* } */
 
 .color-add > i {
     z-index: 102;
@@ -350,7 +351,7 @@ ul, ol {
 }
 
 input[type="color"] {
-    border: none;
+    border: 1px solid transparent;
     width: 100%;
     height: 100%;
     position: absolute;
@@ -542,9 +543,11 @@ input[type="color"] {
     }
 
     .row {
+        position: relative;
+
         button {
-            position: absolute;
             top: 0;
+            position: absolute;
             right: 10px;
         }
     }
