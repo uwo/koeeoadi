@@ -31,6 +31,8 @@
     [:theme/name
      :theme/name-temp
      :theme/map
+     {:palette/active-color (om/get-query Color)} 
+
      {:theme            (om/get-query Theme)}
 
      {:code-chunks/list (om/get-query CodeChunk)}

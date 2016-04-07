@@ -42,7 +42,6 @@
   ([face-name orig-color color-type]
    (color-update-temp face-name orig-color color-type orig-color))
   ([face-name orig-color color-type hover-color-hex]
-   (println "doop")
    (let [code-update-prop (if (and
                                 (not (= face-name "background"))
                                 (= color-type :face/color-fg))

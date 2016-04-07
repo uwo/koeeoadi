@@ -41,7 +41,8 @@
 
 ;; TODO Initialize this using theme/data
 (def app-state
-  {:code/name         initial-code
+  {:palette/active-color (first colors-list)
+   :code/name         initial-code
    :theme/name        "solarized-dark"
    :code-background   [:faces/by-name "background"]
    :theme/map         themes

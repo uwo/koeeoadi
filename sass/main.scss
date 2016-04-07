@@ -284,12 +284,24 @@ ul, ol {
     }
 }
 
-.color-input,.color-add {
+.color-editable,.color-add {
     position: relative;
 }
 
-.color-input {
+.color-editable {
     margin: 20px 0 0 $colorMargin;
+}
+
+.color-editable:before {
+    content: '';
+    width: $colorInputSize;
+    height: $colorInputSize;
+    position: absolute;
+    bottom: -5px;
+}
+
+.color-editable.color-active:before {
+    border-bottom: 2px solid $grayLighter;
 }
 
 .color-add {

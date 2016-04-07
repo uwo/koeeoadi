@@ -50,6 +50,9 @@
 (defn target-value [e]
   (.. e -target -value))
 
+(defn target-color [e]
+  (.. e -target -color))
+
 (defn option [name selected-name]
   (let [selected (= name selected-name)]
     (dom/option #js {:selected selected} name)))

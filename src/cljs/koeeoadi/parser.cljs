@@ -163,6 +163,12 @@
                        (assoc-in [:colors/by-id new-id] {:color/id new-id :color/hex "#FFFFFF"})
                        (update :colors/list conj [:colors/by-id new-id])))))})
 
+(defmethod mutate 'color/set-active
+  [{:keys [state ref]} _ _]
+  {:action
+   (fn []
+     (swap! state assoc :palette/active-color ref))})
+
 (defmethod mutate 'color/remove
   [{:keys [state ref]} _ _]
   {:action
@@ -172,10 +178,10 @@
                      (update :colors/list #(filterv (partial not= ref) %)))))})
 
 (defmethod mutate 'color/update
-  [{:keys [state ref]} _ props]
+  [{:keys [state]} _ {:keys [color/id] :as props}]
   {:action
    (fn []
-     (swap! state update-in ref merge props))})
+     (swap! state update-in [:colors/by-id id] merge props))})
 
 (defmethod mutate 'face/update
   [{:keys [state]} _ {:keys [:face/name] :as props}]
