@@ -18,15 +18,16 @@ $modalWidth: 900px;
 $modalHeight: 500px;
 $smallSelectSize: 100px;
 $tdSpacing: 20px;
-$widgetContent: 250px;
 $widgetPadding: 7.5px;
 $widgetBorder: 1px;
-$widgetBorderColor: $grayLight;
-$widgetTitleBorderColor: $grayLight;
-$sidebarHeight: 500px;
+$widgetContentWidth: 250px;
+$widgetBorderColor: $grayDark;
+$widgetTitleBorderColor: $grayDarkest;
 $sidebarPadding: 5px;
-$sidebarWidth: 2*$sidebarPadding + 2*$widgetPadding + 2*$widgetBorder + 1*$widgetContent;
+$sidebarWidth: 2*$sidebarPadding + 2*$widgetPadding + $widgetContentWidth + 2*$widgetBorder;
+$codeWidth: 800px;
 $userFacesModalWidth: 920px;
+
 
 /* Overrides for skeleton.css */
 .container {
@@ -46,7 +47,7 @@ select {
 select,input[type="text"] {
     background-color: $grayLighter;
     box-sizing: border-box;
-    width: 150px;
+    width: 100px;
     height: 20px;
     line-height: normal;
     border: none;
@@ -75,11 +76,26 @@ html {
 body {
     min-height: 100%;
     font-size: 1.25em;
-    background-color: $backgroundColor;
     color: $grayLighter;
     font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
-    background-color: $gray;
+    background-image:
+    -moz-linear-gradient(45deg, $grayDarker 25%, transparent 25%),
+    -moz-linear-gradient(-45deg, $grayDarker 25%, transparent 25%),
+    -moz-linear-gradient(45deg, transparent 75%, $grayDarker 75%),
+    -moz-linear-gradient(-45deg, $gray 75%, $grayDarker 75%);
+    background-image:
+    -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, $grayDarker), color-stop(.25, transparent)),
+    -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.25, $grayDarker), color-stop(.25, transparent)),
+    -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.75, transparent), color-stop(.75, $grayDarker)),
+    -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.75, $gray), color-stop(.75, $grayDarker));
+
+    -moz-background-size: 100px 100px;
+    background-size: 100px 100px;
+    -webkit-background-size: 20px 20px; /* override value for shitty webkit */
+
+    background-position:0 0, 50px 0, 50px -50px, 0px 50px;
 }
+
 
 input, select {
     color: $grayDark;
@@ -110,14 +126,6 @@ ul, ol {
 
 /* General Classes */
 
-.sidebar{
-    box-sizing: border-box;
-    padding: $sidebarPadding;
-    width: $sidebarWidth;
-    position: relative;
-    z-index: 100;
-}
-
 .widget {
     background: $backgroundColor;
     vertical-align: top;
@@ -125,7 +133,7 @@ ul, ol {
     border: $widgetBorder solid $widgetBorderColor;
     border-radius: $borderRadius;
     padding: $widgetPadding;
-    width: $widgetContent;
+    width: $widgetContentWidth;
 }
 
 .color {
@@ -211,19 +219,29 @@ ul, ol {
     text-align: left;
 }
 
+/* Root */
+#root {
+    > * {
+        vertical-align: top;
+    }
+}
+
 /* Sidebar */
-#sidebar-left {
-    position:absolute;
-    top: 0;
+.sidebar{
+    box-sizing: border-box;
+    display: inline-block;
+    padding: $sidebarPadding;
+    z-index: 100;
+    position: absolute;
+}
+
+#sidebar-left{
     left: 0;
 }
 
-#sidebar-right {
-    position: absolute;
+#sidebar-right{
     right: 0;
-    top: 0;
 }
-
 
 /* Code Picker */
 #code-picker{
@@ -235,18 +253,16 @@ ul, ol {
 
 /* Code */
 #code {
+    width: $codeWidth;
+    position: absolute;
+    left: 50%;
+    margin-left: -$codeWidth/2;
     padding: 5px;
     border-radius: 0;
     box-sizing: border-box;
     font: normal 1.25em Menlo,Monaco,Consolas,"Courier New",monospace;
     display: inline-block;
     vertical-align: top;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    overflow-y: scroll;
-    left: $sidebarWidth;
-    right: $sidebarWidth;
     z-index: 0;
 }
 

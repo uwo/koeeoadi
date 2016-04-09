@@ -59,7 +59,7 @@
            palette-data      :palette
            faces-data        :faces
            user-faces-data   :user-faces :as props} (om/props this)]
-      (dom/div #js {:id "root"}
+      (dom/div #js {:id "root" }
         (dom/div #js {:className "sidebar" :id "sidebar-left"}
           (title this)
           (theme theme-data)
