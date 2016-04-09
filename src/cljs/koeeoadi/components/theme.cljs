@@ -4,9 +4,7 @@
             [cljs.reader :as reader]
             [om.next :as om :refer-macros [defui]]
             [om.dom :as dom]
-
             [cljs.pprint :as pprint]
-
             [koeeoadi.reconciler :refer [reconciler]]
             [koeeoadi.util :as util]
             [koeeoadi.config :as config]
@@ -32,15 +30,20 @@
       `[(theme/update {:theme/name-temp ~input})])))
 
 (defn select-theme [comp e]
-  (let [theme-map  (:theme/map (om/props comp))
+  (let [{theme-map    :theme/map
+         active-color :palette-widget/active-color} (om/props comp)
         theme-name (util/target-value e)]
-    (om/transact! comp `[(theme/change ~(assoc (get theme-map theme-name)
-                                          :theme/name theme-name)) :theme/map])))
+    (om/transact! comp `[(state/merge
+                           ~(assoc (get theme-map theme-name)
+                              :theme/name
+                              theme-name
 
-;; TODO This is slow because of the follow read
-;; could probably use local component state to update
-;; the themeactions component and update everything
-;; when the input loses focus
+                              :palette-widget/face-classes-by-color-type
+                              (util/faces-to-colorize
+                                (get-in theme-map [theme-name :faces/list])
+                                (:color-id active-color))))
+                         :theme/map])))
+
 (defn new-theme [comp]
   (om/transact! comp `[(theme/new) :theme/map])
   (om/update-state! comp assoc :needs-focus true))
@@ -103,7 +106,9 @@
         (dom/i #js {:className "fa fa-file fa-3x"}))
       (dom/div nil "New"))
     (dom/div #js {:className "one-third column"}
-      (dom/button #js {:className "inline-button" :onClick #(save-theme-file comp (:theme/name (om/props comp)))}
+      (dom/button #js {:className "inline-button"
+                       :onClick #(save-theme-file comp
+                                   (:theme/name (om/props comp)))}
         (dom/i #js {:className "fa fa-save fa-3x"}))
       (dom/div nil "Save"))
     (dom/div #js {:className "one-third column"}
@@ -158,9 +163,10 @@
 (defui Theme
   static om/IQuery
   (query [this]
-    [:theme/name-temp
-     :theme/name
-     :theme/map])
+    '[:theme/name-temp
+      :theme/name
+      :theme/map
+      [:palette-widget/active-color _]])
 
   Object
   (componentDidUpdate [this prev-props prev-state]
@@ -172,13 +178,10 @@
       (om/update-state! this assoc :needs-focus nil)))
 
   (render [this]
-    (let [{current-theme :theme/name
-           name-temp     :theme/name-temp
-           theme-map     :theme/map} (om/props this)]
-      (dom/div #js {:className "widget" :id "actions"}
-        (util/widget-title "Theme")
-        (theme-select-edit this)
-        (theme-actions this)
-        (theme-export this)))))
+    (dom/div #js {:className "widget" :id "actions"}
+      (util/widget-title "Theme")
+      (theme-select-edit this)
+      (theme-actions this)
+      (theme-export this))))
 
 (def theme (om/factory Theme))

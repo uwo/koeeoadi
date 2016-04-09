@@ -1,7 +1,6 @@
 (ns koeeoadi.components.language
   (:require [om.dom :as dom]
             [om.next :as om :refer-macros [defui]]
-
             [koeeoadi.components.code :refer [CodeChunk code-comp]]
             [koeeoadi.util :as util]))
 

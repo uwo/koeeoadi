@@ -2,7 +2,6 @@
   (:require [goog.dom :as gdom]
             [goog.style :as gstyle] [om.next :as om :refer-macros [defui]]
             [om.dom :as dom]
-
             [koeeoadi.util :as util]
             [koeeoadi.reconciler :refer [reconciler]]
             [koeeoadi.components.colorpicker :refer [color-picker-comp]]))

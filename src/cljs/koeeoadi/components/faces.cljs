@@ -3,12 +3,10 @@
             [goog.style :as gstyle]
             [om.next :as om :refer-macros [defui]]
             [om.dom :as dom]
-
             [koeeoadi.components.palette :refer [Color]]
             [koeeoadi.util :as util]
             [koeeoadi.reconciler :refer [reconciler]]
             [koeeoadi.components.colorpicker :refer [color-picker-comp]]
-            
             [koeeoadi.components.userfaces :refer [user-faces-comp]]
             [koeeoadi.components.code :refer [code-comp]]))
 

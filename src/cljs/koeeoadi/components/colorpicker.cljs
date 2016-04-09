@@ -4,7 +4,6 @@
             [om.next :as om :refer-macros [defui]]
             [om.dom :as dom]
             [cljs.pprint :as pprint]
-
             [koeeoadi.components.palette :refer [Color]]
             [koeeoadi.reconciler :refer [reconciler]]
             [koeeoadi.util :as util]))

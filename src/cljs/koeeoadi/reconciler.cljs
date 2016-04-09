@@ -1,6 +1,5 @@
 (ns koeeoadi.reconciler
   (:require [om.next :as om]
-
             [koeeoadi.config :refer [app-state]]
             [koeeoadi.parser :refer [parser]]))
 

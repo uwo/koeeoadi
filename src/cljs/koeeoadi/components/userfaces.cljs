@@ -1,7 +1,6 @@
 (ns koeeoadi.components.userfaces
   (:require [om.next :as om :refer-macros [defui]]
             [om.dom :as dom]
-
             [koeeoadi.util :as util]
             [koeeoadi.config :as config]
             [koeeoadi.reconciler :refer [reconciler]]))

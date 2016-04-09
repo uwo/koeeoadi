@@ -78,6 +78,7 @@
 
 (defmethod mutate 'state/merge
   [{:keys [state]} _ props]
+  (.log js/console props)
   (swap! state merge props))
 
 (defmethod mutate 'theme/update

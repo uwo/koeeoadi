@@ -4,9 +4,7 @@
             [om.next :as om :refer-macros [defui]]
             [om.dom :as dom]
             [cljs.pprint :as pprint]
-
             [devtools.core :as devtools]
-
             [koeeoadi.components.title :refer [title]]
             [koeeoadi.components.theme :refer [Theme theme]]
             [koeeoadi.components.language :refer [language]]

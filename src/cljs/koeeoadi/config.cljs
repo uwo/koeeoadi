@@ -1,10 +1,7 @@
 (ns koeeoadi.config
-  (:require
-   [om.next :as om]
-
-   [koeeoadi.code :refer [code]]
-   [koeeoadi.themes :refer [themes]]))
-
+  (:require [om.next :as om]
+            [koeeoadi.code :refer [code]]
+            [koeeoadi.themes :refer [themes]]))
 
 (def editor-file-map
   {:emacs        "el"
