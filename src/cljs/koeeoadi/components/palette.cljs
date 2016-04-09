@@ -62,10 +62,10 @@
           {:keys [hex-temp]} (om/get-state this)
           active? (= id (:color/id active-color))]
       (dom/div #js {:className (str "color color-editable" (when active? " color-active") (when-not hex " color-missing") " color-" id)
-                    :onClick   #(om/transact! this
+                    :onClick   #(om/transact! (om/class->any reconciler Palette)
                                   `[(palette-widget/update
                                       {:palette-widget/active-color [:colors/by-id ~id]
-                                       :palette-widget/face-classes-by-color-type ~(util/faces-to-colorize list id)}) :palette])
+                                       :palette-widget/face-classes-by-color-type ~(util/faces-to-colorize list id)})])
                     :style     (when (or hex-temp hex) #js {:backgroundColor (or hex-temp hex)})}
         (dom/button #js {:className "color-remove"
                          :onClick   #(color-remove this color)}
