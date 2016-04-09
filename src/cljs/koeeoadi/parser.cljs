@@ -137,7 +137,7 @@
            new-theme     (get-in st [:theme/map "basic-bw"])
            new-theme-map (merge {"new-theme" new-theme} (theme-map st))]
        (swap! state merge new-theme {:theme/name      "new-theme"
-                                     :theme/name-temp ""
+                                     :theme/name-temp "new-theme"
                                      :theme/map       new-theme-map})))})
 
 (defn code-merge [current-data new-data]
