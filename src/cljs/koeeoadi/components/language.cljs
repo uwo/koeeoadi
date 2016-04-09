@@ -22,6 +22,6 @@
                 :id         "code-picker"
                 :onChange   #(code-change code-map %)}
     (util/widget-title "Language")
-    (dom/label nil "Current language:")
+    (dom/label nil "Choose language:")
     (apply dom/select nil
       (map #(code-option % code-name) (vals code-map)))))
