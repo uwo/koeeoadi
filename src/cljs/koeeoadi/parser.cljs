@@ -165,9 +165,11 @@
    (fn []
      (let [st      @state
            new-id  (new-color-id (:colors/list st))]
-       (reset! state (-> @state
+       (reset! state (-> st
                        (assoc-in [:colors/by-id new-id] {:color/id new-id :color/hex "#FFFFFF"})
-                       (update :colors/list conj [:colors/by-id new-id])))))})
+                       (update :colors/list conj [:colors/by-id new-id])
+                       (assoc :palette-widget/active-color [:colors/by-id new-id])
+                       (assoc :palette-widget/face-classes-by-color-type (util/faces-to-colorize (:faces/list st) new-id))))))})
 
 (defmethod mutate 'palette-widget/update
   [{:keys [state]} _ props]
