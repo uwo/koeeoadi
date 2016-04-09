@@ -76,6 +76,10 @@
 (defmethod mutate :default
   [_ _ _] {:remote true})
 
+(defmethod mutate 'state/merge
+  [{:keys [state]} _ props]
+  (swap! state merge props))
+
 (defmethod mutate 'theme/update
   [{:keys [state]} _ props]
   {:action
