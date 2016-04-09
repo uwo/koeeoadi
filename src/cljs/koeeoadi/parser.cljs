@@ -1,5 +1,6 @@
 (ns koeeoadi.parser
   (:require [om.next :as om]
+            [koeeoadi.util :as util]
             [clojure.set :refer [rename-keys]]))
 
 (defmulti read om/dispatch)
@@ -174,13 +175,26 @@
    (fn []
      (swap! state merge props))})
 
+(defn next-active-color [colors color-id-removing]
+  (let [[left-colors right-colors] (split-with #(< (last %) color-id-removing) colors)]
+    (println "here")
+    (println right-colors)
+    (println left-colors)
+    (or (second right-colors) (last left-colors))))
+
 (defmethod mutate 'color/remove
   [{:keys [state ref]} _ _]
   {:action
    (fn []
-     (reset! state (-> @state
-                     (update :colors/by-id dissoc (last ref))
-                     (update :colors/list #(filterv (partial not= ref) %)))))})
+     (let [st                @state
+           color-id-removing (last ref)
+           active-color      (next-active-color (st :colors/list) color-id-removing)]
+       (println "removing")
+       (reset! state (-> st
+                       (update :colors/by-id dissoc (last ref))
+                       (update :colors/list #(filterv (partial not= ref) %))
+                       (assoc :palette-widget/active-color active-color)
+                       (assoc :palette-widget/face-classes-by-color-type (util/faces-to-colorize (:faces/list st) (:color/id active-color)))))))})
 
 (defmethod mutate 'color/update
   [{:keys [state]} _ {:keys [color/id] :as props}]

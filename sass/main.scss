@@ -319,6 +319,12 @@ i {
     }
 }
 
+#palette-colors.minimum-colors {
+    .color-remove {
+        display: none;
+    }
+}
+
 .color-editable,.color-add {
     position: relative;
 }
@@ -333,6 +339,7 @@ i {
     height: $colorInputSize;
     position: absolute;
     bottom: -5px;
+    cursor: pointer;
 }
 
 .color-editable.color-active:before {
@@ -541,10 +548,6 @@ i {
         margin: 0;
     }
 
-    button {
-        border: none;
-    }
-
     input[type=checkbox]{
         width: 20px;
         height: 20px;
@@ -581,7 +584,7 @@ i {
     .user-face-remove-button {
         padding: 0;
         width: 40px;
-        border: 1px solid white;
+        border: none;
         position: absolute;
         right: -50px;
         top: 0px;

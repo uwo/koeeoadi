@@ -19,7 +19,9 @@
     `[(color/update {:color/id ~(:color/id active-color)
                      :color/hex ~(.getColor closure-comp)}) :palette]))
 
-(defn color-remove [comp {:keys [color/id] :as color}]
+(defn color-remove [comp {:keys [color/id] :as color} e]
+  (.preventDefault e)
+  (.stopPropagation e)
   (om/transact! comp
     `[(color/remove) :palette]))
 
@@ -79,7 +81,7 @@
                     :onClick   #(palette-widget-update id list)
                     :style     (when (or hex-temp hex) #js {:backgroundColor (or hex-temp hex)})}
         (dom/button #js {:className "color-remove"
-                         :onClick   #(color-remove this color)}
+                         :onClick   #(color-remove this color %)}
           (dom/i #js {:className "fa fa-remove fa-2x"}))))))
 
 (def color (om/factory Color {:keyfn :color/id}))
@@ -154,6 +156,10 @@
 
 (def palette-widget (om/factory PaletteWidget))
 
+(defn minimum-colors-class [colors]
+  (when (< (count colors) 3)
+    "minimum-colors"))
+
 (defui Palette
   static om/IQuery
   (query [this]
@@ -164,11 +170,13 @@
   (render [this]
     (let [{colors/list         :colors/list
            palette-widget-data :palette-widget} (om/props this)
+          
           callback (partial color-add this)]
-      (dom/div #js {:className "widget"
+      (dom/div #js {:className "widget" 
                     :id        "palette"}
         (util/widget-title "Palette")
-        (apply dom/div #js {:id "palette-colors"}
+        (apply dom/div #js {:id "palette-colors"
+                            :className (minimum-colors-class list)}
           (palette-widget palette-widget-data)
           (conj (mapv #(color (merge % palette-widget-data)) list)
             (color-adder (om/computed {} {:callback callback}))))))))
