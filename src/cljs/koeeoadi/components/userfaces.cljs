@@ -12,9 +12,10 @@
   (om/transact! comp `[(user-face/update ~props)]))
 
 (defn face-edit-name [comp face-name new-name needs-focus]
-  (om/transact! comp `[(user-face/update
-                         {:face/name      ~face-name
-                          :face/name-temp ~new-name})])
+  (when-not (empty? new-name)
+    (om/transact! comp `[(user-face/update
+                           {:face/name      ~face-name
+                            :face/name-temp ~(clojure.string/trim new-name)})]))
   (when needs-focus
     (om/update-state! comp assoc :needs-focus true)))
 
@@ -100,7 +101,7 @@
           fg-hex       (:color/hex color-fg)
           editors      (keys config/editor-file-map)]
       (dom/tr nil
-        (dom/td nil
+        (dom/td #js {:className "user-face-name-td"}
           (dom/input #js {:value     name-temp
                           :onBlur    #(when (and (not= name name-temp)
                                               (util/valid-face-name? name-temp))
@@ -114,9 +115,13 @@
           (dom/div #js {:className "row"
                         :onClick   #(face-edit-name this name name true)
                         :style     (util/display (not name-temp))}
-            (dom/span nil name)
-            (dom/button #js {:className "inline-button"}
-              (dom/i #js {:className "fa fa-edit fa-2x"}))))
+            (dom/span nil name))
+          (dom/button #js {:id "user-face-edit-button"
+                           :className "inline-button"
+                           :onClick #(face-edit-name this name name true)
+                           :style  (util/display (not name-temp))}
+            (dom/i #js {:className "fa fa-edit fa-2x"})
+            ))
 
         (dom/td nil
           (apply dom/select
@@ -157,7 +162,7 @@
             (map #(util/option (clojure.core/name %) (clojure.core/name editor)) editors)))
 
         (dom/td nil
-          (dom/button #js {:onClick #(face-remove this)}
+          (dom/button #js {:className "user-face-remove-button" :onClick #(face-remove this)}
             (dom/i #js {:className "fa fa-close fa-2x"})))))))
 
 (def user-face (om/factory UserFace {:keyfn :face/name}))
@@ -191,16 +196,17 @@
               (dom/table #js {:id "user-faces-container"
                               :cellPadding 0
                               :cellSpacing 0}
-                (apply dom/tbody nil
+                (dom/thead nil
                   (dom/tr nil
-                    (dom/td nil "Name")
-                    (dom/td nil "Background")
-                    (dom/td nil "Foreground")
-                    (dom/td nil "Bold")
-                    (dom/td nil "Italic")
-                    (dom/td nil "Underline")
-                    (dom/td nil "Editor")
-                    (dom/td nil ""))
+                    (dom/th #js {:id "user-face-heading-name"}  "Name")
+                    (dom/th #js {:id "user-face-heading-background"}  "Background")
+                    (dom/th #js {:id "user-face-heading-foreground"}  "Foreground")
+                    (dom/th #js {:id "user-face-heading-bold"}  "Bold")
+                    (dom/th #js {:id "user-face-heading-italic"}  "Italic")
+                    (dom/th #js {:id "user-face-heading-underline"}  "Underline")
+                    (dom/th #js {:id "user-face-heading-editor"}  "Editor")
+                    (dom/th #js {:id "user-face-heading-remove"}  "")))
+                (apply dom/tbody nil
                   ;; TODO is it the right thing to be sorting here?
                   (map #(user-face (om/computed % {:colors/by-id colors-by-id})) (sort-by :face/id user-faces-list)))))
             (dom/button #js {:className "modal-close-button"

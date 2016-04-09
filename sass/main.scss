@@ -9,23 +9,33 @@ $grayDarker: #202020;
 $grayDarkest: #1a1a1a;
 $backgroundColor: $grayDarker;
 
+/* General Dimensions */
 $buttonWidth: 100px;
-$colorInputSize: 20px;
-$colorMargin: 2px;
-$colorTransitionPeriod: 0.5s;
 $borderRadius: 0px;
 $modalWidth: 900px;
 $modalHeight: 500px;
 $smallSelectSize: 100px;
 $tdSpacing: 20px;
+
+/* Widget Dimensions */
 $widgetPadding: 7.5px;
 $widgetBorder: 1px;
 $widgetContentWidth: 250px;
-$widgetBorderColor: $grayDark;
-$widgetTitleBorderColor: $grayDarkest;
+$widgetBorderColor: $grayLight;
+$widgetTitleBorderColor: $grayLight;
+
+/* Sidebar Dimensions */
 $sidebarPadding: 5px;
 $sidebarWidth: 2*$sidebarPadding + 2*$widgetPadding + $widgetContentWidth + 2*$widgetBorder;
+
+/* Code Dimensions */
 $codeWidth: 800px;
+
+/* Color Dimensions */
+$colorInputSize: 20px;
+$colorMargin: 2px;
+
+/* User Faces Dimensions */
 $userFacesModalWidth: 920px;
 
 
@@ -51,6 +61,7 @@ select,input[type="text"] {
     height: 20px;
     line-height: normal;
     border: none;
+    padding: 0 0 0 5px;
 }
 
 code {
@@ -78,6 +89,7 @@ body {
     font-size: 1.25em;
     color: $grayLighter;
     font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+
     background-image:
     -moz-linear-gradient(45deg, $grayDarker 25%, transparent 25%),
     -moz-linear-gradient(-45deg, $grayDarker 25%, transparent 25%),
@@ -89,13 +101,12 @@ body {
     -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.75, transparent), color-stop(.75, $grayDarker)),
     -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.75, $gray), color-stop(.75, $grayDarker));
 
-    -moz-background-size: 100px 100px;
-    background-size: 100px 100px;
+    -moz-background-size: 20px 20px;
+    background-size: 20px 20px;
     -webkit-background-size: 20px 20px; /* override value for shitty webkit */
 
     background-position:0 0, 50px 0, 50px -50px, 0px 50px;
 }
-
 
 input, select {
     color: $grayDark;
@@ -119,9 +130,6 @@ label {
 i {
     vertical-align: middle;
     pointer-events: none;
-}
-
-ul, ol {
 }
 
 /* General Classes */
@@ -210,14 +218,25 @@ ul, ol {
     overflow-y: scroll;
 }
 
-#help-modal > .modal-content-container{
-    width: $modalWidth;
-    margin-left: - $modalWidth/2;
+.column {
+    text-align: center;
+}
+.inline-button {
+    text-align: center;
+    padding: 0;
+    height: auto;
+    border: none;
+    width: auto;
+    margin: 0 0 0 0px;
 }
 
-#help-modal > *{
-    text-align: left;
+.inline-button:before {
+    content: '';
+    vertical-align: middle;
+    height: 100%;
+    pointer-events: none;
 }
+
 
 /* Root */
 #root {
@@ -345,13 +364,6 @@ ul, ol {
     top: -$colorInputSize;
 }
 
-/* .color-add:before { */
-/*     content: ''; */
-/*     vertical-align: middle; */
-/*     height: 100%; */
-/*     pointer-events: none; */
-/* } */
-
 .color-add > i {
     z-index: 102;
     pointer-events: none;
@@ -360,35 +372,6 @@ ul, ol {
 .color-add > i:before {
     position: relative;
     z-index: 102;
-}
-
-.input-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 101;
-}
-
-.input-overlay.color-missing {
-    box-sizing: border-box;
-    border: 1px solid $white;
-    background-color: #2a2a2a;
-}
-
-input[type="color"] {
-    border: 1px solid transparent;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 100;
-    margin: 0;
-    cursor: pointer;
-    background-color: $grayDarker;
 }
 
 /* App */
@@ -429,25 +412,6 @@ input[type="color"] {
     .control-row {
         margin: -10px 0 7px 0;
     }
-}
-
-.column {
-    text-align: center;
-}
-.inline-button {
-    text-align: center;
-    padding: 0;
-    height: auto;
-    border: none;
-    width: auto;
-    margin: 0 0 0 0px;
-}
-
-.inline-button:before {
-    content: '';
-    vertical-align: middle;
-    height: 100%;
-    pointer-events: none;
 }
 
 .export-button {
@@ -562,6 +526,17 @@ input[type="color"] {
 }
 
 #user-faces-container {
+    table-layout: fixed;
+    width: 90%;
+    white-space: nowrap;
+
+    th,td {
+        position: relative;
+        height: 40px;
+        text-align: left;
+        padding: 0;
+    }
+
     button, input {
         margin: 0;
     }
@@ -570,49 +545,46 @@ input[type="color"] {
         border: none;
     }
 
-    .row {
-        position: relative;
+    input[type=checkbox]{
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
 
-        button {
-            top: 0;
-            position: absolute;
-            right: 10px;
+    .user-face-name-td {
+        overflow: hidden;
+
+        input {
+            width: 130px;
+            font-size: 0.7em !important;
         }
-    }
-
-    td {
-        position: relative;
-        height: 40px;
-        text-align: left;
-        padding: 0;
-    }
-
-    /* Face name */
-    td:nth-child(1){
-        width: 200px + $tdSpacing;
-        overflow-x: hidden;
-
-        > span {
+        
+        .row {
+            position: relative;
+            width: 130px;
             overflow-x: hidden;
         }
+
+        span {
+            font-size: 0.7em !important;
+        }
+
+        button {
+            vertical-align: middle;
+            top: 0;
+            right: 10px;
+            position: absolute;
+        }
+        
     }
 
-    td:nth-child(2),
-    td:nth-child(3),
-    td:nth-child(7),{
-        width: $smallSelectSize + $tdSpacing;
-    }
-
-    /* Bold and Italic */
-
-    td:nth-child(4),
-    td:nth-child(5){
-        width: 50px + $tdSpacing;
-    }
-
-    /* Underline */
-    td:nth-child(6) {
-        width: 75px + $tdSpacing;
+    .user-face-remove-button {
+        padding: 0;
+        width: 40px;
+        border: 1px solid white;
+        position: absolute;
+        right: -50px;
+        top: 0px;
     }
 
     select {
@@ -620,5 +592,39 @@ input[type="color"] {
         padding: 0;
         margin: 0;
     }
+}
 
+#user-face-heading-name {
+    width: 15%;
+}
+
+#user-face-heading-background,
+#user-face-heading-foreground
+    {
+        width: 10%;
+    }
+
+#user-face-heading-editor,
+#user-face-heading-bold,
+#user-face-heading-italic,
+{
+    width: 6%;
+}
+
+#user-face-heading-underline{
+    width: 10%;
+}
+
+#user-face-heading-remove{
+    width: 5%;
+}
+
+/* Help Modal */
+#help-modal > .modal-content-container{
+    width: $modalWidth;
+    margin-left: - $modalWidth/2;
+}
+
+#help-modal > *{
+    text-align: left;
 }
