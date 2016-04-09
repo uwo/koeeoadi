@@ -78,8 +78,9 @@
     (let [{:keys [color/id color/hex faces/list] :as color} (om/props this)
           {:keys [hex-temp]} (om/get-state this)]
       (dom/div #js {:className (color-class color)
-                    :onClick   #(palette-widget-update id list)
                     :style     (when (or hex-temp hex) #js {:backgroundColor (or hex-temp hex)})}
+        (dom/div #js {:className "color-mask"
+                      :onClick   #(palette-widget-update id list)})
         (dom/button #js {:className "color-remove"
                          :onClick   #(color-remove this color %)}
           (dom/i #js {:className "fa fa-remove fa-2x"}))))))

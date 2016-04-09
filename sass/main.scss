@@ -333,16 +333,16 @@ i {
     margin: 20px 0 0 $colorMargin;
 }
 
-.color-editable:before {
+.color-editable:after {
     content: '';
     width: $colorInputSize;
     height: $colorInputSize;
-    position: absolute;
     bottom: -5px;
     cursor: pointer;
+    position: absolute;
 }
 
-.color-editable.color-active:before {
+.color-editable.color-active:after {
     border-bottom: 2px solid $grayLighter;
 }
 
@@ -353,6 +353,15 @@ i {
     cursor: pointer;
 }
 
+.color-mask {
+    width: 100%;
+    height: 100%;
+    border-radius: $colorInputSize/2;
+    cursor: pointer;
+    position: absolute;
+    z-index: 101;
+    background-color: inherit;
+}
 
 .color-remove {
     border: none;
@@ -363,22 +372,13 @@ i {
     width: $colorInputSize !important;
     height: $colorInputSize !important;
     padding: 0;
-    transition: top 0.5s, opacity 0.5s;
+    transition: top 0.1s, opacity 0.1s;
+    z-index: 100;
 }
 
 .color:hover  .color-remove {
     opacity: 1;
     top: -$colorInputSize;
-}
-
-.color-add > i {
-    z-index: 102;
-    pointer-events: none;
-}
-
-.color-add > i:before {
-    position: relative;
-    z-index: 102;
 }
 
 /* App */
@@ -561,7 +561,7 @@ i {
             width: 130px;
             font-size: 0.7em !important;
         }
-        
+
         .row {
             position: relative;
             width: 130px;
@@ -578,7 +578,7 @@ i {
             right: 10px;
             position: absolute;
         }
-        
+
     }
 
     .user-face-remove-button {
