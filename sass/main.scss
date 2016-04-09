@@ -71,6 +71,10 @@ code {
     margin: 0;
 }
 
+p {
+    margin-bottom: 10px;
+}
+
 /* Tags */
 html {
     height: 100%;
@@ -118,7 +122,7 @@ button {
     color: $grayLighter;
 }
 
-button:hover {
+button:hover, button:focus {
     color: $white;
     border-color: $white;
 }
@@ -133,6 +137,12 @@ i {
 }
 
 /* General Classes */
+button, div, span, td, th {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 
 .widget {
     background: $backgroundColor;
@@ -272,6 +282,7 @@ i {
 
 /* Code */
 #code {
+    min-height: 100%;
     width: $codeWidth;
     position: absolute;
     left: 50%;
@@ -311,8 +322,14 @@ i {
 
 /* Palette */
 
+.goog-hsv-palette-sm {
+    margin: 10px auto;
+    border: none;
+    transform: scale(1.2);
+}
+
 #palette-colors {
-    margin: -15px 0 3px 0;
+    margin: 0 0 3px 0;
 
     > * {
         vertical-align: middle;
@@ -367,7 +384,7 @@ i {
     border: none;
     position: absolute;
     top: 0;
-    left: 0.5px;
+    left: 1px;
     opacity: 0;
     width: $colorInputSize !important;
     height: $colorInputSize !important;
