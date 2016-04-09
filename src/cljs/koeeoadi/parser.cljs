@@ -177,12 +177,11 @@
    (fn []
      (swap! state merge props))})
 
-(defn next-active-color [colors color-id-removing]
-  (let [[left-colors right-colors] (split-with #(< (last %) color-id-removing) colors)]
-    (println "here")
-    (println right-colors)
-    (println left-colors)
-    (or (second right-colors) (last left-colors))))
+(defn next-active-color [{:keys [:palette-widget/active-color :faces/list]} color-id-removing]
+  (if (= color-id-removing (:color/id active-color))
+    (let [[left-colors right-colors] (split-with #(< (last %) color-id-removing) list)]
+      (or (second right-colors) (last left-colors)))
+    active-color))
 
 (defmethod mutate 'color/remove
   [{:keys [state ref]} _ _]
@@ -190,8 +189,7 @@
    (fn []
      (let [st                @state
            color-id-removing (last ref)
-           active-color      (next-active-color (st :colors/list) color-id-removing)]
-       (println "removing")
+           active-color      (next-active-color st color-id-removing)]
        (reset! state (-> st
                        (update :colors/by-id dissoc (last ref))
                        (update :colors/list #(filterv (partial not= ref) %))
