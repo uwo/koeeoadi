@@ -14,13 +14,28 @@
 (declare Palette)
 (declare PaletteWidget)
 
-(defn color-update [comp props]
+(defn color-update [comp active-color closure-comp]
   (om/transact! comp
-    `[(color/update ~props) :palette]))
+    `[(color/update {:color/id ~(:color/id active-color)
+                     :color/hex ~(.getColor closure-comp)}) :palette]))
 
 (defn color-remove [comp {:keys [color/id] :as color}]
   (om/transact! comp
     `[(color/remove) :palette]))
+
+(defn palette-widget-update [color-id faces-list]
+  (om/transact! (om/class->any reconciler Palette)
+    `[(palette-widget/update
+        {:palette-widget/active-color [:colors/by-id ~color-id]
+         :palette-widget/face-classes-by-color-type ~(util/faces-to-colorize faces-list color-id)})]))
+
+(defn face-class-prefix [color-type]
+  (if (= :face/color-fg color-type)
+    ".color-fg-"
+    ".color-bg-"))
+
+(defn face-to-selectors [face color-type]
+  (vector (str ".code-" %) (str (face-class-prefix color-type) %)))
 
 (defn colorize-faces [classes color-prop hex-temp]
   (when-not (empty? classes)
@@ -28,18 +43,21 @@
       (forEach elements #(setStyle % color-prop hex-temp)))))
 
 (defn selectors-for-colorize [faces color-type]
-  (let [face-color-type-class-prefix (if (= :face/color-fg color-type) ".color-fg-" ".color-bg-")
-        code-class-prefix            ".code-"
-        face-classes-groups          (->> faces
-                                       (map #(vector
-                                               (str code-class-prefix %)
-                                               (str face-color-type-class-prefix %))))]
-    (if (= 1 (count face-classes-groups))
-      (first face-classes-groups)
+  (let [selectors (map #(face-to-selectors % color-type) faces)]
+    (if (= 1 (count faces))
+      (first selectors)
       (reduce #(vector
                  (str (first %1) "," (first %2))
                  (str (last %1) "," (last %2)))
-        face-classes-groups ))))
+        selectors))))
+
+(defn color-class [props]
+  (let [{:keys [:color/id :color/hex :palette-widget/active-color]} props
+        active? (= id (:color/id active-color))]
+    (str "color color-editable"
+      (when active? " color-active")
+      (when-not hex " color-missing")
+      " color-" id)))
 
 (defui Color
   static om/Ident
@@ -55,17 +73,10 @@
 
   Object
   (render [this]
-    (let [{:keys [color/id
-                  color/hex
-                  faces/list
-                  palette-widget/active-color] :as color} (om/props this)
-          {:keys [hex-temp]} (om/get-state this)
-          active? (= id (:color/id active-color))]
-      (dom/div #js {:className (str "color color-editable" (when active? " color-active") (when-not hex " color-missing") " color-" id)
-                    :onClick   #(om/transact! (om/class->any reconciler Palette)
-                                  `[(palette-widget/update
-                                      {:palette-widget/active-color [:colors/by-id ~id]
-                                       :palette-widget/face-classes-by-color-type ~(util/faces-to-colorize list id)})])
+    (let [{:keys [color/id color/hex faces/list] :as color} (om/props this)
+          {:keys [hex-temp]} (om/get-state this)]
+      (dom/div #js {:className (color-class color)
+                    :onClick   #(palette-widget-update id list)
                     :style     (when (or hex-temp hex) #js {:backgroundColor (or hex-temp hex)})}
         (dom/button #js {:className "color-remove"
                          :onClick   #(color-remove this color)}
@@ -135,10 +146,10 @@
         (.setColor closure-comp (:color/hex active-color)))))
 
   (render [this]
-    (let [{:keys [palette-widget/closure-comp palette-widget/active-color] :as props} (om/props this)]
-      (dom/div #js {:onMouseUp #(color-update this {:color/id (:color/id active-color)
-                                                    :color/hex (.getColor closure-comp)})
-                    ;;:onTouchEnd #(color-update this (.getColor closure-comp))
+    (let [{:keys [palette-widget/closure-comp
+                  palette-widget/active-color] :as props} (om/props this)]
+      (dom/div #js {:onMouseUp #(color-update this active-color closure-comp)
+                    ;;:onTouchEnd #(color-update this active-color closure-comp)
                     :ref "paletteWidget"} nil))))
 
 (def palette-widget (om/factory PaletteWidget))
