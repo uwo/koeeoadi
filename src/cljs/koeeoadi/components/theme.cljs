@@ -95,9 +95,6 @@
   (let [input (gdom/getElement "file-input")]
     (.click input)))
 
-(defn export-theme []
-  (println "stub"))
-
 (defn theme-actions [comp]
   (dom/div #js {:className "row control-row"}
     (dom/div #js {:className "one-third column"}
