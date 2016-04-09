@@ -1,7 +1,7 @@
 (ns koeeoadi.util
   (:require [cljs.reader :refer [read-string]]
-            [goog.dom :refer [getElementsByTagNameAndClass]]
-            [goog.style :refer [getClientPosition]]
+            [goog.dom :refer [getElement getElementsByTagNameAndClass]]
+            [goog.style :refer [getClientPosition getPageOffset]]
             [goog.array :refer [forEach]]
             [om.next :as om]
             [om.dom :as dom])
@@ -62,19 +62,18 @@
   (let [selected (= name selected-name)]
     (dom/option #js {:selected selected} name)))
 
-(defn switch-coordinates [coords]
-  {:x (aget coords "y")
-   :y (aget coords "x")})
-
 (defn color-picker-show [comp face color-type e]
   (.preventDefault e)
   (.stopPropagation e)
-  (let [coordinates (-> (getClientPosition e)
-                      switch-coordinates)]
+  (let [coords (getClientPosition e)
+        coords-offset (getPageOffset (getElement "root"))
+        ;; TODO this could be refactored
+        coords' {:y (aget coords "x")
+                 :x (+ (aget coords "y") (- (aget coords-offset "y")))}]
     (om/transact! comp `[(color-picker/update
                            {:color-picker/active-face ~face
                             :color-type               ~color-type
-                            :color-picker/coordinates ~coordinates})])))
+                            :color-picker/coordinates ~coords'})])))
 
 (defn color-picker-hide [comp]
   (om/transact! comp `[(color-picker/update

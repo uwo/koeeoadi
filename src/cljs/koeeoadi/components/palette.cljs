@@ -35,7 +35,7 @@
     ".color-bg-"))
 
 (defn face-to-selectors [face color-type]
-  (vector (str ".code-" %) (str (face-class-prefix color-type) %)))
+  (vector (str ".code-" face) (str (face-class-prefix color-type) face)))
 
 (defn colorize-faces [classes color-prop hex-temp]
   (when-not (empty? classes)
