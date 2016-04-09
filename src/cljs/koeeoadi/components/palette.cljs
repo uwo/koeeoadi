@@ -27,11 +27,6 @@
     (let [elements (query classes)]
       (forEach elements #(setStyle % color-prop hex-temp)))))
 
-(defn faces-to-colorize [faces color-id]
-  (hash-map
-    :bg-faces (map :face/name (filter #(= color-id (last (:face/color-bg %))) faces))
-    :fg-faces (map :face/name (filter #(= color-id (last (:face/color-fg %))) faces))))
-
 (defn selectors-for-colorize [faces color-type]
   (let [face-color-type-class-prefix (if (= :face/color-fg color-type) ".color-fg-" ".color-bg-")
         code-class-prefix            ".code-"
@@ -53,23 +48,24 @@
 
   static om/IQuery
   (query [this]
-    '[:color/id :color/hex
-      [:faces/list _]
-      [:palette/active-color _]])
+    '[:color/id
+      :color/hex
+      [:palette-widget/active-color _]
+      [:faces/list _]])
 
   Object
   (render [this]
     (let [{:keys [color/id
                   color/hex
                   faces/list
-                  palette/active-color] :as color} (om/props this)
+                  palette-widget/active-color] :as color} (om/props this)
           {:keys [hex-temp]} (om/get-state this)
-          active?            (= id (:color/id active-color))]
+          active? (= id (:color/id active-color))]
       (dom/div #js {:className (str "color color-editable" (when active? " color-active") (when-not hex " color-missing") " color-" id)
-                    :onClick #(om/transact! this `[(color/set-active) :palette])
-                    ;; :onClick   #(om/update-state! (om/class->any reconciler PaletteWidget) assoc
-                    ;;               :status :load
-                    ;;               :face-classes-by-color-type (faces-to-colorize list id))
+                    :onClick   #(om/transact! this
+                                  `[(palette-widget/update
+                                      {:palette-widget/active-color [:colors/by-id ~id]
+                                       :palette-widget/face-classes-by-color-type ~(util/faces-to-colorize list id)}) :palette])
                     :style     (when (or hex-temp hex) #js {:backgroundColor (or hex-temp hex)})}
         (dom/button #js {:className "color-remove"
                          :onClick   #(color-remove this color)}
@@ -91,12 +87,11 @@
 (def color-adder (om/factory ColorAdder))
 
 (defn handle-action [comp e]
-  (let [{:keys [color/id color/hex]} (om/props comp)
-        {:keys [face-classes-by-color-type]} (om/get-state comp)
+  (let [{:keys [palette-widget/active-color palette-widget/face-classes-by-color-type]} (om/props comp)
         hex-temp (util/target-color e)]
     ;; TODO refactor this so its in the state, its wasteful to calculate this on each run through, could maybe even use the element references themeselves
     (let [{:keys [bg-faces fg-faces]} face-classes-by-color-type
-          color-editable-selector (str ".color-" id)
+          color-editable-selector (str ".color-" (:color/id active-color))
           [code-bg-selector face-bg-color-selector] (selectors-for-colorize bg-faces :face/color-bg)
           [code-fg-selector face-fg-color-selector] (selectors-for-colorize fg-faces :face/color-fg)]
 
@@ -111,61 +106,60 @@
         (colorize-faces code-bg-selector "background-color" hex-temp)
         (colorize-faces face-bg-color-selector "background-color" hex-temp)))))
 
-;; clicking on a color changes active-color
-;; this updates palettewidget
-;; palette widget is always setup to check for a change in active-color if it does that then it updates the widget UI, otherwise it does nothing
-
 (defui PaletteWidget
   static om/IQuery
   (query [this]
-    '[:color/id :color/hex [:faces/list _]])
+    '[[:palette-widget/closure-comp _]
+      [:palette-widget/active-color _]
+      [:palette-widget/face-classes-by-color-type _]
+      [:faces/list _]])
 
   Object
   (componentDidMount [this]
-    (let [{:keys [color/id color/hex faces/list] :as props} (om/props this)
+    (let [{:keys [palette-widget/active-color faces/list] :as props} (om/props this)
           palette-widget (HsvPalette. nil nil "goog-hsv-palette-sm")]
       (.render palette-widget (getElement (dom/node this "paletteWidget")))
-      (.setColor palette-widget hex)
+      (.setColor palette-widget (:color/hex active-color))
       (gevents/listen palette-widget "action" #(handle-action this %))
-      (om/update-state! this assoc
-        :face-classes-by-color-type (faces-to-colorize list id)
-        :closure-comp palette-widget)))
+      (om/transact! this `[(palette-widget/update
+                             {:palette-widget/face-classes-by-color-type ~(util/faces-to-colorize list (:color/id active-color))
+                              :palette-widget/closure-comp               ~palette-widget})])))
 
   (componentDidUpdate [this {id-prev :color/id} _]
-    (let [{:keys [color/id color/hex faces/list]} (om/props this)
-          {:keys [closure-comp]} (om/get-state this)]
-      (when (not= id id-prev)
-        (om/update-state! this assoc :face-classes-by-color-type (faces-to-colorize list id))
-        (.setColor closure-comp hex))))
+    (let [{:keys [palette-widget/active-color
+                  palette-widget/closure-comp
+                  faces/list]} (om/props this)]
+      (when (not= (:color/id active-color) id-prev)
+        (om/transact! this `[(palette-widget/update
+                               {:palette-widget/face-classes-by-color-type ~(util/faces-to-colorize list (:color/id active-color))})])
+        (.setColor closure-comp (:color/hex active-color)))))
 
   (render [this]
-    (let [{:keys [closure-comp]} (om/get-state this)]
-      (dom/div #js {:onMouseUp #(color-update this {:color/id (:color/id (om/props this))
+    (let [{:keys [palette-widget/closure-comp palette-widget/active-color] :as props} (om/props this)]
+      (dom/div #js {:onMouseUp #(color-update this {:color/id (:color/id active-color)
                                                     :color/hex (.getColor closure-comp)})
-                    :onTouchEnd #(color-update this (.getColor closure-comp))
+                    ;;:onTouchEnd #(color-update this (.getColor closure-comp))
                     :ref "paletteWidget"} nil))))
 
 (def palette-widget (om/factory PaletteWidget))
-
-(om/get-query Palette)
 
 (defui Palette
   static om/IQuery
   (query [this]
     `[{:colors/list ~(om/get-query Color)}
-      {[:palette/active-color ~'_] ~(om/get-query PaletteWidget)}])
+      {:palette-widget ~(om/get-query PaletteWidget)}])
 
   Object
   (render [this]
     (let [{colors/list         :colors/list
-           palette-widget-data :palette/active-color} (om/props this)
+           palette-widget-data :palette-widget} (om/props this)
           callback (partial color-add this)]
       (dom/div #js {:className "widget"
                     :id        "palette"}
         (util/widget-title "Palette")
         (apply dom/div #js {:id "palette-colors"}
           (palette-widget palette-widget-data)
-          (conj (mapv color list)
+          (conj (mapv #(color (merge % palette-widget-data)) list)
             (color-adder (om/computed {} {:callback callback}))))))))
 
 (def palette (om/factory Palette))

@@ -167,11 +167,11 @@
                        (assoc-in [:colors/by-id new-id] {:color/id new-id :color/hex "#FFFFFF"})
                        (update :colors/list conj [:colors/by-id new-id])))))})
 
-(defmethod mutate 'color/set-active
-  [{:keys [state ref]} _ _]
+(defmethod mutate 'palette-widget/update
+  [{:keys [state]} _ props]
   {:action
    (fn []
-     (swap! state assoc :palette/active-color ref))})
+     (swap! state merge props))})
 
 (defmethod mutate 'color/remove
   [{:keys [state ref]} _ _]

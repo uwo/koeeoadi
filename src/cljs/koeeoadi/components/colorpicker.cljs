@@ -57,24 +57,28 @@
 (defui ColorPicker
   static om/IQuery
   (query [this]
-    [:color-picker/coordinates
-     :color-type
-     {:color-picker/active-face [:face/id
-                                 :face/name
-                                 {:face/color-bg [:color/id
-                                                  :color/name
-                                                  :color/hex]}
-                                 {:face/color-fg [:color/id
-                                                  :color/name
-                                                  :color/hex]}]}
-     {:colors/list (om/get-query Color)}])
+    `[:color-picker/coordinates
+      :color-type
+      {:color-picker/active-face [:face/id
+                                  :face/name
+                                  {:face/color-bg [:color/id
+                                                   :color/name
+                                                   :color/hex]}
+                                  {:face/color-fg [:color/id
+                                                   :color/name
+                                                   :color/hex]}]}
+      {:colors/list ~(om/get-query Color)}
+      [:palette-widget/active-color _]
+      [:faces/by-name ~'_]])
 
   Object
   (render [this]
-    (let [{:keys [colors/list
-                  color-type
-                  color-picker/coordinates
-                  color-picker/active-face] :as props}
+    (let [{faces-by-name :faces/by-name
+           active-color  :palette-widget/active-color
+           colors        :colors/list
+           color-type    :color-type
+           coordinates   :color-picker/coordinates
+           active-face   :color-picker/active-face :as props}
           (om/props this)
 
           {face-name :face/name}
@@ -82,19 +86,19 @@
 
           color-update-void
           (fn []
-            (let [{:keys [face/id face/name]} active-face]
-              (om/transact! this `[(face/color-update
-                                     {:face/id    ~id
-                                      :face/name  ~name
-                                      ~color-type nil})])))
+            (let [{:keys [face/id face/name]} active-face
+                  faces-by-name' (assoc-in faces-by-name [name color-type] nil)]
+              (om/transact! this `[(state/merge
+                                     {:palette-widget/face-classes-by-color-type ~(util/faces-to-colorize (vals faces-by-name') (:color/id active-color))
+                                      :faces/by-name ~faces-by-name'})])))
 
           color-update
           (fn [color]
-            (let [{:keys [face/id face/name]} active-face]
-              (om/transact! this `[(face/color-update
-                                     {:face/id    ~id
-                                      :face/name  ~name
-                                      ~color-type [:colors/by-id ~(:color/id color)]})])))
+            (let [{:keys [face/id face/name]} active-face
+                  faces-by-name'  (assoc-in faces-by-name [name color-type] [:colors/by-id (:color/id color)])]
+              (om/transact! this `[(state/merge
+                                     {:palette-widget/face-classes-by-color-type ~(util/faces-to-colorize (vals faces-by-name') (:color/id active-color))
+                                      :faces/by-name ~faces-by-name'})])))
           ;; can factor out of this method and partially apply it
           color-update-temp' (partial color-update-temp face-name (get-in active-face [color-type :color/hex]) color-type)
 
@@ -104,7 +108,7 @@
            :color-update      color-update}
 
           color-options-computed
-          (map #(om/computed % computed) list)]
+          (map #(om/computed % computed) colors)]
       (when coordinates
         (apply
           dom/div

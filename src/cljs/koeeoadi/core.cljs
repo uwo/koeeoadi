@@ -28,28 +28,27 @@
 (defui Root
   static om/IQuery
   (query [this]
-    [:theme/name
-     :theme/name-temp
-     :theme/map
-     {:palette/active-color (om/get-query Color)} 
-
-     {:theme            (om/get-query Theme)}
-
-     {:code-chunks/list (om/get-query CodeChunk)}
+    [
+     :code-background
      :code/map
      :code/name
-     :code-background
+     :palette-widget
+     :palette-widget/active-color
+     :palette-widget/closure-comp
+     :palette-widget/face-classes-by-color-type
+     :theme/map
+     :theme/name
+     :theme/name-temp
      {:code             (om/get-query Code)}
-
-     {:faces/list       (om/get-query Face)}
-     {:faces            (om/get-query Faces)}
-
-     {:colors/list      (om/get-query Color)}
-     {:palette          (om/get-query Palette)}
+     {:code-chunks/list (om/get-query CodeChunk)}
      {:color-picker     (om/get-query ColorPicker)}
-
-     {:user-faces/list  (om/get-query UserFace)}
-     {:user-faces       (om/get-query UserFaces)}])
+     {:colors/list      (om/get-query Color)}
+     {:faces            (om/get-query Faces)}
+     {:faces/list       (om/get-query Face)}
+     {:palette          (om/get-query Palette)}
+     {:theme            (om/get-query Theme)}
+     {:user-faces       (om/get-query UserFaces)}
+     {:user-faces/list  (om/get-query UserFace)}])
 
   Object
   (render [this]

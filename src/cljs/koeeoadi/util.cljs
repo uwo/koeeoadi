@@ -7,6 +7,11 @@
             [om.dom :as dom])
   (:import  [goog.dom query]))
 
+(defn faces-to-colorize [faces color-id]
+  (hash-map
+    :bg-faces (map :face/name (filter #(= color-id (last (:face/color-bg %))) faces))
+    :fg-faces (map :face/name (filter #(= color-id (last (:face/color-fg %))) faces))))
+
 (defn widget-title [title]
   (dom/h5 #js {:className "widget-title"} title))
 

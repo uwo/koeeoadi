@@ -41,7 +41,9 @@
 
 ;; TODO Initialize this using theme/data
 (def app-state
-  {:palette/active-color (first colors-list)
+  {:palette-widget {}
+   :palette-widget/cloure-comp  {}
+   :palette-widget/active-color [:colors/by-id 0]
    :code/name         initial-code
    :theme/name        "solarized-dark"
    :code-background   [:faces/by-name "background"]
