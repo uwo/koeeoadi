@@ -85,8 +85,12 @@
 
 (defmethod mutate 'state/merge
   [{:keys [state]} _ props]
-  (.log js/console props)
   (swap! state merge props))
+
+
+(defmethod mutate 'state/reset
+  [{:keys [state]} _ props]
+  (reset! state props))
 
 (defmethod mutate 'theme/update
   [{:keys [state]} _ props]
@@ -190,7 +194,7 @@
     active-color))
 
 (defmethod mutate 'color/remove
-  [{:keys [state ref]} _ _]
+  [{:keys [state ref] :as all} k _]
   {:action
    (fn []
      (let [st                @state
@@ -199,6 +203,7 @@
        (reset! state (-> st
                        (update :colors/by-id dissoc (last ref))
                        (update :colors/list #(filterv (partial not= ref) %))
+                       (assoc :mutate/name k)
                        (assoc :palette-widget/active-color active-color)
                        (assoc :palette-widget/face-classes-by-color-type (util/faces-to-colorize (:faces/list st) (:color/id active-color)))))))})
 

@@ -16,47 +16,53 @@
 (defn history-item [comp history]
   (dom/div nil (str history)))
 
+(defn undo [comp]
+  (let [{:keys [history-stack]} (om/get-state comp)
+        uuid (:mutate/uuid (first history-stack))]
+    (om/update-state! comp update :history-stack #(drop 1 %))
+    (om/transact! comp
+      `[(state/reset ~(merge
+                        (om/from-history reconciler uuid)
+                        {:mutate/name :history/undo})) :palette])))
+
+(defn log-mutation? [mutate-name]
+  (println "testing mutation" mutate-name)
+  (and mutate-name
+    (not= :history/redo mutate-name)
+    (not= :history/undo mutate-name)))
+
+(defn log-history [comp key atom old-state new-state]
+  (let [mutate-name (key new-state)]
+    (when (log-mutation? mutate-name)
+      (om/update-state! comp update :history-stack conj
+        {:mutate/uuid (js-last (internal-history-stack))
+         :mutate/name mutate-name}))))
+
+(defn disabled-class [history-stack]
+  (if (empty? history-stack)
+    "disabled"
+    ""))
+
 (defui History
+  ;; TODO Dummy query so I can transact! for undo and redo.
+  ;; Wish there was a better way to do this
+  static om/IQuery
+  (query [this]
+    [])
+
   Object
   (componentDidMount [this]
-    (add-watch (om/app-state reconciler) :history-watcher
-      (fn [key atom old-state new-state]
-        (println "in watcher")
-        (let [mutate-name       (:mutate/name new-state)
-              hist-map          @(internal-history-map)
-              last-uuid         (js-last (internal-history-stack))
-              mutate-name-prev  (:mutate/name (get hist-map last-uuid))]
-          (println mutate-name-prev)
-          ;; (when-not (and mutate-name (not= :redo mutate-name) (not= :undo mutate-name))
-
-          )
-        )))
+    (add-watch (om/app-state reconciler) :mutate/name
+      (partial log-history this)))
 
   (componentInitState [this]
-    {:history-stack []})
+    {:history-stack nil})
   (render [this]
     (let [{:keys [history-stack]} (om/get-state this)]
-      (dom/div #js {:id "history" :className "widget"}
+      (apply dom/div #js {:id "history" :className "widget"}
         (dom/h5 #js {:className "widget-title"} "History")
-        ;;(apply dom/div nil (map #(history-item comp %) history-stack))
-        ))))
+        (dom/button #js {:onClick #(undo this)
+                         :className (disabled-class history-stack)} "Undo")
+        (map #(history-item comp %) history-stack)))))
 
 (def history (om/factory History))
-
-;;; if I ever pop up
-
-;; on mutate
-
-
-
-;; # | mutate # | type? | undo stack | redo stack | lastwasredo? |
-;; # |----------+-------+------------+------------+--------------|
-;; # | m1       | n     | []         |            | n            |
-;; # | m2       | t     | [m1]       |            | n            |
-;; # | m3       | t     | [m1 m2]    |            | n            |
-;; # | m4       | t     | [m1 m2 m3] |            | n            |
-;; # | m5       | undo  | [m1 m2]    | [m3]       | n            |
-;; # | m6       | n     | [m1 m2]    | [m3]       | n            |
-;; # | m7       | undo  | [m1]       | [m3 m2]    | n            |
-;; # | m8       | redo  | [m1 m2]    | [m3]       | y            |
-;; # | m9       | y     | [m1 m2 m3] | []         |              |

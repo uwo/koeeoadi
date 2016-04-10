@@ -136,13 +136,13 @@ i {
     pointer-events: none;
 }
 
-/* General Classes */
 button, div, span, td, th {
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
 }
+/* General Classes */
 
 .widget {
     background: $backgroundColor;
@@ -175,6 +175,11 @@ button, div, span, td, th {
 
 .hide {
     display: none;
+}
+
+.disabled {
+    opacity: 0.7;
+    pointer-events: none;
 }
 
 .widget-title,.modal-title {
