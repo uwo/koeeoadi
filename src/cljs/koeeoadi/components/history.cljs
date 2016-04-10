@@ -23,10 +23,10 @@
     (om/transact! comp
       `[(state/reset ~(merge
                         (om/from-history reconciler uuid)
-                        {:mutate/name :history/undo})) :palette])))
+                        ;; TODO I couldn't just add a single key here to reread
+                        {:mutate/name :history/undo})) :palette :colors/list])))
 
 (defn log-mutation? [mutate-name]
-  (println "testing mutation" mutate-name)
   (and mutate-name
     (not= :history/redo mutate-name)
     (not= :history/undo mutate-name)))

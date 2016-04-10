@@ -76,6 +76,11 @@
    (let [st @state]
      (om/db->tree query st st))})
 
+
+;;** Mutate helpers
+(defn wrap-mutate-name [props k]
+  (assoc props :mutate/name k))
+
 ;;** Mutators
 (defmulti mutate om/dispatch)
 
@@ -85,12 +90,16 @@
 
 (defmethod mutate 'state/merge
   [{:keys [state]} _ props]
-  (swap! state merge props))
+  {:action
+   (fn []
+     (swap! state merge props))})
 
 
 (defmethod mutate 'state/reset
   [{:keys [state]} _ props]
-  (reset! state props))
+  {:action
+   (fn []
+     (reset! state props))})
 
 (defmethod mutate 'theme/update
   [{:keys [state]} _ props]
@@ -170,13 +179,14 @@
     (inc (last (first ids)))))
 
 (defmethod mutate 'color/add
-  [{:keys [state]} _ _]
+  [{:keys [state]} k _]
   {:action
    (fn []
      (let [st      @state
            new-id  (new-color-id (:colors/list st))]
        (reset! state (-> st
                        (assoc-in [:colors/by-id new-id] {:color/id new-id :color/hex "#FFFFFF"})
+                       (assoc :mutate/name k)
                        (update :colors/list conj [:colors/by-id new-id])
                        (assoc :palette-widget/active-color [:colors/by-id new-id])
                        (assoc :palette-widget/face-classes-by-color-type (util/faces-to-colorize (:faces/list st) new-id))))))})
@@ -208,10 +218,12 @@
                        (assoc :palette-widget/face-classes-by-color-type (util/faces-to-colorize (:faces/list st) (:color/id active-color)))))))})
 
 (defmethod mutate 'color/update
-  [{:keys [state]} _ {:keys [color/id] :as props}]
+  [{:keys [state]} k {:keys [color/id] :as props}]
   {:action
    (fn []
-     (swap! state update-in [:colors/by-id id] merge props))})
+     (reset! state (-> @state
+                    (update-in [:colors/by-id id] merge props)
+                    (wrap-mutate-name k))))})
 
 (defmethod mutate 'face/update
   [{:keys [state]} _ {:keys [:face/name] :as props}]

@@ -67,7 +67,7 @@
                                                    :color/name
                                                    :color/hex]}]}
       {:colors/list ~(om/get-query Color)}
-      [:palette-widget/active-color _]
+      [:palette-widget/active-color ~'_]
       [:faces/by-name ~'_]])
 
   Object
@@ -86,17 +86,19 @@
           color-update-void
           (fn []
             (let [{:keys [face/id face/name]} active-face
-                  faces-by-name' (assoc-in faces-by-name [name color-type] nil)]
+                  faces-by-name' (assoc-in faces-by-name [name color-type] nil)
+                  faces-to-colorize (util/faces-to-colorize (vals faces-by-name') (:color/id active-color))]
               (om/transact! this `[(state/merge
-                                     {:palette-widget/face-classes-by-color-type ~(util/faces-to-colorize (vals faces-by-name') (:color/id active-color))
+                                     {:palette-widget/face-classes-by-color-type ~faces-to-colorize
                                       :faces/by-name ~faces-by-name'})])))
 
           color-update
           (fn [color]
             (let [{:keys [face/id face/name]} active-face
-                  faces-by-name'  (assoc-in faces-by-name [name color-type] [:colors/by-id (:color/id color)])]
+                  faces-by-name' (assoc-in faces-by-name [name color-type] [:colors/by-id (:color/id color)])
+                  faces-to-colorize (util/faces-to-colorize (vals faces-by-name') (:color/id active-color))]
               (om/transact! this `[(state/merge
-                                     {:palette-widget/face-classes-by-color-type ~(util/faces-to-colorize (vals faces-by-name') (:color/id active-color))
+                                     {:palette-widget/face-classes-by-color-type ~faces-to-colorize
                                       :faces/by-name ~faces-by-name'})])))
           ;; can factor out of this method and partially apply it
           color-update-temp' (partial color-update-temp face-name (get-in active-face [color-type :color/hex]) color-type)

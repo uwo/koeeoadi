@@ -46,11 +46,11 @@
                   code-chunk/string]}   (om/props this)
           {:keys [face/name]}           face]
       (dom/span
-        #js {:className    (str util/code-class " " (util/code-face-class name))
-             :onBlur       #(util/color-picker-hide (color-picker-comp))
-             :onClick      #(util/color-picker-show (color-picker-comp) face :face/color-fg %)
-             :style        (face-styles face)
-             :tabIndex     0}
+        #js {:className (str util/code-class " " (util/code-face-class name))
+             :onBlur    #(util/color-picker-hide (color-picker-comp))
+             :onClick   #(util/color-picker-show (color-picker-comp) face :face/color-fg %)
+             :style     (face-styles face)
+             :tabIndex  0}
         string))))
 
 (def code-chunk (om/factory CodeChunk {:keyfn :code-chunk/line-chunk}))
@@ -62,7 +62,6 @@
 (defn group-lines [code-chunks]
   (sort-by first (group-by #(.floor js/Math (/ (:code-chunk/line-chunk %) 1000))
                    code-chunks)))
-
 
 (defui Code
   static om/IQuery

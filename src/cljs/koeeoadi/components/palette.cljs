@@ -148,8 +148,10 @@
 
   (render [this]
     (let [{:keys [palette-widget/closure-comp
-                  palette-widget/active-color] :as props} (om/props this)]
-      (dom/div #js {:onMouseUp #(color-update this active-color closure-comp)
+                  palette-widget/active-color] :as props} (om/props this)
+          update-func #(color-update this active-color closure-comp)]
+
+      (dom/div #js {:onMouseUp update-func
                     ;;:onTouchEnd #(color-update this active-color closure-comp)
                     :ref "paletteWidget"} nil))))
 
@@ -169,7 +171,6 @@
   (render [this]
     (let [{colors/list         :colors/list
            palette-widget-data :palette-widget} (om/props this)
-          
           callback (partial color-add this)]
       (dom/div #js {:className "widget" 
                     :id        "palette"}
