@@ -2,7 +2,7 @@
   (:require [goog.style :refer [setStyle]]
             [goog.events :as gevents]
             [goog.array :refer [forEach]]
-            [goog.dom :refer [getElement]]
+            [goog.dom :refer [getActiveElement getDocument getElement getElementsByTagNameAndClass]]
             [om.dom :as dom]
             [om.next :as om :refer-macros [defui]]
             [koeeoadi.util :as util]
@@ -14,10 +14,19 @@
 (declare Palette)
 (declare PaletteWidget)
 
-(defn color-update [comp active-color closure-comp]
-  (om/transact! comp
-    `[(color/update {:color/id ~(:color/id active-color)
-                     :color/hex ~(.getColor closure-comp)}) :palette]))
+(defn widget-input-elem [comp]
+  (aget (query "input" (getElement (dom/node comp))) 0))
+
+(defn color-update
+  ([comp]
+   (let [{:keys [:palette-widget/active-color
+                 :palette-widget/closure-comp]} (om/props comp)]
+     (color-update comp active-color closure-comp (.getColor closure-comp))))
+  ([comp active-color closure-comp color-hex]
+   (when (not= color-hex (:color/hex active-color))
+     (om/transact! comp
+       `[(color/update {:color/id  ~(:color/id active-color)
+                        :color/hex ~(.getColor closure-comp)}) :palette]))))
 
 (defn color-remove [comp {:keys [color/id] :as color} e]
   (.preventDefault e)
@@ -101,24 +110,27 @@
 (def color-adder (om/factory ColorAdder))
 
 (defn handle-action [comp e]
-  (let [{:keys [palette-widget/active-color palette-widget/face-classes-by-color-type]} (om/props comp)
+  (let [{:keys [palette-widget/active-color
+                palette-widget/face-classes-by-color-type]} (om/props comp)
         hex-temp (util/target-color e)]
-    ;; TODO refactor this so its in the state, its wasteful to calculate this on each run through, could maybe even use the element references themeselves
-    (let [{:keys [bg-faces fg-faces]} face-classes-by-color-type
-          color-editable-selector (str ".color-" (:color/id active-color))
-          [code-bg-selector face-bg-color-selector] (selectors-for-colorize bg-faces :face/color-bg)
-          [code-fg-selector face-fg-color-selector] (selectors-for-colorize fg-faces :face/color-fg)]
+    (if  (= (widget-input-elem comp) (getActiveElement (getDocument)))
+      (color-update comp)
+      ;; TODO refactor this so its in the state, its wasteful to calculate this on each run through, could maybe even use the element references themeselves
+      (let [{:keys [bg-faces fg-faces]} face-classes-by-color-type
+            color-editable-selector (str ".color-" (:color/id active-color))
+            [code-bg-selector face-bg-color-selector] (selectors-for-colorize bg-faces :face/color-bg)
+            [code-fg-selector face-fg-color-selector] (selectors-for-colorize fg-faces :face/color-fg)]
 
-      ;; TODO combine these
-      (colorize-faces color-editable-selector "background-color" hex-temp)
+        ;; TODO combine these
+        (colorize-faces color-editable-selector "background-color" hex-temp)
 
-      (when-not (empty? fg-faces)
-        (colorize-faces code-fg-selector "color" hex-temp)
-        (colorize-faces face-fg-color-selector "background-color" hex-temp))
+        (when-not (empty? fg-faces)
+          (colorize-faces code-fg-selector "color" hex-temp)
+          (colorize-faces face-fg-color-selector "background-color" hex-temp))
 
-      (when-not (empty? bg-faces)
-        (colorize-faces code-bg-selector "background-color" hex-temp)
-        (colorize-faces face-bg-color-selector "background-color" hex-temp)))))
+        (when-not (empty? bg-faces)
+          (colorize-faces code-bg-selector "background-color" hex-temp)
+          (colorize-faces face-bg-color-selector "background-color" hex-temp))))))
 
 (defui PaletteWidget
   static om/IQuery
@@ -130,14 +142,15 @@
 
   Object
   (componentDidMount [this]
-    (let [{:keys [palette-widget/active-color faces/list] :as props} (om/props this)
-          palette-widget (HsvPalette. nil nil "goog-hsv-palette-sm")]
-      (.render palette-widget (getElement (dom/node this "paletteWidget")))
-      (.setColor palette-widget (:color/hex active-color))
-      (gevents/listen palette-widget "action" #(handle-action this %))
-      (om/transact! this `[(palette-widget/update
-                             {:palette-widget/face-classes-by-color-type ~(util/faces-to-colorize list (:color/id active-color))
-                              :palette-widget/closure-comp               ~palette-widget})])))
+    (let [{:keys        [palette-widget/active-color faces/list] :as props} (om/props this)
+          widget        (HsvPalette. nil nil "goog-hsv-palette-sm")]
+      (.render widget (getElement (dom/node this "paletteWidget")))
+      (let [input (widget-input-elem this)]
+        (.setColor widget (:color/hex active-color))
+        (gevents/listen widget EventType.ACTION #(handle-action this %))
+        (om/transact! this `[(palette-widget/update
+                               {:palette-widget/face-classes-by-color-type ~(util/faces-to-colorize list (:color/id active-color))
+                                :palette-widget/closure-comp ~widget})]))))
 
   (componentDidUpdate [this {id-prev :color/id} _]
     (let [{:keys [palette-widget/active-color
@@ -148,10 +161,10 @@
 
   (render [this]
     (let [{:keys [palette-widget/closure-comp
-                  palette-widget/active-color] :as props} (om/props this)
-          update-func #(color-update this active-color closure-comp)]
+                  palette-widget/active-color] :as props} (om/props this)]
 
-      (dom/div #js {:onMouseUp update-func
+      (dom/div #js {:onMouseUp #(color-update this)
+                    :id  "palette-widget"
                     ;;:onTouchEnd #(color-update this active-color closure-comp)
                     :ref "paletteWidget"} nil))))
 
@@ -172,7 +185,7 @@
     (let [{colors/list         :colors/list
            palette-widget-data :palette-widget} (om/props this)
           callback (partial color-add this)]
-      (dom/div #js {:className "widget" 
+      (dom/div #js {:className "widget"
                     :id        "palette"}
         (util/widget-title "Palette")
         (apply dom/div #js {:id "palette-colors"
