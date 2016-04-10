@@ -144,8 +144,6 @@
                   palette-widget/closure-comp
                   faces/list]} (om/props this)]
       (when (not= (:color/id active-color) id-prev)
-        (om/transact! this `[(palette-widget/update
-                               {:palette-widget/face-classes-by-color-type ~(util/faces-to-colorize list (:color/id active-color))})])
         (.setColor closure-comp (:color/hex active-color)))))
 
   (render [this]

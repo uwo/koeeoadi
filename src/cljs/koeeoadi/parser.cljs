@@ -183,8 +183,8 @@
    (fn []
      (swap! state merge props))})
 
-(defn next-active-color [{:keys [:palette-widget/active-color :faces/list]} color-id-removing]
-  (if (= color-id-removing (:color/id active-color))
+(defn next-active-color [{:keys [:palette-widget/active-color :colors/list]} color-id-removing]
+  (if (= color-id-removing (last active-color))
     (let [[left-colors right-colors] (split-with #(< (last %) color-id-removing) list)]
       (or (second right-colors) (last left-colors)))
     active-color))
