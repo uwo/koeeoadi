@@ -6,6 +6,7 @@
             [cljs.pprint :as pprint]
             [devtools.core :as devtools]
             [koeeoadi.components.title :refer [title]]
+            [koeeoadi.components.history :refer [history]]
             [koeeoadi.components.theme :refer [Theme theme]]
             [koeeoadi.components.language :refer [language]]
             [koeeoadi.components.faces :refer [Faces faces Face]]
@@ -61,7 +62,9 @@
         (dom/div #js {:className "sidebar" :id "sidebar-left"}
           (title this)
           (theme theme-data)
-          (language props))
+          (language props)
+          (history)
+          )
         (code code-data)
         (dom/div #js {:className "sidebar" :id "sidebar-right"}
           (palette palette-data)

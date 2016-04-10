@@ -58,6 +58,12 @@
    (let [st @state]
      (om/db->tree query st st))})
 
+(defmethod read :history
+  [{:keys [state query]} _ _]
+  {:value
+   (let [st @state]
+     (om/db->tree query st st))})
+
 (defmethod read :faces
   [{:keys [state query]} _ _]
   {:value
