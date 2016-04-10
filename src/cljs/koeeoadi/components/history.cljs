@@ -24,7 +24,8 @@
       `[(state/reset ~(merge
                         (om/from-history reconciler uuid)
                         ;; TODO I couldn't just add a single key here to reread
-                        {:mutate/name :history/undo})) :palette :colors/list])))
+                        {:mutate/name :history/undo}))
+        :colors/list])))
 
 (defn log-mutation? [mutate-name]
   (and mutate-name

@@ -1,14 +1,14 @@
 (ns koeeoadi.components.language
   (:require [om.dom :as dom]
             [om.next :as om :refer-macros [defui]]
-            [koeeoadi.components.code :refer [CodeChunk code-comp]]
+            [koeeoadi.components.code :refer [CodeChunk]]
             [koeeoadi.util :as util]))
 
-(defn code-change [code-map e]
+(defn code-change [comp code-map e]
   (let [new-code  (.. e -target -value)
         code      (get code-map new-code)
         code-norm (om/tree->db [{:code-chunks/list (om/get-query CodeChunk)}] code true)]
-    (om/transact! (code-comp) `[(code/change ~code-norm)])))
+    (om/transact! comp `[(code/change ~(assoc code-norm :mutate/name 'code/change)) :palette])))
 
 (defn code-option [{:code-option-name :code/name} code-name]
   (dom/option
@@ -16,12 +16,22 @@
          :selected (= code-name code-option-name)}
     code-option-name))
 
-(defn language [{code-map  :code/map
-                 code-name :code/name :as props}]
-  (dom/div #js {:className  "widget"
-                :id         "code-picker"
-                :onChange   #(code-change code-map %)}
-    (util/widget-title "Language")
-    (dom/label nil "Choose language:")
-    (apply dom/select nil
-      (map #(code-option % code-name) (vals code-map)))))
+(defui Language
+  static om/IQuery
+  (query [this]
+    '[[:code/map _]
+      [:code/name _]])
+
+  Object
+  (render [this]
+    (let [{code-map  :code/map
+           code-name :code/name :as props} (om/props this)]
+      (dom/div #js {:className  "widget"
+                    :id         "code-picker"
+                    :onChange   #(code-change this code-map %)}
+        (util/widget-title "Language")
+        (dom/label nil "Choose language:")
+        (apply dom/select nil
+          (map #(code-option % code-name) (vals code-map)))))))
+
+(def language (om/factory Language))

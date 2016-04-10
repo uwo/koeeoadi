@@ -8,7 +8,7 @@
             [koeeoadi.components.title :refer [title]]
             [koeeoadi.components.history :refer [history]]
             [koeeoadi.components.theme :refer [Theme theme]]
-            [koeeoadi.components.language :refer [language]]
+            [koeeoadi.components.language :refer [Language language]]
             [koeeoadi.components.faces :refer [Faces faces Face]]
             [koeeoadi.components.help :refer [help]]
             [koeeoadi.components.palette :refer [Palette palette]]
@@ -44,6 +44,7 @@
      {:colors/list      (om/get-query Color)}
      {:faces            (om/get-query Faces)}
      {:faces/list       (om/get-query Face)}
+     {:language         (om/get-query Language)}
      {:palette          (om/get-query Palette)}
      {:theme            (om/get-query Theme)}
      {:user-faces       (om/get-query UserFaces)}
@@ -57,14 +58,14 @@
            code-data         :code
            palette-data      :palette
            faces-data        :faces
+           language-data     :language
            user-faces-data   :user-faces :as props} (om/props this)]
       (dom/div #js {:id "root" }
         (dom/div #js {:className "sidebar" :id "sidebar-left"}
           (title this)
           (theme theme-data)
-          (language props)
-          (history)
-          )
+          (language language-data)
+          (history))
         (code code-data)
         (dom/div #js {:className "sidebar" :id "sidebar-right"}
           (palette palette-data)

@@ -35,6 +35,12 @@
   [{:keys [state query]} k _]
   {:value (get-faces state k)})
 
+(defmethod read :language
+  [{:keys [state query]} _ _]
+  {:value
+   (let [st @state]
+     (om/db->tree query st st))})
+
 (defmethod read :color-picker
   [{:keys [state query]} _ _]
   {:value
