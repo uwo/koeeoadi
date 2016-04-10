@@ -6,6 +6,12 @@
 (defmulti read om/dispatch)
 
 (defmethod read :default
+  [{:keys [state query]} _ _]
+  {:value
+   (let [st @state]
+     (om/db->tree query st st))})
+
+(defmethod read :code-background
   [{:keys [state query]} k params]
   (let [st @state]
     (if (contains? st k)
@@ -35,53 +41,9 @@
   [{:keys [state query]} k _]
   {:value (get-faces state k)})
 
-(defmethod read :language
-  [{:keys [state query]} _ _]
-  {:value
-   (let [st @state]
-     (om/db->tree query st st))})
-
-(defmethod read :color-picker
-  [{:keys [state query]} _ _]
-  {:value
-   (let [st @state]
-     (om/db->tree query st st))})
-
 (defmethod read :theme
   [{:keys [state]} _ _]
-  {:value (select-keys @state [:theme/name :theme/name-temp :theme/map])})
-
-(defmethod read :code
-  [{:keys [state query]} _ _]
-  {:value
-   (let [st @state]
-     (om/db->tree query st st))})
-
-;; TODO combine these types of queries
-(defmethod read :palette
-  [{:keys [state query]} _ _]
-  {:value
-   (let [st @state]
-     (om/db->tree query st st))})
-
-(defmethod read :history
-  [{:keys [state query]} _ _]
-  {:value
-   (let [st @state]
-     (om/db->tree query st st))})
-
-(defmethod read :faces
-  [{:keys [state query]} _ _]
-  {:value
-   (let [st @state]
-     (om/db->tree query st st))})
-
-(defmethod read :user-faces
-  [{:keys [state query]} _ _]
-  {:value
-   (let [st @state]
-     (om/db->tree query st st))})
-
+  {:value (select-keys @state [:theme/name :theme/map])})
 
 ;;** Mutate helpers
 (defn wrap-mutate-name [props k]
