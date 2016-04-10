@@ -11,14 +11,17 @@
             [koeeoadi.themebuilder :as tb]))
 
 (defn theme-name-begin-edit [comp]
-  (om/transact! comp `[(theme/update {:theme/name-temp ~(:theme/name (om/props comp))})])
-  (om/update-state! comp assoc :needs-focus true))
+  ;;(om/transact! comp `[(theme/update {:theme/name-temp ~(:theme/name (om/props comp))})])
+  (om/update-state! comp assoc :needs-focus true :name-temp (:theme/name (om/props comp))))
 
 (defn theme-rename [comp e]
   (let [input (util/target-value e)]
     (when (and
             (util/no-keycode-or-keycode-is-valid? (util/keycode e))
             (util/valid-file-name? input))
+      (om/update-state! comp assoc :name-temp nil)
+      (println "in rename")
+      (println input)
       (om/transact! comp
         `[(theme/rename
             {:new-name  ~input
@@ -26,8 +29,7 @@
 
 (defn theme-update [comp e]
   (let [input (util/target-value e)]
-    (om/transact! comp
-      `[(theme/update {:theme/name-temp ~input})])))
+    (om/update-state! comp assoc :name-temp input)))
 
 (defn select-theme [comp e]
   (let [{theme-map    :theme/map
@@ -38,6 +40,9 @@
                               :theme/name
                               theme-name
 
+                              :mutate/name
+                              'theme/select
+
                               :palette-widget/face-classes-by-color-type
                               (util/faces-to-colorize
                                 (get-in theme-map [theme-name :faces/list])
@@ -46,7 +51,7 @@
 
 (defn new-theme [comp]
   (om/transact! comp `[(theme/new) :theme/map])
-  (om/update-state! comp assoc :needs-focus true))
+  (om/update-state! comp assoc :needs-focus true :name-temp "new-theme"))
 
 (defn encode-props [props]
   (str "data:text/plain;charset=utf-8;base64,"
@@ -121,26 +126,28 @@
         (dom/i #js {:className "fa fa-upload fa-3x"}))
       (dom/div nil "Load"))))
 
+(defn edit-field-node [comp]
+  (dom/node comp "editField"))
+
 (defn theme-select-edit [comp]
   (let [{theme-name      :theme/name
-         theme-name-temp :theme/name-temp
-         theme-map       :theme/map} (om/props comp)]
+         theme-map       :theme/map} (om/props comp)
+        other-name-temp (:name-temp (om/get-state comp))]
     (dom/label nil "Choose theme:"
       (dom/div #js {:className "row control-row"}
         (apply dom/select
           #js {:id "theme-select"
                :onChange #(select-theme comp %)
-               :style    (util/display (not theme-name-temp))}
+               :style    (util/display (not other-name-temp))}
           (map #(util/option % theme-name) (keys theme-map)))
 
-        (dom/input #js {:id          "theme-name-input"
-                        :onBlur      #(theme-rename comp %)
-                        :onChange    #(theme-update comp %) 
-                        :onKeyDown   #(theme-rename comp %)
-                        :placeholder theme-name
-                        :ref         "editField"
-                        :value       (or theme-name-temp theme-name)
-                        :style       (util/display theme-name-temp)})
+        (dom/input #js {:id        "theme-name-input"
+                        :onBlur    #(do (println "blur") (theme-rename comp %))
+                        :onChange  #(theme-update comp %) 
+                        :onKeyDown #(when (= 13 (util/keycode %)) (.blur (edit-field-node comp)))
+                        :ref       "editField"
+                        :value     (or other-name-temp theme-name)
+                        :style     (util/display other-name-temp)})
 
         (dom/button #js {:className "inline-button"
                          :id        "theme-name-edit-button"
@@ -163,19 +170,21 @@
 (defui Theme
   static om/IQuery
   (query [this]
-    '[:theme/name-temp
-      :theme/name
+    '[:theme/name
       :theme/map
       [:palette-widget/active-color _]])
 
   Object
   (componentDidUpdate [this prev-props prev-state]
-    (when (om/get-state this :needs-focus)
-      (let [node (dom/node this "editField")
+    (if (om/get-state this :needs-focus)
+      (let [node (edit-field-node this)
             len  (.. node -value -length)]
         (.focus node)
         (.setSelectionRange node len len))
       (om/update-state! this assoc :needs-focus nil)))
+
+  (componentInitState [this]
+    {:name-temp (:theme/name (om/props this))})
 
   (render [this]
     (dom/div #js {:className "widget" :id "actions"}

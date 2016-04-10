@@ -76,11 +76,12 @@
      (swap! state merge props))})
 
 (defmethod mutate 'theme/rename
-  [{:keys [state]} _ {:keys [new-name prev-name]}]
+  [{:keys [state]} k {:keys [new-name prev-name]}]
   {:action
    (fn []
      (reset! state (-> @state
-                     (assoc :theme/name new-name :theme/name-temp nil)
+                     (wrap-mutate-name k)
+                     (assoc :theme/name new-name)
                      (update :theme/map rename-keys {prev-name new-name}))))})
 
 (defn current-theme [state]
@@ -106,26 +107,26 @@
      (swap! state merge new-theme {:theme/map new-theme-map}))})
 
 (defmethod mutate 'theme/load
-  [{:keys [state]} _ theme]
+  [{:keys [state]} k theme]
   {:action
    (fn []
      (let [st @state
            new-theme-map (theme-map st (current-theme st) {(:theme/name theme) theme})]
        (swap! state (partial merge-with #(identity %2))
-         theme {:theme/map new-theme-map})))})
+         theme {:theme/map new-theme-map :mutate/name k})))})
 
 ;; TODO there is a bug in this function where
 ;; its not merging correctly.  Not a big deal.
 (defmethod mutate 'theme/new
-  [{:keys [state]} _ _]
+  [{:keys [state]} k _]
   {:action
    (fn []
      (let [st            @state
            new-theme     (get-in st [:theme/map "basic-bw"])
            new-theme-map (merge {"new-theme" new-theme} (theme-map st))]
-       (swap! state merge new-theme {:theme/name      "new-theme"
-                                     :theme/name-temp "new-theme"
-                                     :theme/map       new-theme-map})))})
+       (swap! state merge new-theme {:theme/name  "new-theme"
+                                     :theme/map   new-theme-map
+                                     :mutate/name 'theme/new})))})
 
 (defn code-merge [current-data new-data]
   (cond (map? current-data)
@@ -153,8 +154,8 @@
      (let [st      @state
            new-id  (new-color-id (:colors/list st))]
        (reset! state (-> st
+                       (wrap-mutate-name k)
                        (assoc-in [:colors/by-id new-id] {:color/id new-id :color/hex "#FFFFFF"})
-                       (assoc :mutate/name k)
                        (update :colors/list conj [:colors/by-id new-id])
                        (assoc :palette-widget/active-color [:colors/by-id new-id])
                        (assoc :palette-widget/face-classes-by-color-type (util/faces-to-colorize (:faces/list st) new-id))))))})
@@ -179,9 +180,9 @@
            color-id-removing (last ref)
            active-color      (next-active-color st color-id-removing)]
        (reset! state (-> st
+                       (wrap-mutate-name k)
                        (update :colors/by-id dissoc (last ref))
                        (update :colors/list #(filterv (partial not= ref) %))
-                       (assoc :mutate/name k)
                        (assoc :palette-widget/active-color active-color)
                        (assoc :palette-widget/face-classes-by-color-type (util/faces-to-colorize (:faces/list st) (:color/id active-color)))))))})
 
@@ -190,20 +191,16 @@
   {:action
    (fn []
      (reset! state (-> @state
-                    (update-in [:colors/by-id id] merge props)
-                    (wrap-mutate-name k))))})
+                     (wrap-mutate-name k)
+                     (update-in [:colors/by-id id] merge props))))})
 
 (defmethod mutate 'face/update
-  [{:keys [state]} _ {:keys [:face/name] :as props}]
+  [{:keys [state]} k {:keys [:face/name] :as props}]
   {:action
    (fn []
-     (swap! state update-in [:faces/by-name name] merge props))})
-
-(defmethod mutate 'face/color-update
-  [{:keys [state]} _ {:keys [face/name] :as props}]
-  {:action
-   (fn []
-     (swap! state update-in [:faces/by-name name] merge props))})
+     (reset! state (-> @state
+                     (wrap-mutate-name k)
+                     (update-in [:faces/by-name name] merge props))))})
 
 (defmethod mutate 'color-picker/update
   [{:keys [state]} _ props]
@@ -212,37 +209,40 @@
      (swap! state merge props))})
 
 (defmethod mutate 'user-face/add
-  [{:keys [state]} _ {:keys [face/name] :as props}]
+  [{:keys [state]} k {:keys [face/name] :as props}]
   {:action
    (fn []
      (reset! state (-> @state
+                     (wrap-mutate-name k)
                      (assoc-in [:user-faces/by-name name] props)
                      (update :user-faces/list conj [:user-faces/by-name name]))))})
 
 (defmethod mutate 'user-face/remove
-  [{:keys [state ref]} _ _]
+  [{:keys [state ref]} k _]
   {:action
    (fn []
      (reset! state (-> @state
+                     (wrap-mutate-name k)
                      (update :user-faces/by-name dissoc (last ref))
                      (update :user-faces/list #(filterv (partial not= ref) %)))))})
 
 (defmethod mutate 'user-face/update
-  [{:keys [state ref]} _ props]
+  [{:keys [state ref]} k props]
   {:action
    (fn []
-     (swap! state update-in ref merge props))})
+     (reset! state (-> @state
+                     (wrap-mutate-name k)
+                     (update-in ref merge props))))})
 
 (defmethod mutate 'user-face/change-name
-  [{:keys [state ref]} _ _]
+  [{:keys [state ref]} k {:keys [new-name]}]
   {:action
    (fn []
      (let [st        @state
-           prev-name (last ref)
-           new-name  (:face/name-temp (get-in st ref))]
+           prev-name (last ref)]
        (reset! state (-> @state
-                       (update-in ref merge {:face/name      new-name
-                                             :face/name-temp nil})
+                       (wrap-mutate-name k)
+                       (update-in ref merge {:face/name      new-name})
                        (update :user-faces/by-name rename-keys {prev-name new-name})
                        (update :user-faces/list #(filterv (partial not= ref)
                                                    (conj % [:user-faces/by-name new-name])))))))})

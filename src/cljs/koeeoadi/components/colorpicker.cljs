@@ -56,29 +56,21 @@
 (defui ColorPicker
   static om/IQuery
   (query [this]
-    `[:color-picker/coordinates
-      :color-type
-      {:color-picker/active-face [:face/id
-                                  :face/name
-                                  {:face/color-bg [:color/id
-                                                   :color/name
-                                                   :color/hex]}
-                                  {:face/color-fg [:color/id
-                                                   :color/name
-                                                   :color/hex]}]}
-      {:colors/list ~(om/get-query Color)}
+    `[{:colors/list ~(om/get-query Color)}
       [:palette-widget/active-color ~'_]
       [:faces/by-name ~'_]])
 
   Object
   (render [this]
     (let [{faces-by-name :faces/by-name
-           active-color  :palette-widget/active-color
            colors        :colors/list
-           color-type    :color-type
-           coordinates   :color-picker/coordinates
-           active-face   :color-picker/active-face :as props}
+           active-color  :palette-widget/active-color}
           (om/props this)
+
+          {coordinates   :coordinates
+           color-type    :color-type
+           active-face   :active-face}
+          (om/get-state this)
 
           {face-name :face/name}
           active-face
@@ -90,6 +82,7 @@
                   faces-to-colorize (util/faces-to-colorize (vals faces-by-name') (:color/id active-color))]
               (om/transact! this `[(state/merge
                                      {:palette-widget/face-classes-by-color-type ~faces-to-colorize
+                                      :mutate/name face/color-update
                                       :faces/by-name ~faces-by-name'})])))
 
           color-update
@@ -99,17 +92,20 @@
                   faces-to-colorize (util/faces-to-colorize (vals faces-by-name') (:color/id active-color))]
               (om/transact! this `[(state/merge
                                      {:palette-widget/face-classes-by-color-type ~faces-to-colorize
-                                      :faces/by-name ~faces-by-name'})])))
+                                      :mutate/name face/color-update
+                                      :faces/by-name ~faces-by-name'}) :palette])))
           ;; can factor out of this method and partially apply it
           color-update-temp' (partial color-update-temp face-name (get-in active-face [color-type :color/hex]) color-type)
 
           computed
           {:color-update-temp' color-update-temp'
-           :color-update-void color-update-void
-           :color-update      color-update}
+           :color-update-void  color-update-void
+           :color-update       color-update}
 
           color-options-computed
           (map #(om/computed % computed) colors)]
+      (println "rendering pick")
+      (.log js/console coordinates)
       (when coordinates
         (apply
           dom/div

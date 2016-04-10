@@ -37,11 +37,12 @@
            :style     #js {:backgroundColor hex}
            :tabIndex  (when-not disabled? "0")})))
 
-(defn face-update [name prop e]
-  (let [checked (util/target-checked e)]
-    (om/transact! (code-comp)
+(defn face-update [comp prop e]
+  (let [name    (:face/name comp)
+        checked (util/target-checked e)]
+    (om/transact! comp
       `[(face/update {:face/name ~name
-                      ~prop      ~checked})])))
+                      ~prop      ~checked}) :palette])))
 
 (defn face-style [comp prop]
   (let [{:keys [face/name] :as props} (om/props comp)]
@@ -49,7 +50,7 @@
       (dom/input #js
         {:type    "checkbox"
          :checked (get props prop)
-         :onClick #(face-update name prop %)})
+         :onClick #(face-update comp prop %)})
       (clojure.core/name prop))))
 
 (defn face-styles [comp]
@@ -57,7 +58,7 @@
                 face/bold
                 face/italic
                 face/underline]} (om/props comp)
-        {:keys [active-face]}    (om/get-computed comp)]
+        {:keys [active-face]} (om/get-state (faces-comp))]
     (dom/ul #js {:className "face-styles"
                  :style (util/display (= name active-face))}
       (face-style comp :face/bold)
@@ -84,7 +85,7 @@
     (let [{id        :face/id
            face-name :face/name
            :as props}           (om/props this)
-          {:keys [active-face]} (om/get-computed this)
+          {:keys [active-face]} (om/get-state (faces-comp))
           active?               (= face-name active-face)
           icon-classes          (str "fa fa-2x "
                                   (if active? "fa-angle-down" "fa-angle-right"))]
@@ -92,7 +93,7 @@
         (face-color this :face/color-bg)
         (face-color this :face/color-fg)
         (dom/div #js {:className "face-name"
-                      :onClick   #(om/update-state! (faces-comp) assoc :active-face (if active? nil face-name))}
+                      :onClick   #(om/update-state! (faces-comp) assoc :active-face face-name)}
           (clojure.core/name face-name))
         (dom/i #js {:className icon-classes})
         (when active?
@@ -115,8 +116,8 @@
           #js {:id      "user-face-map-button"
                :onClick #(om/update-state! (user-faces-comp) assoc :active true)}
           "Edit User Faces")
-        (dom/div #js {:id "faces-container"}
-          (map #(face (om/computed % {:active-face active-face})) list))))))
+        (apply dom/div #js {:id "faces-container"}
+          (map face list))))))
 
 (def faces (om/factory Faces))
 

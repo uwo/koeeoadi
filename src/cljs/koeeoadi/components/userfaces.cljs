@@ -10,16 +10,14 @@
 (defn face-update [comp props]
   (om/transact! comp `[(user-face/update ~props)]))
 
-(defn face-edit-name [comp face-name new-name needs-focus]
+(defn change-name [comp face-name new-name needs-focus]
   (when-not (empty? new-name)
-    (om/transact! comp `[(user-face/update
-                           {:face/name      ~face-name
-                            :face/name-temp ~(clojure.string/trim new-name)})]))
+    (om/update-state! comp assoc :name-temp (clojure.string/trim new-name)))
   (when needs-focus
     (om/update-state! comp assoc :needs-focus true)))
 
 (defn face-add [comp]
-  (let [{user-faces :user-faces/list} (om/props comp)
+  (let [{user-faces  :user-faces/list} (om/props comp)
         faces-sorted (sort-by #(- (:face/id %)) user-faces)
         new-id       (inc (:face/id (first faces-sorted)))
         new-name     (str "new-face-" new-id)]
@@ -34,27 +32,100 @@
                         :face/underline false})])))
 
 (defn face-remove [comp]
-  (om/transact! comp `[(user-face/remove) :user-faces]))
+  (om/transact! comp `[(user-face/remove) :palette]))
+
+(defn color-ref [value]
+  (when-not (= value "None")
+    [:colors/by-id (.parseInt js/window value)]))
 
 (defn color-change [comp color-type e]
   (let [{face-name    :face/name}    (om/props comp)
         {colors-by-id :colors/by-id} (om/get-computed comp)
-
-        value (util/target-value e)
-        color (if (= value "None")
-                nil
-                [:colors/by-id (.parseInt js/window
-                                 (util/target-value e))])]
+        color-ref (color-ref (util/target-value e))]
     (face-update comp {:face/name face-name
-                       color-type color})))
+                       color-type color-ref})))
+
+(defn edit-name-button [comp]
+  (let [name      (:face/name (om/props comp))
+        name-temp (:name-temp (om/get-state comp))]
+    (dom/button #js {:id "user-face-edit-button"
+                     :className "inline-button"
+                     :onClick #(change-name comp name name true)
+                     :style  (util/display (not name-temp))}
+      (dom/i #js {:className "fa fa-edit fa-2x"}))))
+
+(defn rename
+  ([comp]
+   (let [name      (:face/name (om/props comp))
+         name-temp (:name-temp (om/get-state comp))]
+     (when (and
+             (not= name name-temp)
+             (util/valid-face-name? name-temp))
+       (om/transact! comp `[(user-face/change-name {:new-name ~name-temp}) :palette]))))
+  ([comp e]
+   (when (= 13 (util/keycode e))
+     (rename comp))))
+
+(defn editable-name [comp]
+  (let [{:keys [face/name]} (om/props comp)
+        name-temp (:name-temp (om/get-state comp))]
+    (dom/td #js {:className "user-face-name-td"}
+      (dom/input #js {:value     name-temp
+                      :onKeyDown #(rename comp %)
+                      :onBlur    #(rename comp)
+                      :onChange  #(change-name comp name (util/target-value %) false)
+                      :style     (util/display name-temp)
+                      :ref       "editField"})
+      (dom/div #js {:onClick #(change-name comp name name true)
+                    :style   (util/display (not name-temp))}
+        name)
+      (edit-name-button comp))))
 
 (defn color-option [{:keys [color/hex color/id] :as color} current-color]
   (let [selected? (= current-color color)]
     (dom/option
-      #js {:style     #js {:backgroundColor hex}
-           :selected  selected?
-           :value     id}
+      #js {:style    #js {:backgroundColor hex}
+           :selected selected?
+           :value    id}
       hex)))
+
+(defn color-select [comp color color-type]
+  (let [color-hex (:color/hex color)
+        colors-by-id (:colors/by-id (om/get-computed comp))]
+    (dom/td nil
+      (apply dom/select
+        #js {:style    #js {:backgroundColor (or color-hex nil)}
+             :onChange #(color-change comp color-type %)}
+        (dom/option #js {:value "None"} "None")
+        (map #(color-option % color) (vals colors-by-id))))))
+
+(defn style-checkbox [comp checked?]
+  (dom/td nil
+    (dom/input
+      #js {:type "checkbox"
+           :checked checked?
+           :onClick #(face-update comp
+                       {:face/name comp
+                        :face/underline (util/target-checked %)})})))
+
+(defn face-update-editor [comp e]
+  (face-update comp
+    {:face/name   (:face/name comp)
+     :face/editor (keyword (util/target-value e))}))
+
+(defn editor-select [comp]
+  (let [{:keys [:face/editor :face/name]} (om/props comp)
+        editor-name (clojure.core/name editor)
+        editors (keys config/editor-file-map)]
+    (dom/td nil
+      (apply dom/select #js {:onChange face-update-editor}
+        (map #(util/option (clojure.core/name %) editor-name) editors)))))
+
+(defn remove-button [comp]
+  (dom/td nil
+    (dom/button #js {:className "user-face-remove-button"
+                     :onClick   #(face-remove comp)}
+      (dom/i #js {:className "fa fa-close fa-2x"}))))
 
 (defui UserFace
   static om/Ident
@@ -66,7 +137,6 @@
     [:colors/by-id
      :face/id
      :face/name
-     :face/name-temp
      :face/bold
      :face/italic
      :face/underline
@@ -84,85 +154,20 @@
       (om/update-state! this assoc :needs-focus nil)))
 
   (render [this]
-    (let [{id        :face/id
-           name      :face/name
-           name-temp :face/name-temp
-           bold      :face/bold
+    (let [{bold      :face/bold
            italic    :face/italic
-           color-bg  :face/color-bg
-           color-fg  :face/color-fg
            underline :face/underline
-           editor    :face/editor}   (om/props this)
-
-          colors-by-id (:colors/by-id (om/get-computed this))
-          colors-list  (vals colors-by-id)
-          bg-hex       (:color/hex color-bg)
-          fg-hex       (:color/hex color-fg)
-          editors      (keys config/editor-file-map)]
+           color-bg  :face/color-bg
+           color-fg  :face/color-fg} (om/props this)]
       (dom/tr nil
-        (dom/td #js {:className "user-face-name-td"}
-          (dom/input #js {:value     name-temp
-                          :onBlur    #(when (and (not= name name-temp)
-                                              (util/valid-face-name? name-temp))
-                                        (om/transact! this `[(user-face/change-name) :user-faces]))
-                          :onKeyDown #(when (and (not= name name-temp)
-                                              (util/valid-face-name? name-temp) (= 13 (util/keycode %)))
-                                        (om/transact! this `[(user-face/change-name) :user-faces]))
-                          :onChange  #(face-edit-name this name (util/target-value %) false)
-                          :style     (util/display name-temp)
-                          :ref       "editField"})
-          (dom/div #js {:className "row"
-                        :onClick   #(face-edit-name this name name true)
-                        :style     (util/display (not name-temp))}
-            (dom/span nil name))
-          (dom/button #js {:id "user-face-edit-button"
-                           :className "inline-button"
-                           :onClick #(face-edit-name this name name true)
-                           :style  (util/display (not name-temp))}
-            (dom/i #js {:className "fa fa-edit fa-2x"})
-            ))
-
-        (dom/td nil
-          (apply dom/select
-            #js {:style    #js {:backgroundColor (or bg-hex nil)}
-                 :onChange #(color-change this :face/color-bg %)}
-            (dom/option #js {:value "None"} "None")
-            (map #(color-option % color-bg) colors-list)))
-
-        (dom/td nil
-          (apply dom/select
-            #js {:style    #js {:backgroundColor (or fg-hex nil)}
-                 :onChange #(color-change this :face/color-fg %)}
-            (dom/option #js {:value "None"} "None")
-            (map #(color-option % color-fg) colors-list)))
-
-        ;; BOLD
-        (dom/td nil
-          (dom/input
-            #js {:type    "checkbox"
-                 :checked bold
-                 :onClick #(face-update this {:face/name name :face/bold (util/target-checked %)})}))
-        ;; ITALIC
-        (dom/td nil
-          (dom/input
-            #js {:type    "checkbox"
-                 :checked italic
-                 :onClick #(face-update this {:face/name name :face/italic (util/target-checked %)})}))
-        ;; UNDERLINE
-        (dom/td nil
-          (dom/input
-            #js {:type    "checkbox"
-                 :checked underline
-                 :onClick #(face-update this {:face/name name :face/underline (util/target-checked %)})}))
-
-        (dom/td nil
-          (apply dom/select #js {:onChange #(face-update this {:face/name   name
-                                                               :face/editor (keyword (util/target-value %))})}
-            (map #(util/option (clojure.core/name %) (clojure.core/name editor)) editors)))
-
-        (dom/td nil
-          (dom/button #js {:className "user-face-remove-button" :onClick #(face-remove this)}
-            (dom/i #js {:className "fa fa-close fa-2x"})))))))
+        (editable-name this)
+        (color-select this color-bg :face/color-bg)
+        (color-select this color-fg :face/color-fg)
+        (style-checkbox this bold)
+        (style-checkbox this italic)
+        (style-checkbox this underline)
+        (editor-select this)
+        (remove-button this)))))
 
 (def user-face (om/factory UserFace {:keyfn :face/name}))
 
@@ -176,40 +181,30 @@
   (render [this]
     (let [{colors-by-id    :colors/by-id
            user-faces-list :user-faces/list}  (om/props this)
-
-          {:keys [active]} (om/get-state this)]
-      (dom/div #js {:id "user-faces-modal"
-                    :className (str "modal " (if active "" "hide"))}
+          user-faces-sorted (sort-by :face/id user-faces-list)
+          active      (:active (om/get-state this))
+          modal-class (str "modal " (if active "" "hide"))]
+      (dom/div #js {:id "user-faces-modal" :className modal-class}
         (dom/div #js {:className "modal-content-container"}
           (dom/div #js {:className "modal-content"}
-            (dom/h5
-              #js {:className "modal-title"}
-              "User Faces")
-            (dom/button
-              #js {:onClick #(face-add this)}
-              "Add Face")
-            (dom/div #js {:id          "user-faces-scroll-container"
-                          :cellSpacing 0
-                          :cellPadding 0
-                          :border      0}
-              (dom/table #js {:id "user-faces-container"
-                              :cellPadding 0
-                              :cellSpacing 0}
+            (dom/h5 #js {:className "modal-title"} "User Faces")
+            (dom/button #js {:onClick #(face-add this)} "Add Face")
+            (dom/div #js {:id "user-faces-scroll-container"}
+              (dom/table #js {:id "user-faces-container"}
                 (dom/thead nil
                   (dom/tr nil
-                    (dom/th #js {:id "user-face-heading-name"}  "Name")
-                    (dom/th #js {:id "user-face-heading-background"}  "Background")
-                    (dom/th #js {:id "user-face-heading-foreground"}  "Foreground")
-                    (dom/th #js {:id "user-face-heading-bold"}  "Bold")
-                    (dom/th #js {:id "user-face-heading-italic"}  "Italic")
-                    (dom/th #js {:id "user-face-heading-underline"}  "Underline")
-                    (dom/th #js {:id "user-face-heading-editor"}  "Editor")
-                    (dom/th #js {:id "user-face-heading-remove"}  "")))
+                    (dom/th #js {:id "user-face-heading-name"} "Name")
+                    (dom/th #js {:id "user-face-heading-background"} "Background")
+                    (dom/th #js {:id "user-face-heading-foreground"} "Foreground")
+                    (dom/th #js {:id "user-face-heading-bold"} "Bold")
+                    (dom/th #js {:id "user-face-heading-italic"} "Italic")
+                    (dom/th #js {:id "user-face-heading-underline"} "Underline")
+                    (dom/th #js {:id "user-face-heading-editor"} "Editor")
+                    (dom/th #js {:id "user-face-heading-remove"} "")))
                 (apply dom/tbody nil
-                  ;; TODO is it the right thing to be sorting here?
-                  (map #(user-face (om/computed % {:colors/by-id colors-by-id})) (sort-by :face/id user-faces-list)))))
+                  (map #(user-face (om/computed % {:colors/by-id colors-by-id})) user-faces-sorted))))
             (dom/button #js {:className "modal-close-button"
-                             :onClick #(om/update-state! this assoc :active false)} "CLOSE")))))))
+                             :onClick   #(om/update-state! this assoc :active false)} "CLOSE")))))))
 
 (def user-faces (om/factory UserFaces))
 

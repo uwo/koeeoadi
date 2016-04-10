@@ -67,18 +67,17 @@
   (.stopPropagation e)
   (let [coords (getClientPosition e)
         coords-offset (getPageOffset (getElement "root"))
-        ;; TODO this could be refactored
         coords' {:y (aget coords "x")
                  :x (+ (aget coords "y") (- (aget coords-offset "y")))}]
-    (om/transact! comp `[(color-picker/update
-                           {:color-picker/active-face ~face
-                            :color-type               ~color-type
-                            :color-picker/coordinates ~coords'})])))
+    (om/update-state! comp assoc
+      :active-face face
+      :color-type  color-type
+      :coordinates coords')))
 
 (defn color-picker-hide [comp]
-  (om/transact! comp `[(color-picker/update
-                         {:color-picker/active-face nil
-                          :color-picker/coordinates nil}) :faces/list]))
+  (om/update-state! comp assoc
+    :active-face nil
+    :coordinates nil))
 
 (defn valid-face-name? [str]
   (re-matches #"^[0-9a-zA-Z\-]+$" str))
