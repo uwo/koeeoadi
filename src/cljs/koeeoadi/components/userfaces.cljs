@@ -8,7 +8,7 @@
 (declare user-faces-comp)
 
 (defn face-update [comp props]
-  (om/transact! comp `[(user-face/update ~props)]))
+  (om/transact! comp `[(user-face/update ~props) :palette]))
 
 (defn change-name [comp face-name new-name needs-focus]
   (when-not (empty? new-name)
@@ -99,14 +99,15 @@
         (dom/option #js {:value "None"} "None")
         (map #(color-option % color) (vals colors-by-id))))))
 
-(defn style-checkbox [comp checked?]
-  (dom/td nil
-    (dom/input
-      #js {:type "checkbox"
-           :checked checked?
-           :onClick #(face-update comp
-                       {:face/name comp
-                        :face/underline (util/target-checked %)})})))
+(defn style-checkbox [comp prop]
+  (let [val (get (om/props comp) prop)]
+    (dom/td nil
+      (dom/input
+        #js {:type "checkbox"
+             :checked val
+             :onClick #(face-update comp
+                         {:face/name (:face/name (om/props comp))
+                          prop (util/target-checked %)})}))))
 
 (defn face-update-editor [comp e]
   (face-update comp
@@ -118,7 +119,7 @@
         editor-name (clojure.core/name editor)
         editors (keys config/editor-file-map)]
     (dom/td nil
-      (apply dom/select #js {:onChange face-update-editor}
+      (apply dom/select #js {:onChange #(face-update-editor comp %)}
         (map #(util/option (clojure.core/name %) editor-name) editors)))))
 
 (defn remove-button [comp]
@@ -163,9 +164,9 @@
         (editable-name this)
         (color-select this color-bg :face/color-bg)
         (color-select this color-fg :face/color-fg)
-        (style-checkbox this bold)
-        (style-checkbox this italic)
-        (style-checkbox this underline)
+        (style-checkbox this :face/bold)
+        (style-checkbox this :face/italic)
+        (style-checkbox this :face/underline)
         (editor-select this)
         (remove-button this)))))
 
