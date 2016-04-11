@@ -37,23 +37,20 @@
                         {:face/color-bg [:color/id :color/hex]}
                         ]}
      :code-chunk/line-chunk
-     :code-chunk/string])
+     :code-chunk/string]))
 
-  Object
-  (render [this]
-    (let [{:keys [code-chunk/face
-                  code-chunk/line-chunk
-                  code-chunk/string]}   (om/props this)
-          {:keys [face/name]}           face]
-      (dom/span
-        #js {:className (str util/code-class " " (util/code-face-class name))
-             :onBlur    #(util/color-picker-hide (color-picker-comp))
-             :onClick   #(util/color-picker-show (color-picker-comp) face :face/color-fg %)
-             :style     (face-styles face)
-             :tabIndex  0}
-        string))))
 
-(def code-chunk (om/factory CodeChunk {:keyfn :code-chunk/line-chunk}))
+(defn code-chunk [props]
+  (let [{:keys [code-chunk/face
+                code-chunk/line-chunk
+                code-chunk/string]}   props
+        {:keys [face/name]}           face]
+    (dom/span
+      #js {:className (str util/code-class " " (util/code-face-class name))
+           :onBlur    #(util/color-picker-hide (color-picker-comp))
+           :onClick   #(util/color-picker-show (color-picker-comp) face :face/color-fg %)
+           :style     (face-styles face)
+           :tabIndex  0}string)))
 
 (defn code-line [line]
   (apply dom/div #js {:className "code-line"}
