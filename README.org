@@ -1,9 +1,31 @@
-* KOEEOADI
-  Koeeoadi is a web app that lets you build color themes for emacs, vim, and sublime text.
+* Koeeoadi
 
-  Koeeoadi was built with Clojurescript and Om Next.
+  Koeeoadi is a web app for building color themes for Emacs and Vim
+  (GUI only).  *Click Here* to check it out.
 
-* Editor Face Map
+  It's somewhat different from other online theme creators because you
+  can click directly on code to edit its styling.  It also supports
+  definition of custom faces.  This means you can define styles for
+  any Emacs face or Vim highlighting group.  In addiiton, to theme
+  export, you can also save your theme to a `.koee` file so that you
+  can open it later for further editing.
+
+  I built Koeeoadi as an exercise for learning about Om Next, a very
+  awesome Clojurescript framework for buildings applications.  I
+  highly recommend checking it out if you haven't already.
+
+  If you're also working on an Om Next app and using this as a
+  reference, then please keep in mind that I'm still figuring out the
+  best way to do things in Om so please don't consider this a shining
+  example.
+
+* Face Mapping
+
+Koeeoadi expects you to style the default faces.  These faces cover
+basic programming language syntax.  The table below shows how
+Koeeoadi's faces map to the built-in faces and highlighting groups of
+Emacs and VIM, respectively.
+
 | Koeeoadi Default Faces | Emacs Face                       | Vim Syntax Group                                   |
 |------------------------+----------------------------------+----------------------------------------------------|
 | background             | default                          | Normal                                             |
@@ -20,3 +42,13 @@
 | type                   | font-lock-type-face              | Type                                               |
 | variable-name          | font-lock-variable-name-face     | Identifier                                         |
 
+* Contribution
+
+  Pull requests are welcome.
+
+** Remaining Tasks
+
+*** TODO Add tests
+*** TODO Finish TODO items in code
+*** TODO Add support for other popular editors
+*** TODO Add fallback theme for terminal users (not sure if possible)
