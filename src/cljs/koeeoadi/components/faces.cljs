@@ -38,27 +38,23 @@
            :tabIndex  (when-not disabled? "0")})))
 
 (defn face-update [comp prop e]
-  (let [name    (:face/name comp)
+  (let [name    (:face/name (om/props comp))
         checked (util/target-checked e)]
     (om/transact! comp
       `[(face/update {:face/name ~name
-                      ~prop      ~checked}) :palette])))
+                      ~prop      ~checked}) :code])))
 
 (defn face-style [comp prop]
-  (let [{:keys [face/name] :as props} (om/props comp)]
-    (dom/li nil
-      (dom/input #js
-        {:type    "checkbox"
-         :checked (get props prop)
-         :onClick #(face-update comp prop %)})
-      (clojure.core/name prop))))
+  (dom/li nil
+    (dom/input #js
+      {:type    "checkbox"
+       :checked (get (om/props comp) prop)
+       :onClick #(face-update comp prop %)})
+    (clojure.core/name prop)))
 
 (defn face-styles [comp]
-  (let [{:keys [face/name
-                face/bold
-                face/italic
-                face/underline]} (om/props comp)
-        {:keys [active-face]} (om/get-state (faces-comp))]
+  (let [{:keys [face/active-face
+                face/name]} (om/props comp)]
     (dom/ul #js {:className "face-styles"
                  :style (util/display (= name active-face))}
       (face-style comp :face/bold)
@@ -78,23 +74,24 @@
       :face/italic
       :face/underline
       {:face/color-fg ~(om/get-query Color)}
-      {:face/color-bg ~(om/get-query Color)}])
+      {:face/color-bg ~(om/get-query Color)}
+      [:face/active-face ~'_]])
 
   Object
   (render [this]
-    (let [{id        :face/id
-           face-name :face/name
+    (let [{id          :face/id
+           name   :face/name
+           active-face :face/active-face
            :as props}           (om/props this)
-          {:keys [active-face]} (om/get-state (faces-comp))
-          active?               (= face-name active-face)
+          active?               (= name active-face)
           icon-classes          (str "fa fa-2x "
                                   (if active? "fa-angle-down" "fa-angle-right"))]
       (dom/div #js {:className "face"}
         (face-color this :face/color-bg)
         (face-color this :face/color-fg)
         (dom/div #js {:className "face-name"
-                      :onClick   #(om/update-state! (faces-comp) assoc :active-face face-name)}
-          (clojure.core/name face-name))
+                      :onClick   #(om/transact! (faces-comp) `[(state/merge {:face/active-face ~name})])}
+          name)
         (dom/i #js {:className icon-classes})
         (when active?
           (face-styles this))))))
@@ -107,8 +104,8 @@
     [{:faces/list (om/get-query Face)}])
   Object
   (render [this]
-    (let [{:keys [faces/list]}  (om/props this)
-          {:keys [active-face]} (om/get-state this)]
+    (println "rerendering faces")
+    (let [{:keys [faces/list]}  (om/props this)]
       (dom/div #js {:className  "widget"
                     :id         "faces"}
         (util/widget-title "Faces")
