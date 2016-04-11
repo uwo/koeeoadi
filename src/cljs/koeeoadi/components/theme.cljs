@@ -154,18 +154,22 @@
 
           (dom/i #js {:className "fa fa-edit fa-2x"}))))))
 
-(defn theme-export-button [theme-name button-text]
+(def export-button-text 
+  {:emacs "Emacs (GUI Only)"
+   :vim "VIM (GUI Only)"})
+
+(defn theme-export-button [theme-name editor]
   (dom/button
     #js {:className "export-button"
-         :onClick   #(export-theme-file theme-name :emacs)}
-    button-text))
+         :onClick   #(export-theme-file theme-name editor)}
+    (editor export-button-text)))
 
 (defn theme-export [comp]
   (let [theme-name (:theme/name (om/props comp))]
     (dom/div #js {:className "row"}
       (dom/label nil "Export: ")
-      (theme-export-button theme-name "Emacs (GUI only)")
-      (theme-export-button theme-name "Vim (GUI only)"))))
+      (theme-export-button theme-name :emacs)
+      (theme-export-button theme-name :vim))))
 
 (defui Theme
   static om/IQuery
