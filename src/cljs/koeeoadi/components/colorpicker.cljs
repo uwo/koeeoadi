@@ -104,8 +104,6 @@
 
           color-options-computed
           (map #(om/computed % computed) colors)]
-      (println "rendering pick")
-      (.log js/console coordinates)
       (when coordinates
         (apply
           dom/div

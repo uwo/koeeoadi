@@ -104,7 +104,6 @@
     [{:faces/list (om/get-query Face)}])
   Object
   (render [this]
-    (println "rerendering faces")
     (let [{:keys [faces/list]}  (om/props this)]
       (dom/div #js {:className  "widget"
                     :id         "faces"}

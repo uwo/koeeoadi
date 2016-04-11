@@ -18,11 +18,11 @@
             [koeeoadi.components.userfaces :refer [UserFaces user-faces UserFace]]
             [koeeoadi.reconciler :refer [reconciler]]))
 
-;; TODO separate out this dev stuff
-(enable-console-print!)
-; this enables additional features, :custom-formatters is enabled by default
-(devtools/enable-feature! :sanity-hints :dirac)
-(devtools/install!)
+;; ;; TODO separate out this dev stuff
+;; (enable-console-print!)
+;; ; this enables additional features, :custom-formatters is enabled by default
+;; (devtools/enable-feature! :sanity-hints :dirac)
+;; (devtools/install!)
 
 (defui Root
   static om/IQuery

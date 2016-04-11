@@ -128,7 +128,6 @@
   (render [this]
     (let [{:keys [history-stack active]} (om/get-state this)
           [redos undos] (history-split active history-stack)]
-      (println "rerendering " active)
       (dom/div #js {:id "history" :className "widget"}
         (dom/h5 #js {:className "widget-title"} "History")
         (dom/button #js {:onClick #(undo this)

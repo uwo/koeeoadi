@@ -20,8 +20,6 @@
             (util/no-keycode-or-keycode-is-valid? (util/keycode e))
             (util/valid-file-name? input))
       (om/update-state! comp assoc :name-temp nil)
-      (println "in rename")
-      (println input)
       (om/transact! comp
         `[(theme/rename
             {:new-name  ~input
@@ -142,7 +140,7 @@
           (map #(util/option % theme-name) (keys theme-map)))
 
         (dom/input #js {:id        "theme-name-input"
-                        :onBlur    #(do (println "blur") (theme-rename comp %))
+                        :onBlur    #(theme-rename comp %)
                         :onChange  #(theme-update comp %) 
                         :onKeyDown #(when (= 13 (util/keycode %)) (.blur (edit-field-node comp)))
                         :ref       "editField"
