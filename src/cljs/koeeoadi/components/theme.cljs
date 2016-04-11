@@ -61,10 +61,11 @@
     (aset link "download" (str current-theme ".koee"))
     (aset link "href" (encode-props
                         (select-keys @reconciler
-                          [:theme/name  :colors/by-id
-                           :colors/list :faces/by-name
-                           :faces/list  :user-faces/list
-                           :user-faces/by-name])))
+                          [:theme/name         :colors/by-id
+                           :colors/list        :faces/by-name
+                           :faces/list         :user-faces/list
+                           :user-faces/by-name :theme/version
+                           :palette-widget/active-color])))
     (.click link)))
 
 (defn export-theme-file [current-theme editor]

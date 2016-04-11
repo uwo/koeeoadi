@@ -3,6 +3,8 @@
             [koeeoadi.code :refer [code]]
             [koeeoadi.themes :refer [themes]]))
 
+(def project-version "0.0.1")
+
 (def editor-file-map
   {:emacs        "el"
    :vim          "vim"})
@@ -38,8 +40,8 @@
 
 ;; TODO Initialize this using theme/data
 (def app-state
-  {:palette-widget {}
-   :palette-widget/cloure-comp  {}
+  {:theme/version project-version
+   :palette-widget {}
    :palette-widget/active-color [:colors/by-id 0]
    :code/name         initial-code
    :theme/name        "solarized-dark"
