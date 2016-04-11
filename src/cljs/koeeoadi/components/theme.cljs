@@ -161,7 +161,8 @@
 
 (defn theme-export [comp]
   (let [theme-name (:theme/name (om/props comp))]
-    (dom/label #js {:className "widget-label"} "Export to:"
+    (dom/div #js {:className "row"}
+      (dom/label nil "Export: ")
       (theme-export-button theme-name "Emacs (GUI only)")
       (theme-export-button theme-name "Vim (GUI only)"))))
 
