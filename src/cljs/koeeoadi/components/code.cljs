@@ -39,6 +39,14 @@
      :code-chunk/line-chunk
      :code-chunk/string]))
 
+(defn update-face [face-ref faces-by-name colors-by-id]
+  (let [{:keys [face/color-bg face/color-fg] :as face} (get faces-by-name (last face-ref))]
+    (assoc face
+      :face/color-bg (get colors-by-id (last color-bg))
+      :face/color-fg (get colors-by-id (last color-fg)))))
+
+(defn update-code [code-chunk faces-by-name colors-by-id]
+  (update code-chunk :code-chunk/face update-face faces-by-name colors-by-id))
 
 (defn code-chunk [props]
   (let [{:keys [code-chunk/face
@@ -50,11 +58,13 @@
            :onBlur    #(util/color-picker-hide (color-picker-comp))
            :onClick   #(util/color-picker-show (color-picker-comp) face :face/color-fg %)
            :style     (face-styles face)
-           :tabIndex  0}string)))
+           :tabIndex  0}
+      string)))
 
-(defn code-line [line]
+(defn code-line [line faces-by-name colors-by-id]
+  (println line)
   (apply dom/div #js {:className "code-line"}
-    (map code-chunk line)))
+    (map #(code-chunk (update-code % faces-by-name colors-by-id)) line)))
 
 (defn group-lines [code-chunks]
   (sort-by first (group-by #(.floor js/Math (/ (:code-chunk/line-chunk %) 1000))
@@ -63,18 +73,24 @@
 (defui Code
   static om/IQuery
   (query [this]
-    [{:code-chunks/list (om/get-query CodeChunk)}
-     {:code-background  [:face/id
-                         :face/name
-                         {:face/color-bg [:color/id
-                                          :color/name
-                                          :color/hex]}]}])
+    '[[:code/map _]
+      [:code/name _]
+      [:faces/by-name _]
+      [:colors/by-id _]
+      {:code-background  [:face/id
+                          :face/name
+                          {:face/color-bg [:color/id
+                                           :color/name
+                                           :color/hex]}]}])
 
   Object
   (render [this]
-    (let [{:keys [code-background
-                  code-chunks/list]} (om/props this)
-          code-lines                 (group-lines list)]
+    (let [{code-background :code-background
+           code-name :code/name
+           faces-by-name :faces/by-name
+           colors-by-id :colors/by-id 
+           code-map :code/map} (om/props this)
+          code-lines (group-lines (get-in code-map [code-name :code-chunks/list]))]
       (apply dom/code
         #js {:className (util/code-face-class "background")
              :id        "code"
@@ -82,7 +98,7 @@
              :onClick   #(util/color-picker-show (color-picker-comp) code-background :face/color-bg %)
              :style     #js {:backgroundColor (get-in code-background [:face/color-bg :color/hex])}
              :tabIndex  0}
-        (map #(code-line (last %)) code-lines)))))
+        (map #(code-line (last %) faces-by-name colors-by-id) code-lines)))))
 
 (def code (om/factory Code))
 

@@ -27,17 +27,7 @@
 (defui Root
   static om/IQuery
   (query [this]
-    [:code-background
-     :code/map
-     :code/name
-     :palette-widget
-     :palette-widget/active-color
-     :palette-widget/closure-comp
-     :palette-widget/face-classes-by-color-type
-     :theme/map
-     :theme/name
-     {:code             (om/get-query Code)}
-     {:code-chunks/list (om/get-query CodeChunk)}
+    [{:code             (om/get-query Code)}
      {:color-picker     (om/get-query ColorPicker)}
      {:colors/list      (om/get-query Color)}
      {:faces            (om/get-query Faces)}

@@ -48,5 +48,4 @@
    :code/map          code
    :faces/list        faces-list
    :user-faces/list   []
-   :colors/list       colors-list
-   :code-chunks/list  (get-in code [initial-code :code-chunks/list])})
+   :colors/list       colors-list})

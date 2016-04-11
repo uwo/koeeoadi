@@ -126,7 +126,7 @@
                                  ~(merge
                                     (om/from-history reconciler uuid)
                                     {:mutate/name action}))
-                               :colors/list :palette :theme/map
+                               :palette
                                ])))))
   (render [this]
     (let [{:keys [history-stack active]} (om/get-state this)

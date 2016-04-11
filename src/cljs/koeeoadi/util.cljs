@@ -35,8 +35,8 @@
 (defn display [pred]
   (when-not pred #js {:display "none"}))
 
-(defn profile-start []
-  (.profile js/console "Profile Run"))
+(defn profile-start [name]
+  (.profile js/console name))
 
 (defn profile-stop []
   (.profileEnd js/console))
