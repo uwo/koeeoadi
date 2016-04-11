@@ -13,7 +13,7 @@
    'theme/select           "change theme"
    'theme/rename           "rename theme"
    'theme/new              "new theme"
-   'theme/load             "loa theme"
+   'theme/load             "load theme"
    'user-face/add          "add face"
    'user-face/change-name  "change face name"
    'user-face/remove       "remove face"
