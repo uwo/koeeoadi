@@ -4,17 +4,20 @@
             [koeeoadi.reconciler :refer [reconciler]]))
 
 (def mutate-display-strings
-  {'code/change "change language"
-   'color/add "add color"
-   'color/remove "remove color"
-   'color/update "change color"
-   'face/update "update face style"
-   'theme/change "change theme"
-   'theme/rename "rename theme"
-   'user-face/add "add face"
-   'user-face/change-name "change face name"
-   'user-face/remove "remove face"
-   'user-face/update "change face style"})
+  {'code/change            "change language"
+   'color/add              "add color"
+   'color/remove           "remove color"
+   'color/update           "change color"
+   'face/update            "update face style"
+   'face/color-update      "update face color"
+   'theme/select           "change theme"
+   'theme/rename           "rename theme"
+   'theme/new              "new theme"
+   'theme/load             "loa theme"
+   'user-face/add          "add face"
+   'user-face/change-name  "change face name"
+   'user-face/remove       "remove face"
+   'user-face/update       "change face style"})
 
 (defn js-last [arr]
   (let [length (.-length arr)]
@@ -32,7 +35,7 @@
 (defn history-item [history]
   (let [mutate-name (:mutate/name history)
         display-string (mutate-name mutate-display-strings)]
-    (dom/li nil (or display-string mutate-name))))
+    (dom/li nil (or display-string (str mutate-name)))))
 
 ;; (internal-history-stack)
 ;; (om/get-state (om/class->any reconciler History))
@@ -130,11 +133,14 @@
           [redos undos] (history-split active history-stack)]
       (dom/div #js {:id "history" :className "widget"}
         (dom/h5 #js {:className "widget-title"} "History")
-        (dom/button #js {:onClick #(undo this)
-                         :className (disabled-class undos)} "Undo")
-        (dom/button #js {:onClick #(redo this)
-                         :className (disabled-class redos)} "Redo")
-        (apply dom/ul nil
+        (dom/div #js {:className "row"}
+          (dom/div #js {:className "one-half column"}
+            (dom/button #js {:onClick #(undo this)
+                             :className (disabled-class undos)} "Undo"))
+          (dom/div #js {:className "one-half column"}
+            (dom/button #js {:onClick #(redo this)
+                             :className (disabled-class redos)} "Redo")))
+        (apply dom/ul #js {:id "history-scroll-container"}
           (map history-item undos))))))
 
 (def history (om/factory History))

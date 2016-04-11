@@ -448,6 +448,16 @@ button, div, span, td, th {
     width: 100%;
 }
 
+/* History */
+#history {
+    height: 300px;
+
+}
+#history-scroll-container {
+    overflow-y: auto;
+    max-height: 60%;
+}
+
 /* Face Editor */
 .face {
     padding: 2px 2px 2px 5px;
