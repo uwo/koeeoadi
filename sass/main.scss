@@ -142,6 +142,11 @@ button, div, span, td, th {
   -ms-user-select: none;
   user-select: none;
 }
+
+.code, code, .color {
+    transition: background-color 0.1s, color 0.1s;
+}
+
 /* General Classes */
 
 .widget {
