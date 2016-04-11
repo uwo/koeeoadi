@@ -61,6 +61,7 @@
      (when (and
              (not= name name-temp)
              (util/valid-face-name? name-temp))
+       (om/update-state! comp assoc :name-temp nil)
        (om/transact! comp `[(user-face/change-name {:new-name ~name-temp}) :palette]))))
   ([comp e]
    (when (= 13 (util/keycode e))
@@ -111,14 +112,14 @@
 
 (defn face-update-editor [comp e]
   (face-update comp
-    {:face/name   (:face/name comp)
+    {:face/name   (:face/name (om/props comp))
      :face/editor (keyword (util/target-value e))}))
 
 (defn editor-select [comp]
   (let [{:keys [:face/editor :face/name]} (om/props comp)
         editor-name (clojure.core/name editor)
         editors (keys config/editor-file-map)]
-    (dom/td nil
+    (dom/td #js {:className "user-face-editor-td"}
       (apply dom/select #js {:onChange #(face-update-editor comp %)}
         (map #(util/option (clojure.core/name %) editor-name) editors)))))
 
