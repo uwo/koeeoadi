@@ -35,11 +35,7 @@
 (defn history-item [history]
   (let [mutate-name (:mutate/name history)
         display-string (mutate-name mutate-display-strings)]
-    (dom/li nil (or display-string (str mutate-name)))))
-
-;; (internal-history-stack)
-;; (om/get-state (om/class->any reconciler History))
-;;(:history-stack (om/get-state (om/class->any reconciler History)))
+    (dom/li #js {:className "striped"} (or display-string (str mutate-name)))))
 
 ;; Undo pops one from its stack and adds it to active
 ;; also commits the current state and adds that to the redo stack
@@ -140,7 +136,7 @@
           (dom/div #js {:className "one-half column"}
             (dom/button #js {:onClick #(redo this)
                              :className (disabled-class redos)} "Redo")))
-        (apply dom/ul #js {:id "history-scroll-container"}
+        (apply dom/ul #js {:id "history-container"}
           (map history-item undos))))))
 
 (def history (om/factory History))

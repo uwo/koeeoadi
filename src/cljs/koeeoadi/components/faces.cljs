@@ -86,7 +86,7 @@
           active?               (= name active-face)
           icon-classes          (str "fa fa-2x "
                                   (if active? "fa-angle-down" "fa-angle-right"))]
-      (dom/div #js {:className "face"}
+      (dom/div #js {:className "face striped"}
         (face-color this :face/color-bg)
         (face-color this :face/color-fg)
         (dom/div #js {:className "face-name"

@@ -178,6 +178,10 @@ button, div, span, td, th {
     border: 1px solid $grayLighter !important;
 }
 
+.striped:nth-child(odd) {
+    background-color: $gray;
+}
+
 .hide {
     display: none;
 }
@@ -458,9 +462,14 @@ button, div, span, td, th {
     height: 300px;
 
 }
-#history-scroll-container {
+#history-container {
     overflow-y: auto;
     max-height: 60%;
+
+    > li {
+        margin: 0;
+        padding-left: 5px;
+    }
 }
 
 /* Face Editor */
@@ -479,10 +488,6 @@ button, div, span, td, th {
 #user-face-map-button {
     margin-top: 10px;
     width: 100%;
-}
-
-.face:nth-child(odd) {
-    background-color: $gray;
 }
 
 .face-name {
