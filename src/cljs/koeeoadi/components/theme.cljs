@@ -61,10 +61,15 @@
     (aset link "download" (str current-theme ".koee"))
     (aset link "href" (encode-props
                         (select-keys @reconciler
-                          [:theme/name         :colors/by-id
-                           :colors/list        :faces/by-name
-                           :faces/list         :user-faces/list
-                           :user-faces/by-name :theme/version
+                          [:colors/by-id
+                           :colors/list
+                           :faces/by-name
+                           :faces/list
+                           :user-faces/list
+                           :user-faces/by-name
+                           :theme/name
+                           :theme/version
+                           :palette-widget/face-classes-by-color-type
                            :palette-widget/active-color])))
     (.click link)))
 
