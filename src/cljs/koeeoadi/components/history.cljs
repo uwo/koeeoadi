@@ -37,12 +37,10 @@
         display-string (mutate-name mutate-display-strings)]
     (dom/li #js {:className "striped"} (or display-string (str mutate-name)))))
 
-;; Undo pops one from its stack and adds it to active
-;; also commits the current state and adds that to the redo stack
 (defn undo [comp]
-  ;; if active is nil then conj current one onto stack and make active 1
   (let [{:keys [history-stack active] :as state} (om/get-state comp)
         uuid (:mutate/uuid (first history-stack))]
+    ;; if active is nil then conj current state onto stack and make active 1
     (if (nil? active)
       (do
         (om/transact! comp
@@ -53,7 +51,8 @@
                               (update :history-stack conj {:mutate/name :history/ignore
                                                            :mutate/uuid (latest-uuid)})
                               (assoc :active 1)
-                              (assoc :action :history/undo))))
+                              (assoc :action :history/ignore))))
+      ;; Otherwise, just increment the active index
       (om/update-state! comp update :active inc))))
 
 (defn redo [comp]
@@ -62,9 +61,7 @@
 
 (defn log-mutation? [mutate-name]
   (and mutate-name
-    (not= :history/redo mutate-name)
-    (not= :history/ignore mutate-name)
-    (not= :history/undo mutate-name)))
+    (not= :history/ignore mutate-name)))
 
 (defn log-history [comp key atom old-state new-state]
   (let [mutate-name (key new-state)
@@ -72,13 +69,12 @@
         new-entry {:mutate/uuid (latest-uuid)
                    :mutate/name mutate-name}]
     (when (log-mutation? mutate-name)
-      ;; In this case:
-      ;; drop undo-stack to active
-      ;; set active back to nil
-      ;; conj new-entry onto undo
+      ;; In this case: drop undo-stack to active, set active back to
+      ;; nil, conj new-entry onto undo
       (if active
         (let [history-stack' (conj (drop (inc active) history-stack) new-entry)]
           (om/update-state! comp assoc :active nil :history-stack history-stack'))
+        ;; Otherwise, just conj the new-entry on to the undo stack
         (om/update-state! comp assoc :history-stack (conj history-stack new-entry))))))
 
 (defn disabled-class [undos-or-redos]
@@ -122,8 +118,7 @@
                                  ~(merge
                                     (om/from-history reconciler uuid)
                                     {:mutate/name action}))
-                               :palette
-                               ])))))
+                               :palette])))))
   (render [this]
     (let [{:keys [history-stack active]} (om/get-state this)
           [redos undos] (history-split active history-stack)]
