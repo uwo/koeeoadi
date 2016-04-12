@@ -18,15 +18,15 @@
             [koeeoadi.reconciler :refer [reconciler]]
             [koeeoadi.util :as util]))
 
-;; TODO separate out this dev stuff
-(enable-console-print!)
-                                        ; this enables additional features, :custom-formatters is enabled by default
-(devtools/enable-feature! :sanity-hints :dirac)
-(devtools/install!)
+;; ;; TODO separate out this dev stuff
+;; (enable-console-print!)
+;;                                         ; this enables additional features, :custom-formatters is enabled by default
+;; (devtools/enable-feature! :sanity-hints :dirac)
+;; (devtools/install!)
 
 (defn switch-widget [comp widget]
   (om/transact! comp `[(state/merge {:widget/active ~widget
-                                     :mutate/name :history/ignore})]))
+                                     :mutate/name   :change/widget})]))
 
 (defn switcher [comp widget]
   (let [widget-active (:widget/active (om/props comp))]
@@ -40,11 +40,7 @@
     (switcher comp :theme)
     (switcher comp :language)
     (switcher comp :palette)
-    (switcher comp :faces)
-    ;; (history-button (history-comp) :undo) "Undo"
-    ;; (history-button (history-comp) :redo) "Redo"
-    )
-  )
+    (switcher comp :faces)))
 
 (defui Root
   static om/IQuery
@@ -81,7 +77,8 @@
           (theme theme-data)
           (language language-data))
         (code code-data)
-        (history history-data)
+        ;;;; History doens't work 100% yet.
+        ;;(history history-data)
         (dom/div #js {:className "sidebar" :id "sidebar-right"}
           (palette palette-data)
           (faces faces-data))

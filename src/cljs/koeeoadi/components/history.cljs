@@ -40,30 +40,32 @@
 
 (defn undo [comp]
   (let [{:keys [history-stack active] :as state} (om/get-state comp)
-        uuid (:mutate/uuid (first history-stack))]
+        uuid (:mutate/uuid (last history-stack))]
     ;; if active is nil then conj current state onto stack and make active 1
     (if (nil? active)
       (do
-        (println "UNDO BEING CALLED")
         (om/transact! comp
           `[(state/reset ~(merge
                             (om/from-history reconciler uuid)
-                            {:mutate/name :history/ignore})) :palette])
+                            {:mutate/name :history/ignore}))])
         (om/set-state! comp (-> state
-                              (update :history-stack conj {:mutate/name :history/ignore
+                              (update :history-stack conj {:mutate/name :blahblah
                                                            :mutate/uuid (latest-uuid)})
-                              (assoc :active 1)
-                              (assoc :action :history/ignore))))
+                              (assoc :active  (- (count history-stack) 1)))))
       ;; Otherwise, just increment the active index
-      (om/update-state! comp update :active inc))))
+      (om/update-state! comp update :active dec))))
 
 (defn redo [comp]
   (let [active (:active (om/get-state comp))]
-    (om/update-state! comp update :active dec)))
+    (om/update-state! comp update :active inc)))
 
 (defn log-mutation? [mutate-name]
   (and mutate-name
     (not= :history/ignore mutate-name)))
+
+(defn drop-redos [active history-stack]
+  (let [cnt (count history-stack)]
+    (into [] (drop-last (- (dec cnt) active) history-stack))))
 
 (defn log-history [comp key atom old-state new-state]
   (let [mutate-name (key new-state)
@@ -71,12 +73,14 @@
         new-entry {:mutate/uuid (latest-uuid)
                    :mutate/name mutate-name}]
     (when (log-mutation? mutate-name)
-      ;; In this case: drop undo-stack to active, set active back to
-      ;; nil, conj new-entry onto undo
+      ;; In this case: drop history-stack from active, set active back to
+      ;; nil, conj new-entry onto history
+      ;;(.alert js/window "logging active " active)
       (if active
-        (let [history-stack' (conj (drop (inc active) history-stack) new-entry)]
+        (let [history-stack' (drop-redos active history-stack)]
+          ;;(.alert js/window "setting active to nil")
           (om/update-state! comp assoc :active nil :history-stack history-stack'))
-        ;; Otherwise, just conj the new-entry on to the undo stack
+        ;; Otherwise, just conj the new-entry on to the history stack
         (om/update-state! comp assoc :history-stack (conj history-stack new-entry))))))
 
 (defn disabled-class [undos-or-redos]
@@ -86,13 +90,13 @@
 (defn history-split [active history-stack]
   "Splits history stack into undos and redos"
   (if active
-    (let [[redos active-and-undos] (split-at active history-stack)]
-      [redos (rest active-and-undos)])
-    [[] history-stack]))
+    (let [[undos active-and-redos] (split-at active history-stack)]
+      [undos (rest active-and-redos)])
+    [history-stack []]))
 
 (defn history-button [comp type]
   (let [{:keys [active history-stack]} (om/get-state comp)
-        [redos undos] (history-split active history-stack)
+        [undos redos] (history-split active history-stack)
         [func items]  (if (= :undo type) [undo undos] [redo redos])]
     (dom/button #js {:onClick #(func comp)
                      :className (disabled-class items)}
@@ -109,14 +113,14 @@
       (partial log-history this)))
 
   (initLocalState [this]
-    {:history-stack (list)
+    {:history-stack []
      ;; active is an index to the history-stack
      ;; if the currently active app-state is from history then active should reflect that
      ;; this gets set to nil whenever a named mutation is received (besides history mutations of course)
      :active nil})
 
   (componentDidUpdate [this prev-props {active-prev :active}]
-    (let [{:keys [history-stack active action]} (om/get-state this)]
+    (let [{:keys [history-stack active]} (om/get-state this)]
       ;; the undo and redo functions above will update active.
       ;; when this happens, set the app-state to the state
       ;; active indexes in the history-stack.
@@ -125,15 +129,17 @@
           (om/transact! this `[(state/reset
                                  ~(merge
                                     (om/from-history reconciler uuid)
-                                    {:mutate/name   :history/ignore}))
+                                    {:mutate/name :history/ignore}))
                                :palette])))))
   (render [this]
     (let [{:keys [history-stack active]} (om/get-state this)
-          [redos undos] (history-split active history-stack)
+          [undos redos] (history-split active history-stack)
           widget-class  (util/widget-class :history (:widget/active (om/props this)))]
       (dom/div #js {:id "history"}
         (history-button this :undo)
-        (history-button this :redo)))))
+        (history-button this :redo)
+        (dom/div nil (str history-stack))
+        (dom/div nil (str active))))))
 
 (def history (om/factory History))
 
