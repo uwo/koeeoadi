@@ -62,7 +62,6 @@
       string)))
 
 (defn code-line [line faces-by-name colors-by-id]
-  (println line)
   (apply dom/div #js {:className "code-line"}
     (map #(code-chunk (update-code % faces-by-name colors-by-id)) line)))
 
@@ -88,7 +87,7 @@
     (let [{code-background :code-background
            code-name :code/name
            faces-by-name :faces/by-name
-           colors-by-id :colors/by-id 
+           colors-by-id :colors/by-id
            code-map :code/map} (om/props this)
           code-lines (group-lines (get-in code-map [code-name :code-chunks/list]))]
       (apply dom/code
