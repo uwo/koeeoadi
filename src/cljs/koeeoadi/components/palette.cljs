@@ -57,10 +57,16 @@
       (forEach elements #(setStyle % color-prop hex-temp)))))
 
 (defn selectors-for-colorize [faces color-type]
-  (let [selectors (map #(face-to-selectors % color-type) faces)]
-    (if (= 1 (count faces))
+  (let [selectors (map #(face-to-selectors % color-type) faces)
+        cnt (count selectors)]
+    (cond
+      (= count 0)
+      [nil nil]
+
+      (= count 1 (count faces))
       (first selectors)
-      (reduce #(vector
+
+      :else (reduce #(vector
                  (str (first %1) "," (first %2))
                  (str (last %1) "," (last %2)))
         selectors))))
@@ -112,6 +118,12 @@
 
 (def color-adder (om/factory ColorAdder))
 
+(defn selectors [bg-faces fg-faces]
+  (let [fg-faces-empty? (empty? fg-faces)
+        bg-faces-empty? (empty? bg-faces)]
+    (vector
+      (clojure.string/join []))))
+
 (defn handle-action [comp e]
   (let [{:keys [palette-widget/active-color
                 palette-widget/face-classes-by-color-type]} (om/props comp)
@@ -122,18 +134,12 @@
       (let [{:keys [bg-faces fg-faces]} face-classes-by-color-type
             color-editable-selector (str ".color-" (:color/id active-color))
             [code-bg-selector face-bg-color-selector] (selectors-for-colorize bg-faces :face/color-bg)
-            [code-fg-selector face-fg-color-selector] (selectors-for-colorize fg-faces :face/color-fg)]
+            [code-fg-selector face-fg-color-selector] (selectors-for-colorize fg-faces :face/color-fg)
+            bg-selectors  (clojure.string/join "," (remove nil? [color-editable-selector code-bg-selector face-bg-color-selector face-fg-color-selector]))
+            fg-selectors   (clojure.string/join "," (remove nil? [code-fg-selector]))]
 
-        ;; TODO combine these
-        (colorize-faces color-editable-selector "background-color" hex-temp)
-
-        (when-not (empty? fg-faces)
-          (colorize-faces code-fg-selector "color" hex-temp)
-          (colorize-faces face-fg-color-selector "background-color" hex-temp))
-
-        (when-not (empty? bg-faces)
-          (colorize-faces code-bg-selector "background-color" hex-temp)
-          (colorize-faces face-bg-color-selector "background-color" hex-temp))))))
+        (colorize-faces bg-selectors "background-color" hex-temp)
+        (colorize-faces fg-selectors "color" hex-temp)))))
 
 (defui PaletteWidget
   static om/IQuery
