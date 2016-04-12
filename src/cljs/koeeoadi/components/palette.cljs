@@ -163,9 +163,9 @@
     (let [{:keys [palette-widget/closure-comp
                   palette-widget/active-color] :as props} (om/props this)]
 
-      (dom/div #js {:onMouseUp #(color-update this)
+      (dom/div #js {:onMouseUp    #(color-update this)
+                    :onMouseLeave #(color-update this)
                     :id  "palette-widget"
-                    ;;:onTouchEnd #(color-update this active-color closure-comp)
                     :ref "paletteWidget"} nil))))
 
 (def palette-widget (om/factory PaletteWidget))
