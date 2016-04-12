@@ -6,9 +6,13 @@
             [koeeoadi.reconciler :refer [reconciler]]
             [koeeoadi.components.colorpicker :refer [color-picker-comp]]))
 
+(def code-class "code")
+
+(defn code-face-class [face-name]
+  (str "code-" (name face-name)))
+
 (defn style-maybe [prop style]
   (if prop style {}))
-
 
 (defn face-styles [{:keys [face/color-fg face/color-bg face/bold face/italic face/underline]}]
   (clj->js
@@ -54,7 +58,7 @@
                 code-chunk/string]}   props
         {:keys [face/name]}           face]
     (dom/span
-      #js {:className (str util/code-class " " (util/code-face-class name))
+      #js {:className (str code-class " " (code-face-class name))
            :onBlur    #(util/color-picker-hide (color-picker-comp))
            :onClick   #(util/color-picker-show (color-picker-comp) face :face/color-fg %)
            :style     (face-styles face)
@@ -91,7 +95,7 @@
            code-map :code/map} (om/props this)
           code-lines (group-lines (get-in code-map [code-name :code-chunks/list]))]
       (apply dom/code
-        #js {:className (util/code-face-class "background")
+        #js {:className (code-face-class "background")
              :id        "code"
              :onBlur    #(util/color-picker-hide (color-picker-comp))
              :onClick   #(util/color-picker-show (color-picker-comp) code-background :face/color-bg %)
