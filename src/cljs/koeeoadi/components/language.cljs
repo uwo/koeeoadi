@@ -19,14 +19,16 @@
 (defui Language
   static om/IQuery
   (query [this]
-    '[[:code/map _]
-      [:code/name _]])
+    '[:widget/active
+      :code/map
+      :code/name])
 
   Object
   (render [this]
-    (let [{code-map  :code/map
-           code-name :code/name :as props} (om/props this)]
-      (dom/div #js {:className  "widget"
+    (let [{widget-active :widget/active
+           code-map      :code/map
+           code-name     :code/name :as props} (om/props this)]
+      (dom/div #js {:className  (util/widget-class :language widget-active)
                     :id         "code-picker"
                     :onChange   #(code-change this code-map %)}
         (util/widget-title "Language")

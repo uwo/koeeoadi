@@ -6,54 +6,36 @@
 (defmulti read om/dispatch)
 
 (defmethod read :default
-  [{:keys [state query]} _ _]
+  [{:keys [state query]} k _]
   {:value
    (let [st @state]
      (om/db->tree query st st))})
 
-(defmethod read :code-background
-  [{:keys [state query]} k params]
-  (let [st @state]
-    (if (contains? st k)
-      {:value (get st k)}
-      {:remote true})))
+(defmethod read :widget/active
+  [{:keys [state]} k _]
+  {:value (get @state k)})
 
-(defn get-colors [state]
+(defn normalized-items [state key]
   (let [st @state]
-    (into [] (map #(get-in st %)) (get st :colors/list))))
+    (into [] (map #(get-in st %)) (get st key))))
 
 (defmethod read :colors/list
-  [{:keys [state]} _ _]
-  {:value (get-colors state)})
-
-(defn get-face [state face-ident]
-  (get-in state face-ident))
-
-(defn get-faces [state key]
-  (let [st @state]
-    (into [] (map #(get-face st %)) (get st key))))
+  [{:keys [state]} k _]
+  {:value (normalized-items state k)})
 
 (defmethod read :faces/list
   [{:keys [state query]} k _]
-  {:value (get-faces state k)})
+  {:value (normalized-items state k)})
 
 (defmethod read :user-faces/list
   [{:keys [state query]} k _]
-  {:value (get-faces state k)})
-
-(defmethod read :theme
-  [{:keys [state]} _ _]
-  {:value (select-keys @state [:theme/name :theme/map])})
+  {:value (normalized-items state k)})
 
 ;;** Mutators
 (defmulti mutate om/dispatch)
 
 (defn wrap-mutate-name [props k]
   (assoc props :mutate/name k))
-
-;; non-local
-(defmethod mutate :default
-  [_ _ _] {:remote true})
 
 (defmethod mutate 'state/merge
   [{:keys [state]} _ props]
@@ -62,7 +44,7 @@
      (swap! state merge props))})
 
 (defmethod mutate 'state/reset
-  [{:keys [state]} _ props]
+  [{:keys [state]} k props]
   {:action
    (fn []
      (reset! state props))})

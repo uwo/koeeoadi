@@ -1,6 +1,7 @@
 (ns koeeoadi.themes)
 
-(def themes {"solarized-dark" {:theme/name "solarized-dark"
+(def themes {"solarized-dark" {:palette-widget/active-color [:colors/by-id 0]
+                               :theme/name "solarized-dark"
                                :colors/list
                                 [[:colors/by-id 0]
                                  [:colors/by-id 1]

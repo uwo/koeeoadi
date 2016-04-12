@@ -24,24 +24,28 @@
       (style-maybe underline {:textDecoration "underline"}))))
 
 (defui CodeChunk
-  static om/Ident
-  (ident [this props]
-    [:code-chunks/by-line-chunk (:code-chunk/line-chunk props)])
-
   static om/IQuery
   (query [this]
     ;; TODO why can't I query Face here?
-    [{:code-chunk/face [:face/id
-                        :face/name
-                        :face/bold
-                        :face/italic
-                        :face/underline
-
-                        {:face/color-fg [:color/id :color/hex]}
-                        {:face/color-bg [:color/id :color/hex]}
-                        ]}
+    [{:code-chunk/face util/shared-face-query}
      :code-chunk/line-chunk
-     :code-chunk/string]))
+     :code-chunk/string])
+
+  Object
+  (render [this]
+    (let [{:keys [code-chunk/face
+                  code-chunk/line-chunk
+                  code-chunk/string]}   (om/props this)
+          {:keys [face/name]}           face]
+      (dom/span
+        #js {:className (str code-class " " (code-face-class name))
+             :onBlur    #(util/color-picker-hide (color-picker-comp))
+             :onClick   #(util/color-picker-show (color-picker-comp) face :face/color-fg %)
+             :style     (face-styles face)
+             :tabIndex  0}
+        string))))
+
+(def code-chunk (om/factory CodeChunk {:keyfn :code-chunk/line-chunk}))
 
 (defn update-face [face-ref faces-by-name colors-by-id]
   (let [{:keys [face/color-bg face/color-fg] :as face} (get faces-by-name (last face-ref))]
@@ -51,19 +55,6 @@
 
 (defn update-code [code-chunk faces-by-name colors-by-id]
   (update code-chunk :code-chunk/face update-face faces-by-name colors-by-id))
-
-(defn code-chunk [props]
-  (let [{:keys [code-chunk/face
-                code-chunk/line-chunk
-                code-chunk/string]}   props
-        {:keys [face/name]}           face]
-    (dom/span
-      #js {:className (str code-class " " (code-face-class name))
-           :onBlur    #(util/color-picker-hide (color-picker-comp))
-           :onClick   #(util/color-picker-show (color-picker-comp) face :face/color-fg %)
-           :style     (face-styles face)
-           :tabIndex  0}
-      string)))
 
 (defn code-line [line faces-by-name colors-by-id]
   (apply dom/div #js {:className "code-line"}
@@ -76,15 +67,11 @@
 (defui Code
   static om/IQuery
   (query [this]
-    '[[:code/map _]
-      [:code/name _]
-      [:faces/by-name _]
-      [:colors/by-id _]
-      {:code-background  [:face/id
-                          :face/name
-                          {:face/color-bg [:color/id
-                                           :color/name
-                                           :color/hex]}]}])
+    `[[:code/map ~'_]
+      [:code/name ~'_]
+      [:faces/by-name ~'_]
+      [:colors/by-id ~'_]
+      {:code-background ~util/shared-face-query}])
 
   Object
   (render [this]

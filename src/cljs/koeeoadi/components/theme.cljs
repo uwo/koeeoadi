@@ -68,13 +68,14 @@
                            :user-faces/by-name
                            :theme/name
                            :theme/version
+                           :widget/active
                            :palette-widget/face-classes-by-color-type
                            :palette-widget/active-color])))
     (.click link)))
 
 (defn export-theme-file [current-theme editor]
   (let [link      (gdom/getElement "download-link")
-        extension (editor config/editor-file-map)]
+        extension (editor util/editor-file-map)]
     (aset link "download" (str current-theme "-theme." extension))
     (aset link "href" (str "data:text/plain;charset=utf-8," (tb/build-theme editor)))
     (.click link)))
@@ -146,7 +147,7 @@
 
         (dom/input #js {:id        "theme-name-input"
                         :onBlur    #(theme-rename comp %)
-                        :onChange  #(theme-update comp %) 
+                        :onChange  #(theme-update comp %)
                         :onKeyDown #(when (= 13 (util/keycode %)) (.blur (edit-field-node comp)))
                         :ref       "editField"
                         :value     (or other-name-temp theme-name)
@@ -158,7 +159,7 @@
 
           (dom/i #js {:className "fa fa-edit fa-2x"}))))))
 
-(def export-button-text 
+(def export-button-text
   {:emacs "Emacs (GUI Only)"
    :vim "VIM (GUI Only)"})
 
@@ -180,7 +181,8 @@
   (query [this]
     '[:theme/name
       :theme/map
-      [:palette-widget/active-color _]])
+      :palette-widget/active-color
+      :widget/active])
 
   Object
   (componentDidUpdate [this prev-props prev-state]
@@ -195,10 +197,11 @@
     {:name-temp (:theme/name (om/props this))})
 
   (render [this]
-    (dom/div #js {:className "widget" :id "actions"}
-      (util/widget-title "Theme")
-      (theme-select-edit this)
-      (theme-actions this)
-      (theme-export this))))
+    (let [class (util/widget-class :theme (:widget/active (om/props this)))]
+     (dom/div #js {:className class :id "actions"}
+       (util/widget-title "Theme")
+       (theme-select-edit this)
+       (theme-actions this)
+       (theme-export this)))))
 
 (def theme (om/factory Theme))

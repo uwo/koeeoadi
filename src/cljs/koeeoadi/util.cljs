@@ -7,6 +7,19 @@
             [om.dom :as dom])
   (:import  [goog.dom query]))
 
+(def shared-color-query
+  [:color/id :color/hex])
+
+(def shared-face-query
+  [:face/name
+   :face/id
+   :face/bold
+   :face/italic
+   :face/underline
+   :face/editor 
+   {:face/color-fg shared-color-query}
+   {:face/color-bg shared-color-query}])
+
 ;; Dev
 (defn profile-start [name]
   (.profile js/console name))
@@ -41,6 +54,11 @@
     (dom/option #js {:selected selected} name)))
 
 ;; Styling
+(defn widget-class [widget active-widget]
+  (if (= active-widget widget)
+    "widget widget-active"
+    "widget"))
+
 (defn hex-to-rgb [hex]
   "Converts a 6 digit hex number or color string to an RGB map"
   (let [hex'       (if (string? hex) hex (str "#" hex))
@@ -85,6 +103,11 @@
 
 (defn valid-file-name? [str]
   (re-matches #"^[\w\-. ]+$" str))
+
+;; Export
+(def editor-file-map
+  {:emacs "el"
+   :vim   "vim"})
 
 ;; Other
 (defn update-elements-by-class [class func]

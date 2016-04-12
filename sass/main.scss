@@ -9,7 +9,7 @@ $grayDarker: #202020;
 $grayDarkest: #1a1a1a;
 $backgroundColor: $grayDarker;
 
-/* General Dimensions */
+/* General Properties */
 $buttonWidth: 100px;
 $borderRadius: 0px;
 $modalWidth: 900px;
@@ -18,25 +18,26 @@ $smallSelectSize: 100px;
 $smallerSelectSize: 75px;
 $tdSpacing: 20px;
 
-/* Widget Dimensions */
+/* Widget Properties */
 $widgetPadding: 7.5px;
 $widgetBorder: 1px;
 $widgetContentWidth: 250px;
-$widgetBorderColor: $grayLight;
-$widgetTitleBorderColor: $grayLight;
+$widgetBorderColor: $gray;
+$widgetTitleBorderColor: $gray;
+$widgetBoxShadow: 5px 10px 5px 0.5px $grayDarkest;
 
-/* Sidebar Dimensions */
+/* Sidebar Properties */
 $sidebarPadding: 5px;
 $sidebarWidth: 2*$sidebarPadding + 2*$widgetPadding + $widgetContentWidth + 2*$widgetBorder;
 
-/* Code Dimensions */
+/* Code Properties */
 $codeWidth: 800px;
 
-/* Color Dimensions */
+/* Color Properties */
 $colorInputSize: 20px;
 $colorMargin: 2px;
 
-/* User Faces Dimensions */
+/* User Faces Properties */
 $userFacesModalWidth: 920px;
 
 
@@ -116,9 +117,9 @@ button {
 }
 
 button:hover, button:focus {
-    color: $white;
-    border-color: $white;
-}
+                  color: $white;
+                  border-color: $white;
+              }
 
 label {
     margin-top: 5px;
@@ -130,10 +131,10 @@ i {
 }
 
 button, div, span, td, th {
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 /* General Classes */
@@ -152,6 +153,9 @@ button, div, span, td, th {
     border-radius: $borderRadius;
     padding: $widgetPadding;
     width: $widgetContentWidth;
+    margin-bottom: 10px;
+    box-shadow: $widgetBoxShadow;
+
 }
 
 .code, code, .color {
@@ -191,7 +195,7 @@ button, div, span, td, th {
 }
 
 .widget-title,.modal-title {
-    border: 1px solid $widgetTitleBorderColor;
+    border: 2px solid $widgetTitleBorderColor;
     border-radius: $borderRadius;
     margin-bottom: 20px !important;
     padding-top: 5px;
@@ -244,6 +248,7 @@ button, div, span, td, th {
 .column {
     text-align: center;
 }
+
 .inline-button {
     text-align: center;
     padding: 0;
@@ -279,10 +284,12 @@ button, div, span, td, th {
 /* Sidebar */
 .sidebar{
     box-sizing: border-box;
-    display: inline-block;
     padding: $sidebarPadding;
     z-index: 100;
+    position: relative;
+    width: $sidebarWidth;
     position: absolute;
+    top: 0;
 }
 
 #sidebar-left{
@@ -293,6 +300,10 @@ button, div, span, td, th {
     right: 0;
 }
 
+#widget-switchers {
+    display: none;
+}
+
 /* Code Picker */
 #code-picker{
     > select {
@@ -301,19 +312,52 @@ button, div, span, td, th {
     }
 }
 
+
+/* History */
+#history {
+    padding: 10px;
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    box-sizing: border-box;
+    transform: translateX(220px);
+
+    button:nth-child(2){
+        transform: rotateY(180deg);
+    }
+
+    button {
+        width: 50px;
+        height: 50px;
+        margin-left: 10px;
+        border-radius: 30px;
+        background-color: $grayDarker;
+        border: 1px solid $widgetBorderColor;
+    }
+}
+
+/* For debug only */
+#history-container {
+    overflow-y: auto;
+    max-height: 60%;
+
+    > li {
+        margin: 0;
+        padding-left: 5px;
+    }
+}
+
 /* Code */
 #code {
-    min-height: 100%;
+    display: block;
+    position: relative;
     width: $codeWidth;
-    position: absolute;
-    left: 50%;
-    margin-left: -$codeWidth/2;
+    margin: 0 auto;
+    min-height: 100%;
     padding: 5px;
     border-radius: 0;
     box-sizing: border-box;
     font: normal 1.25em Menlo,Monaco,Consolas,"Courier New",monospace;
-    display: inline-block;
-    vertical-align: top;
     z-index: 0;
 }
 
@@ -383,7 +427,7 @@ button, div, span, td, th {
 }
 
 .color-add {
-    margin-top: 20px;
+    margin-top: 22px;
     padding-top: 5px;
     text-align: center;
     cursor: pointer;
@@ -414,7 +458,7 @@ button, div, span, td, th {
 
 .color:hover  .color-remove {
     opacity: 1;
-    top: -$colorInputSize;
+    top: -$colorInputSize - 2px;
 }
 
 /* App Info */
@@ -423,7 +467,7 @@ button, div, span, td, th {
 }
 
 #title {
-    border:  1px solid $grayLighter;
+    border:  2px solid $widgetTitleBorderColor;
     font-size: 3em;
     border-radius: $borderRadius;
     margin-bottom: 20px !important;
@@ -448,26 +492,14 @@ button, div, span, td, th {
     }
 }
 
-.export-button {
+.export-button, #user-face-map-button {
     border-color: $gray;
     display: block;
     width: 100%;
 }
 
-/* History */
-#history {
-    height: 300px;
-
-}
-
-#history-container {
-    overflow-y: auto;
-    max-height: 60%;
-
-    > li {
-        margin: 0;
-        padding-left: 5px;
-    }
+.export-button:hover, #user-face-map-button:hover {
+    border-color: $grayLightest;
 }
 
 /* Faces */
@@ -670,4 +702,58 @@ button, div, span, td, th {
 
 #help-modal > *{
     text-align: left;
+}
+
+@media (max-width: 1200px) {
+    .sidebar {
+        position: initial;
+        background-color: $grayDarker;
+        padding-bottom: 0;
+        padding-top: 0;
+        border: $widgetBorder;
+    }
+
+    #app-title {
+        display: block !important;
+    }
+
+    #widget-switchers {
+        display: block !important;
+
+        button {
+            display: block;
+            width: 100%;
+        }
+    }
+
+    #sidebar-left {
+        float: none;
+    }
+
+    #sidebar-right {
+        float: none;
+    }
+
+    #code {
+        position: absolute;
+        top: 0;
+        left: $sidebarWidth;
+        right: 0;
+        width: 100%;
+        margin: 0;
+    }
+
+    .widget {
+        margin-bottom: 0;
+        box-shadow: none;
+        border: none;
+    }
+
+    .widget:not(.widget-active) {
+        display: none;
+    }
+
+    .active-widget {
+        display: block;
+    }
 }

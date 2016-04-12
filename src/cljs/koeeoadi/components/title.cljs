@@ -4,9 +4,9 @@
 
 (defn title [comp]
   (let [{:keys [show-help]} (om/get-state comp)]
-    (dom/div #js {:className "widget"
+    (dom/div #js {:className "widget widget-active"
                   :id        "app-info"}
-      (dom/h2 #js {:id "title"} "KOEEOADI")
+      (dom/h2 #js {:id "title"} "KOEEOADI!")
       (dom/p nil "A theme creator for Emacs and Vim")
       (dom/div #js {:className "row"}
         (dom/div #js {:className "column one-third"}

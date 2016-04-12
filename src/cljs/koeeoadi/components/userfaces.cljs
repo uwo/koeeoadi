@@ -40,7 +40,7 @@
     [:colors/by-id (.parseInt js/window value)]))
 
 (defn color-change [comp color-type e]
-  (let [{face-name    :face/name}    (om/props comp)
+  (let [{face-name :face/name}       (om/props comp)
         {colors-by-id :colors/by-id} (om/get-computed comp)
         color-ref (color-ref (util/target-value e))]
     (face-update comp {:face/name face-name
@@ -93,7 +93,7 @@
 
 (defn color-select [comp color color-type]
   (let [color-hex (:color/hex color)
-        colors-by-id (:colors/by-id (om/get-computed comp))]
+        colors-by-id (:colors/by-id (om/props comp))]
     (dom/td nil
       (apply dom/select
         #js {:style    #js {:backgroundColor (or color-hex nil)}
@@ -119,7 +119,7 @@
 (defn editor-select [comp]
   (let [{:keys [:face/editor :face/name]} (om/props comp)
         editor-name (clojure.core/name editor)
-        editors (keys config/editor-file-map)]
+        editors (keys util/editor-file-map)]
     (dom/td #js {:className "user-face-editor-td"}
       (apply dom/select #js {:onChange #(face-update-editor comp %)}
         (map #(util/option (clojure.core/name %) editor-name) editors)))))
@@ -137,15 +137,7 @@
 
   static om/IQuery
   (query [this]
-    [:colors/by-id
-     :face/id
-     :face/name
-     :face/bold
-     :face/italic
-     :face/underline
-     :face/editor
-     {:face/color-bg [:color/id :color/hex]}
-     {:face/color-fg [:color/id :color/hex]}])
+    (conj util/shared-face-query '[:colors/by-id _]))
 
   Object
   (componentDidUpdate [this prev-props prev-state]
@@ -177,16 +169,16 @@
 (defui UserFaces
   static om/IQuery
   (query [this]
-    [:colors/by-id
-     {:user-faces/list (om/get-query UserFace)}])
+    [{:user-faces/list (om/get-query UserFace)}])
 
   Object
   (render [this]
-    (let [{colors-by-id    :colors/by-id
-           user-faces-list :user-faces/list}  (om/props this)
+
+    (let [{user-faces-list :user-faces/list} (om/props this)
           user-faces-sorted (sort-by :face/id user-faces-list)
-          active      (:active (om/get-state this))
+          active (:active (om/get-state this))
           modal-class (str "modal " (if active "" "hide"))]
+
       (dom/div #js {:id "user-faces-modal" :className modal-class}
         (dom/div #js {:className "modal-content-container"}
           (dom/div #js {:className "modal-content"}
@@ -205,7 +197,7 @@
                     (dom/th #js {:id "user-face-heading-editor"} "Editor")
                     (dom/th #js {:id "user-face-heading-remove"} "")))
                 (apply dom/tbody nil
-                  (map #(user-face (om/computed % {:colors/by-id colors-by-id})) user-faces-sorted))))
+                  (map user-face user-faces-sorted))))
             (dom/button #js {:className "modal-close-button"
                              :onClick   #(om/update-state! this assoc :active false)} "CLOSE")))))))
 

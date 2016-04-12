@@ -86,10 +86,10 @@
 
   static om/IQuery
   (query [this]
-    '[:color/id
-      :color/hex
-      [:palette-widget/active-color _]
-      [:faces/list _]])
+    (into []
+      (concat util/shared-color-query
+        '[[:palette-widget/active-color _]
+          [:faces/list _]])))
 
   Object
   (render [this]
@@ -186,15 +186,17 @@
 (defui Palette
   static om/IQuery
   (query [this]
-    `[{:colors/list ~(om/get-query Color)}
+    `[:widget/active
+      {:colors/list ~(om/get-query Color)}
       {:palette-widget ~(om/get-query PaletteWidget)}])
 
   Object
   (render [this]
-    (let [{colors/list         :colors/list
+    (let [{widget-active       :widget/active
+           colors/list         :colors/list
            palette-widget-data :palette-widget} (om/props this)
           callback (partial color-add this)]
-      (dom/div #js {:className "widget"
+      (dom/div #js {:className (util/widget-class :palette widget-active)
                     :id        "palette"}
         (util/widget-title "Palette")
         (apply dom/div #js {:id "palette-colors"

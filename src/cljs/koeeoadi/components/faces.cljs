@@ -69,14 +69,8 @@
 
   static om/IQuery
   (query [this]
-    `[:face/id
-      :face/name
-      :face/bold
-      :face/italic
-      :face/underline
-      {:face/color-fg ~(om/get-query Color)}
-      {:face/color-bg ~(om/get-query Color)}
-      [:face/active-face ~'_]])
+    (conj util/shared-face-query
+      '[:face/active-face _]))
 
   Object
   (render [this]
@@ -102,11 +96,12 @@
 (defui Faces
   static om/IQuery
   (query [this]
-    [{:faces/list (om/get-query Face)}])
+    [:widget/active
+    {:faces/list (om/get-query Face)}])
   Object
   (render [this]
-    (let [{:keys [faces/list]}  (om/props this)]
-      (dom/div #js {:className  "widget"
+    (let [{:keys [widget/active faces/list]}  (om/props this)]
+      (dom/div #js {:className  (util/widget-class :faces active)
                     :id         "faces"}
         (util/widget-title "Faces")
         (dom/button

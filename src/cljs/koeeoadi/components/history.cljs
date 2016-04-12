@@ -1,6 +1,7 @@
 (ns koeeoadi.components.history
   (:require [om.next :as om :refer-macros [defui]]
             [om.dom :as dom]
+            [koeeoadi.util :as util]
             [koeeoadi.reconciler :refer [reconciler]]))
 
 (def mutate-display-strings
@@ -43,10 +44,11 @@
     ;; if active is nil then conj current state onto stack and make active 1
     (if (nil? active)
       (do
+        (println "UNDO BEING CALLED")
         (om/transact! comp
           `[(state/reset ~(merge
                             (om/from-history reconciler uuid)
-                            {:mutate/name :history/ignore}))])
+                            {:mutate/name :history/ignore})) :palette])
         (om/set-state! comp (-> state
                               (update :history-stack conj {:mutate/name :history/ignore
                                                            :mutate/uuid (latest-uuid)})
@@ -88,12 +90,18 @@
       [redos (rest active-and-undos)])
     [[] history-stack]))
 
+(defn history-button [comp type]
+  (let [{:keys [active history-stack]} (om/get-state comp)
+        [redos undos] (history-split active history-stack)
+        [func items]  (if (= :undo type) [undo undos] [redo redos])]
+    (dom/button #js {:onClick #(func comp)
+                     :className (disabled-class items)}
+      (dom/i #js {:className "fa fa-undo fa-3x fa-fw"}))))
+
 (defui History
-  ;; TODO Dummy query so I can transact! for undo and redo.
-  ;; Wish there was a better way to do this
   static om/IQuery
   (query [this]
-    [])
+    [:widget/active])
 
   Object
   (componentDidMount [this]
@@ -110,28 +118,24 @@
   (componentDidUpdate [this prev-props {active-prev :active}]
     (let [{:keys [history-stack active action]} (om/get-state this)]
       ;; the undo and redo functions above will update active.
-      ;; when this happens, reset the app-state to the state
-      ;; it indexes in the history-stack.
-      (when (not= active active-prev)
+      ;; when this happens, set the app-state to the state
+      ;; active indexes in the history-stack.
+      (when (and active (not= active active-prev))
         (let [uuid (:mutate/uuid (nth history-stack active))]
           (om/transact! this `[(state/reset
                                  ~(merge
                                     (om/from-history reconciler uuid)
-                                    {:mutate/name action}))
+                                    {:mutate/name   :history/ignore}))
                                :palette])))))
   (render [this]
     (let [{:keys [history-stack active]} (om/get-state this)
-          [redos undos] (history-split active history-stack)]
-      (dom/div #js {:id "history" :className "widget"}
-        (dom/h5 #js {:className "widget-title"} "History")
-        (dom/div #js {:className "row"}
-          (dom/div #js {:className "one-half column"}
-            (dom/button #js {:onClick #(undo this)
-                             :className (disabled-class undos)} "Undo"))
-          (dom/div #js {:className "one-half column"}
-            (dom/button #js {:onClick #(redo this)
-                             :className (disabled-class redos)} "Redo")))
-        (apply dom/ul #js {:id "history-container"}
-          (map history-item undos))))))
+          [redos undos] (history-split active history-stack)
+          widget-class  (util/widget-class :history (:widget/active (om/props this)))]
+      (dom/div #js {:id "history"}
+        (history-button this :undo)
+        (history-button this :redo)))))
 
 (def history (om/factory History))
+
+(defn history-comp []
+  (om/class->any reconciler History))

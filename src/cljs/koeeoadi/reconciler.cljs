@@ -5,6 +5,6 @@
 
 (defonce reconciler
   (om/reconciler
-    {:normalize true
+    {:normalize false
      :state     app-state
      :parser    parser}))
