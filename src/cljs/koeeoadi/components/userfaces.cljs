@@ -8,7 +8,8 @@
 (declare user-faces-comp)
 
 (defn face-update [comp props]
-  (om/transact! comp `[(user-face/update ~props) :palette]))
+  (let [props' (merge props {:mutate/name 'user-face/update :props props})]
+    (om/transact! comp `[(state/update-ref ~props') :palette])))
 
 (defn change-name [comp face-name new-name needs-focus]
   (when-not (empty? new-name)

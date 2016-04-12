@@ -11,7 +11,6 @@
             [koeeoadi.themebuilder :as tb]))
 
 (defn theme-name-begin-edit [comp]
-  ;;(om/transact! comp `[(theme/update {:theme/name-temp ~(:theme/name (om/props comp))})])
   (om/update-state! comp assoc :needs-focus true :name-temp (:theme/name (om/props comp))))
 
 (defn theme-rename [comp e]

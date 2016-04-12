@@ -41,8 +41,9 @@
   (let [name    (:face/name (om/props comp))
         checked (util/target-checked e)]
     (om/transact! comp
-      `[(face/update {:face/name ~name
-                      ~prop      ~checked}) :code])))
+      `[(state/update-ref {:mutate/name face/update
+                           :props {:face/name   ~name
+                                   ~prop        ~checked}}) :code])))
 
 (defn face-style [comp prop]
   (dom/li nil

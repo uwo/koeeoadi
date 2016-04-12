@@ -45,12 +45,11 @@
   [{:keys [state]} _ _]
   {:value (select-keys @state [:theme/name :theme/map])})
 
-;;** Mutate helpers
-(defn wrap-mutate-name [props k]
-  (assoc props :mutate/name k))
-
 ;;** Mutators
 (defmulti mutate om/dispatch)
+
+(defn wrap-mutate-name [props k]
+  (assoc props :mutate/name k))
 
 ;; non-local
 (defmethod mutate :default
@@ -62,18 +61,19 @@
    (fn []
      (swap! state merge props))})
 
-
 (defmethod mutate 'state/reset
   [{:keys [state]} _ props]
   {:action
    (fn []
      (reset! state props))})
 
-(defmethod mutate 'theme/update
-  [{:keys [state]} _ props]
+(defmethod mutate 'state/update-ref
+  [{:keys [state ref]} _ {:keys [mutate/name props]}]
   {:action
    (fn []
-     (swap! state merge props))})
+     (reset! state (-> @state
+                     (wrap-mutate-name name)
+                     (update-in ref merge props))))})
 
 (defmethod mutate 'theme/rename
   [{:keys [state]} k {:keys [new-name prev-name]}]
@@ -115,8 +115,6 @@
        (swap! state (partial merge-with #(identity %2))
          theme {:theme/map new-theme-map :mutate/name k})))})
 
-;; TODO there is a bug in this function where
-;; its not merging correctly.  Not a big deal.
 (defmethod mutate 'theme/new
   [{:keys [state]} k _]
   {:action
@@ -160,12 +158,6 @@
                        (assoc :palette-widget/active-color [:colors/by-id new-id])
                        (assoc :palette-widget/face-classes-by-color-type (util/faces-to-colorize (:faces/list st) new-id))))))})
 
-(defmethod mutate 'palette-widget/update
-  [{:keys [state]} _ props]
-  {:action
-   (fn []
-     (swap! state merge props))})
-
 (defn next-active-color [{:keys [:palette-widget/active-color :colors/list]} color-id-removing]
   (if (= color-id-removing (last active-color))
     (let [[left-colors right-colors] (split-with #(< (last %) color-id-removing) list)]
@@ -186,28 +178,6 @@
                        (assoc :palette-widget/active-color active-color)
                        (assoc :palette-widget/face-classes-by-color-type (util/faces-to-colorize (:faces/list st) (:color/id active-color)))))))})
 
-(defmethod mutate 'color/update
-  [{:keys [state]} k {:keys [color/id] :as props}]
-  {:action
-   (fn []
-     (reset! state (-> @state
-                     (wrap-mutate-name k)
-                     (update-in [:colors/by-id id] merge props))))})
-
-(defmethod mutate 'face/update
-  [{:keys [state]} k {:keys [:face/name] :as props}]
-  {:action
-   (fn []
-     (reset! state (-> @state
-                     (wrap-mutate-name k)
-                     (update-in [:faces/by-name name] merge props))))})
-
-(defmethod mutate 'color-picker/update
-  [{:keys [state]} _ props]
-  {:action
-   (fn []
-     (swap! state merge props))})
-
 (defmethod mutate 'user-face/add
   [{:keys [state]} k {:keys [face/name] :as props}]
   {:action
@@ -225,14 +195,6 @@
                      (wrap-mutate-name k)
                      (update :user-faces/by-name dissoc (last ref))
                      (update :user-faces/list #(filterv (partial not= ref) %)))))})
-
-(defmethod mutate 'user-face/update
-  [{:keys [state ref]} k props]
-  {:action
-   (fn []
-     (reset! state (-> @state
-                     (wrap-mutate-name k)
-                     (update-in ref merge props))))})
 
 (defmethod mutate 'user-face/change-name
   [{:keys [state ref]} k {:keys [new-name]}]

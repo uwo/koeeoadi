@@ -24,9 +24,12 @@
      (color-update comp active-color closure-comp (.getColor closure-comp))))
   ([comp active-color closure-comp color-hex]
    (when (not= color-hex (:color/hex active-color))
-     (om/transact! comp
-       `[(color/update {:color/id  ~(:color/id active-color)
-                        :color/hex ~(.getColor closure-comp)}) :palette]))))
+     (let [id         (:color/id active-color)
+           color-comp (om/ref->any reconciler [:colors/by-id id])]
+       (om/transact! color-comp
+         `[(state/update-ref  {:mutate/name color/update
+                               :props {:color/id  ~id
+                                       :color/hex ~(.getColor closure-comp)}}) :palette])))))
 
 (defn color-remove [comp {:keys [color/id] :as color} e]
   (.preventDefault e)
@@ -36,7 +39,7 @@
 
 (defn palette-widget-update [color-id faces-list]
   (om/transact! (om/class->any reconciler Palette)
-    `[(palette-widget/update
+    `[(state/merge
         {:palette-widget/active-color [:colors/by-id ~color-id]
          :palette-widget/face-classes-by-color-type ~(util/faces-to-colorize faces-list color-id)})]))
 
@@ -148,7 +151,7 @@
       (let [input (widget-input-elem this)]
         (.setColor widget (:color/hex active-color))
         (gevents/listen widget EventType.ACTION #(handle-action this %))
-        (om/transact! this `[(palette-widget/update
+        (om/transact! this `[(state/merge
                                {:palette-widget/face-classes-by-color-type ~(util/faces-to-colorize list (:color/id active-color))
                                 :palette-widget/closure-comp ~widget})]))))
 
