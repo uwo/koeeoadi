@@ -1,23 +1,25 @@
 * Koeeoadi
 
   Koeeoadi is a web app for building color themes for Emacs and Vim
-  (GUI only).  *Click Here* to check it out.
+  (GUI only).  [[http://thescratchcastle.com/koeeoadi][Click here to check it out.]]
+
+#+NAME:   fig:koeeoadi-preview
+[[./koeeoadi.png]]
 
   It's somewhat different from other online theme creators because you
   can click directly on code to edit its styling.  It also supports
   definition of custom faces.  This means you can define styles for
-  any Emacs face or Vim highlighting group.  In addiiton, to theme
-  export, you can also save your theme to a `.koee` file so that you
-  can open it later for further editing.
+  any Emacs face or Vim highlighting group.  In addition to theme
+  export, you can also save your theme to a `.koee` file for editing
+  later.
 
   I built Koeeoadi as an exercise for learning about Om Next, a very
-  awesome Clojurescript framework for buildings applications.  I
+  awesome Clojurescript framework for building web applications.  I
   highly recommend checking it out if you haven't already.
 
-  If you're also working on an Om Next app and using this as a
-  reference, then please keep in mind that I'm still figuring out the
-  best way to do things in Om so please don't consider this a shining
-  example.
+  If you're working on an Om Next app and using this repo as a reference,
+  then please keep in mind that I'm still figuring out the best way to
+  do things in Om so please everything here exemplary.
 
 * Face Mapping
 
