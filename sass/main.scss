@@ -40,42 +40,6 @@ $colorMargin: 2px;
 $userFacesModalWidth: 920px;
 
 
-/* Overrides for skeleton.css */
-.container {
-    overflow-y: scroll;
-    min-height: 100%;
-    width: 100% !important;
-    max-width: initial !important;
-}
-
-select {
-    border-radius: 0;
-    padding: initial;
-    width: initial;
-    height: initial;
-}
-
-select,input[type="text"] {
-    background-color: $grayLighter;
-    box-sizing: border-box;
-    width: 100px;
-    height: 20px;
-    line-height: normal;
-    border: none;
-    padding: 0 0 0 5px;
-}
-
-code {
-    border: none !important;
-    white-space: pre-wrap;
-    padding: 0;
-    margin: 0;
-}
-
-p {
-    margin-bottom: 10px;
-}
-
 /* Tags */
 html {
     height: 100%;
@@ -117,6 +81,34 @@ input, select {
     color: $grayDark;
 }
 
+select {
+    border-radius: 0;
+    padding: initial;
+    width: initial;
+    height: initial;
+    width: 100px;
+}
+
+select,input[type="text"] {
+    background-color: $grayLighter;
+    box-sizing: border-box;
+    height: 20px;
+    line-height: normal;
+    border: none;
+    padding: 0 0 0 5px;
+}
+
+code {
+    border: none !important;
+    white-space: pre-wrap;
+    padding: 0;
+    margin: 0;
+}
+
+p {
+    margin-bottom: 10px;
+}
+
 button {
     width: $buttonWidth;
     padding: 0;
@@ -144,11 +136,13 @@ button, div, span, td, th {
   user-select: none;
 }
 
-.code, code, .color {
-    transition: background-color 0.1s, color 0.1s;
-}
-
 /* General Classes */
+.container {
+    overflow-y: scroll;
+    min-height: 100%;
+    width: 100% !important;
+    max-width: initial !important;
+}
 
 .widget {
     background: $backgroundColor;
@@ -158,6 +152,10 @@ button, div, span, td, th {
     border-radius: $borderRadius;
     padding: $widgetPadding;
     width: $widgetContentWidth;
+}
+
+.code, code, .color {
+    transition: background-color 0.1s, color 0.1s;
 }
 
 .color {
@@ -262,6 +260,14 @@ button, div, span, td, th {
     pointer-events: none;
 }
 
+/* App */
+#app {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
 
 /* Root */
 #root {
@@ -336,7 +342,6 @@ button, div, span, td, th {
 }
 
 /* Palette */
-
 .goog-hsv-palette-sm {
     margin: 10px auto;
     border: none;
@@ -412,15 +417,6 @@ button, div, span, td, th {
     top: -$colorInputSize;
 }
 
-/* App */
-#app {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-}
-
 /* App Info */
 #app-info > *{
     text-align: center;
@@ -474,7 +470,7 @@ button, div, span, td, th {
     }
 }
 
-/* Face Editor */
+/* Faces */
 .face {
     padding: 2px 2px 2px 5px;
     position: relative;
@@ -533,8 +529,6 @@ button, div, span, td, th {
 .color-trigger:nth-child(2){
     margin-left: 5px;;
 }
-
-
 
 /* Palette Picker */
 #color-picker {
