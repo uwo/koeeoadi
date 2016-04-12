@@ -10,16 +10,16 @@
   can click directly on code to edit its styling.  It also supports
   definition of custom faces.  This means you can define styles for
   any Emacs face or Vim highlighting group.  In addition to theme
-  export, you can also save your theme to a `.koee` file for editing
+  export, you can also save your theme to a .koee file for editing
   later.
 
-  I built Koeeoadi as an exercise for learning about Om Next, a very
+  I built Koeeoadi in order to learn more about Om Next, a very
   awesome Clojurescript framework for building web applications.  I
   highly recommend checking it out if you haven't already.
 
   If you're working on an Om Next app and using this repo as a reference,
   then please keep in mind that I'm still figuring out the best way to
-  do things in Om so please everything here exemplary.
+  do things in Om so please don't assume everything here is exemplary.
 
 * Face Mapping
 
@@ -43,6 +43,11 @@ Emacs and VIM, respectively.
 | string                 | font-lock-string-face            | String                                             |
 | type                   | font-lock-type-face              | Type                                               |
 | variable-name          | font-lock-variable-name-face     | Identifier                                         |
+
+There are two themes included with Koeeoadi that contain the most
+common VIM and Emacs faces.  These are called 'vim-theme-all-faces'
+and 'emacs-theme-all-faces'.  You may want to use those out if you're
+looking to build an extensive theme.
 
 * Contribution
 
